@@ -67,7 +67,7 @@ describe("saveメソッド", () => {
       expect(result2.updatedAt).toBeInstanceOf(Date);
     });
 
-    it("", () => {
+    it("メソッドを実行すると、初期データの後にデータを追加し、そのデータ内容を取得する事できる。", () => {
       const instance = new TodoRepository([
         { title: "ダミータイトル1", body: "ダミーボディ1" },
         { title: "ダミータイトル2", body: "ダミーボディ2" },
