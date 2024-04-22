@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { TodoInput } from "../models/Todo";
+import { TodoInput } from "../models/entities";
 import { TodoRepository } from "../repositories/TodoRepository";
 
 export const postTodo = (req: Request<any, any, TodoInput>, res: Response) => {

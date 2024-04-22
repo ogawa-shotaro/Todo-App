@@ -1,4 +1,4 @@
-import { TodoEntity } from "../../../models/Todo";
+import { TodoEntity } from "../../../models/entities";
 import { TodoRepository } from "../../../repositories/TodoRepository";
 
 describe("TodoRepositoryクラス", () => {

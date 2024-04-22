@@ -1,7 +1,7 @@
-import { TodoEntity } from "../../../models/Todo";
+import { TodoEntity } from "../../../models/entities";
 
 describe("TodoEntityクラス", () => {
-  it("タイトルが未入力だエラーになる", () => {
+  it("タイトルが未入力だとエラーになる", () => {
     const data = {
       id: 1,
       title: "",
