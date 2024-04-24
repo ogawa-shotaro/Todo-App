@@ -1,5 +1,5 @@
-import { TodoEntity } from "../../../entities/Todo";
-import { TodoRepository } from "../../../repositories/TodoRepository";
+import { TodoEntity } from "../../entities/Todo";
+import { TodoRepository } from "../../repositories/TodoRepository";
 
 describe("TodoRepositoryクラス", () => {
   it("インスタンス生成時(引数なし)", () => {
