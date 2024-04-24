@@ -1,4 +1,4 @@
-import { TodoEntity } from "../../../models/entities";
+import { TodoEntity } from "../../../entities/Todo";
 
 describe("TodoEntityクラス", () => {
   it("タイトルが未入力だとエラーになる", () => {

@@ -1,5 +1,5 @@
-import type { TodoInput } from "../models/entities";
-import { TodoEntity } from "../models/entities";
+import type { TodoInput } from "../entities/Todo";
+import { TodoEntity } from "../entities/Todo";
 
 export class TodoRepository {
   private nextId = 1;

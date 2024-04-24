@@ -3,7 +3,7 @@ export interface TodoInput {
   body: string;
 }
 
-export interface TodoModel extends TodoInput {
+export interface TodoEntityInput extends TodoInput {
   id: number;
 }
 
@@ -14,7 +14,7 @@ export class TodoEntity {
   public readonly createdAt: Date;
   public readonly updatedAt: Date;
 
-  constructor({ id, title, body }: TodoModel) {
+  constructor({ id, title, body }: TodoEntityInput) {
     if (!title) {
       throw new Error("titleの内容は必須です");
     }
