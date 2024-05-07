@@ -13,9 +13,7 @@ export class TodoController {
     try {
       const { title, body } = req.body;
       const createdTodo = this.repository.save({ title, body });
-
       res.status(200).json(createdTodo);
-      res.status(200).json({});
     } catch (error) {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
