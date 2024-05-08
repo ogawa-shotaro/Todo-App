@@ -22,15 +22,15 @@ describe("getメソッドのテスト(Todo一覧取得APIの動作テスト)", (
       statusCode: 200,
     });
 
-    const getTodo: TodoEntity[] = response.body;
-    expect(getTodo.length).toEqual(3);
-    expect(getTodo.map((todo) => todo.id)).toEqual([1, 2, 3]);
-    expect(getTodo.map((todo) => todo.title)).toEqual([
+    const todoItems: TodoEntity[] = response.body;
+    expect(todoItems.length).toEqual(3);
+    expect(todoItems.map((todo) => todo.id)).toEqual([1, 2, 3]);
+    expect(todoItems.map((todo) => todo.title)).toEqual([
       "ダミータイトル1",
       "ダミータイトル2",
       "ダミータイトル3",
     ]);
-    expect(getTodo.map((todo) => todo.body)).toEqual([
+    expect(todoItems.map((todo) => todo.body)).toEqual([
       "ダミーボディ1",
       "ダミーボディ2",
       "ダミーボディ3",

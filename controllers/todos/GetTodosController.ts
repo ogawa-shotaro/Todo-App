@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import { TodoRepository } from "../../repositories/TodoRepository";
-export class TodosGetController {
+
+export class GetTodosController {
   private repository: TodoRepository;
 
   constructor(repository: TodoRepository) {

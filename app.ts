@@ -1,6 +1,6 @@
 import express from "express";
-const app = express();
 import router from "./routers/todos";
+const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

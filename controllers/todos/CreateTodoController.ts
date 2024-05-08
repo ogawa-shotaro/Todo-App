@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import { TodoInput } from "../../entities/Todo";
 import { TodoRepository } from "../../repositories/TodoRepository";
 
-export class TodoController {
+export class CreateTodoController {
   private repository: TodoRepository;
 
   constructor(repository: TodoRepository) {
