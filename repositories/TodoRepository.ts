@@ -1,7 +1,8 @@
 import type { TodoInput } from "../entities/Todo";
 import { TodoEntity } from "../entities/Todo";
+import type IRepository from "./IRepository";
 
-export class TodoRepository {
+export class TodoRepository implements IRepository<TodoEntity> {
   private nextId = 1;
   private db: TodoEntity[] = [];
 
