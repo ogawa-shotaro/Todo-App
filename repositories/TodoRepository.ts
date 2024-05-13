@@ -1,8 +1,7 @@
 import type { TodoInput } from "../entities/Todo";
 import { TodoEntity } from "../entities/Todo";
-import type IRepository from "./IRepository";
 
-export class TodoRepository implements IRepository<TodoEntity> {
+export class TodoRepository {
   private nextId = 1;
   private db: TodoEntity[] = [];
 
@@ -30,5 +29,13 @@ export class TodoRepository implements IRepository<TodoEntity> {
 
   list() {
     return this.db.slice();
+  }
+
+  find(id: number) {
+    const todo = this.db.find((e) => e.id === id);
+    if (!todo) {
+      return null;
+    }
+    return todo;
   }
 }
