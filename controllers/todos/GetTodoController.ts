@@ -10,11 +10,17 @@ export class GetTodoController {
 
   find(req: Request, res: Response) {
     const id = req.params.id;
-    const parsedNumber = parseInt(id, 10);
-    const pickupTodo = this.repository.find(parsedNumber);
-    if (!pickupTodo) {
-      res.status(404).json("IDに該当したTodoがありません。");
+    const parsedId = parseInt(id, 10);
+    const todoItem = this.repository.find(parsedId);
+    if (!todoItem) {
+      const errorObj = {
+        code: 404,
+        message: "Not found",
+        stat: "fail",
+      };
+
+      res.status(404).json(errorObj);
     }
-    return res.status(200).json(pickupTodo);
+    return res.status(200).json(todoItem);
   }
 }

@@ -4,6 +4,7 @@ import { TodoRepository } from "../../repositories/TodoRepository";
 
 export class CreateTodoController {
   private repository: TodoRepository;
+
   constructor(repository: TodoRepository) {
     this.repository = repository;
   }
