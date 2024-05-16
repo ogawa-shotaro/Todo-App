@@ -20,6 +20,7 @@ export class GetTodoController {
       };
 
       res.status(404).json(errorObj);
+      return;
     }
     return res.status(200).json(todoItem);
   }
