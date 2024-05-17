@@ -97,14 +97,15 @@ describe("TodoRepository", () => {
   describe("異常パターン", () => {
     it("重複したIDがある場合、例外が発生する", () => {
       const repository = new TodoRepository();
-      const entity = new TodoEntity({
-        id: 1,
+      const entity = repository.save({
         title: "ダミータイトル1",
         body: "ダミーボディ1",
       });
-      expect(repository.save(entity)).toBeInstanceOf(TodoEntity);
-    });
 
+      expect(() => repository.save(entity)).toThrow(
+        new Error("重複したIDが存在します。")
+      );
+    });
     it("存在しないIDの値を取得しようとした場合、nullが返る", () => {
       const repository = new TodoRepository();
       const entity = repository.find(999);
