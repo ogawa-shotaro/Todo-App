@@ -20,10 +20,6 @@ export class TodoRepository {
       id: this.nextId,
       ...input,
     });
-    const duplicatedId = this.db.find((e) => e.id === inputData.id);
-    if (duplicatedId) {
-      throw new Error("重複したIDが存在します。");
-    }
 
     this.db.push(inputData);
     this.nextId++;
