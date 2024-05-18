@@ -47,7 +47,12 @@ describe("getメソッドのテスト(Todo一件の取得とAPIの動作テス�
         endPoint: "/api/todos/999",
         statusCode: 404,
       });
+      const { code, message, stat } = response.body;
+
       expect(response.statusCode).toEqual(404);
+      expect(code).toEqual(404);
+      expect(message).toEqual("Not found");
+      expect(stat).toEqual("fail");
     });
   });
 });
