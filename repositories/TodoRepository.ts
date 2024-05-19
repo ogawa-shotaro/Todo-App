@@ -30,4 +30,12 @@ export class TodoRepository {
   list() {
     return this.db.slice();
   }
+
+  find(id: number) {
+    const todo = this.db.find((e) => e.id === id);
+    if (!todo) {
+      return null;
+    }
+    return todo;
+  }
 }
