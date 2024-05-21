@@ -92,6 +92,28 @@ describe("TodoRepository", () => {
         expect(result2?.updatedAt).toBeInstanceOf(Date);
       });
     });
+
+    it("updateメソッドを実行すると、DB内のデータを更新する事ができる。", () => {
+      const instance = new TodoRepository();
+      const dammyData = instance.save({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
+
+      const result = instance.update({
+        id: 1,
+        title: "変更後のタイトル",
+        body: "変更後のボディ",
+      });
+
+      expect(result).toEqual({
+        id: 1,
+        title: "変更後のタイトル",
+        body: "変更後のボディ",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    });
   });
 
   describe("異常パターン", () => {
@@ -100,6 +122,22 @@ describe("TodoRepository", () => {
       const entity = repository.find(999);
 
       expect(entity).toBeNull();
+    });
+
+    it("更新時のタイトル or ボディが未入力だとエラーになる", () => {
+      const instance = new TodoRepository();
+      const dammyData = instance.save({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
+
+      expect(() => {
+        instance.update({ id: 1, title: "", body: "変更後のタイトル" });
+      }).toThrow("titleの内容は必須です");
+
+      expect(() => {
+        instance.update({ id: 1, title: "変更後のタイトル", body: "" });
+      }).toThrow("bodyの内容は必須です");
     });
   });
 });

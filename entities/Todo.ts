@@ -8,11 +8,11 @@ export interface TodoEntityInput extends TodoInput {
 }
 
 export class TodoEntity {
-  public readonly id: number;
-  public readonly title: string;
-  public readonly body: string;
-  public readonly createdAt: Date;
-  public readonly updatedAt: Date;
+  public id: number;
+  public title: string;
+  public body: string;
+  public createdAt: Date;
+  public updatedAt: Date;
 
   constructor({ id, title, body }: TodoEntityInput) {
     if (!title) {
