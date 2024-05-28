@@ -25,13 +25,13 @@ describe("TodoEntityクラス", () => {
       };
 
       const instance = new TodoEntity(data);
-      const clonedInstance = instance.clone();
+      const sameInstance = instance.clone();
 
-      expect(clonedInstance.getTodoEntity.id).toEqual(1);
-      expect(clonedInstance.getTodoEntity.title).toEqual("ダミータイトル");
-      expect(clonedInstance.getTodoEntity.body).toEqual("ダミーボディ");
-      expect(clonedInstance.getTodoEntity.createdAt).toBeInstanceOf(Date);
-      expect(clonedInstance.getTodoEntity.updatedAt).toBeInstanceOf(Date);
+      expect(sameInstance.getTodoEntity.id).toEqual(1);
+      expect(sameInstance.getTodoEntity.title).toEqual("ダミータイトル");
+      expect(sameInstance.getTodoEntity.body).toEqual("ダミーボディ");
+      expect(sameInstance.getTodoEntity.createdAt).toBeInstanceOf(Date);
+      expect(sameInstance.getTodoEntity.updatedAt).toBeInstanceOf(Date);
     });
 
     it("updateメソッドを実行すると、作成後のTodo情報を更新する事ができる", () => {
