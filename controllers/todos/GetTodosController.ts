@@ -10,7 +10,8 @@ export class GetTodosController {
 
   list(req: Request, res: Response) {
     const todos = this.repository.list();
+    const responseData = todos.map((todo) => todo.getTodoEntity);
 
-    return res.status(200).json(todos);
+    return res.status(200).json(responseData);
   }
 }

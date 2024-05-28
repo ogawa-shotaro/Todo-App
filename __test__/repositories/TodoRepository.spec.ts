@@ -31,18 +31,18 @@ describe("TodoRepository", () => {
         });
 
         expect(result1).toBeInstanceOf(TodoEntity);
-        expect(result1.id).toEqual(1);
-        expect(result1.title).toEqual("ダミータイトル1");
-        expect(result1.body).toEqual("ダミーボディ1");
-        expect(result1.createdAt).toBeInstanceOf(Date);
-        expect(result1.updatedAt).toBeInstanceOf(Date);
+        expect(result1.getTodoEntity.id).toEqual(1);
+        expect(result1.getTodoEntity.title).toEqual("ダミータイトル1");
+        expect(result1.getTodoEntity.body).toEqual("ダミーボディ1");
+        expect(result1.getTodoEntity.createdAt).toBeInstanceOf(Date);
+        expect(result1.getTodoEntity.updatedAt).toBeInstanceOf(Date);
 
         expect(result2).toBeInstanceOf(TodoEntity);
-        expect(result2.id).toEqual(2);
-        expect(result2.title).toEqual("ダミータイトル2");
-        expect(result2.body).toEqual("ダミーボディ2");
-        expect(result2.createdAt).toBeInstanceOf(Date);
-        expect(result2.updatedAt).toBeInstanceOf(Date);
+        expect(result2.getTodoEntity.id).toEqual(2);
+        expect(result2.getTodoEntity.title).toEqual("ダミータイトル2");
+        expect(result2.getTodoEntity.body).toEqual("ダミーボディ2");
+        expect(result2.getTodoEntity.createdAt).toBeInstanceOf(Date);
+        expect(result2.getTodoEntity.updatedAt).toBeInstanceOf(Date);
       });
 
       it("初期データの後にデータを追加し、そのデータ内容を一覧取得(listメソッド)する事できる。", () => {
@@ -77,41 +77,56 @@ describe("TodoRepository", () => {
 
         const result1: TodoEntity | null = instance.find(1);
 
-        expect(result1?.id).toEqual(1);
-        expect(result1?.title).toEqual("ダミータイトル1");
-        expect(result1?.body).toEqual("ダミーボディ1");
-        expect(result1?.createdAt).toBeInstanceOf(Date);
-        expect(result1?.updatedAt).toBeInstanceOf(Date);
+        expect(result1?.getTodoEntity.id).toEqual(1);
+        expect(result1?.getTodoEntity.title).toEqual("ダミータイトル1");
+        expect(result1?.getTodoEntity.body).toEqual("ダミーボディ1");
+        expect(result1?.getTodoEntity.createdAt).toBeInstanceOf(Date);
+        expect(result1?.getTodoEntity.updatedAt).toBeInstanceOf(Date);
 
         const result2: TodoEntity | null = instance.find(2);
 
-        expect(result2?.id).toEqual(2);
-        expect(result2?.title).toEqual("ダミータイトル2");
-        expect(result2?.body).toEqual("ダミーボディ2");
-        expect(result2?.createdAt).toBeInstanceOf(Date);
-        expect(result2?.updatedAt).toBeInstanceOf(Date);
-      });
-    });
-
-    it("updateメソッドを実行すると、DB内のデータを更新する事ができる。", () => {
-      const instance = new TodoRepository();
-      const dammyData = instance.save({
-        title: "ダミータイトル",
-        body: "ダミーボディ",
+        expect(result2?.getTodoEntity.id).toEqual(2);
+        expect(result2?.getTodoEntity.title).toEqual("ダミータイトル2");
+        expect(result2?.getTodoEntity.body).toEqual("ダミーボディ2");
+        expect(result2?.getTodoEntity.createdAt).toBeInstanceOf(Date);
+        expect(result2?.getTodoEntity.updatedAt).toBeInstanceOf(Date);
       });
 
-      const result = instance.update({
-        id: 1,
-        title: "変更後のタイトル",
-        body: "変更後のボディ",
+      it("updateメソッドを実行すると、DB内のデータを更新する事ができる。", () => {
+        const instance = new TodoRepository();
+        const dammyData = instance.save({
+          title: "ダミータイトル",
+          body: "ダミーボディ",
+        });
+        expect(
+          instance.update({
+            id: 1,
+            title: "変更後のタイトル",
+            body: "変更後のボディ",
+          })
+        ).toEqual({
+          id: 1,
+          title: "変更後のタイトル",
+          body: "変更後のボディ",
+          createdAt: dammyData.getTodoEntity.createdAt,
+          updatedAt: new Date(),
+        });
       });
 
-      expect(result).toEqual({
-        id: 1,
-        title: "変更後のタイトル",
-        body: "変更後のボディ",
-        createdAt: new Date(),
-        updatedAt: new Date(),
+      it("updateメソッドを実行した後は、updatedAtの方がcreatedAtよりも新しい時間になっている。", () => {
+        const instance = new TodoRepository();
+        instance.save({
+          title: "ダミータイトル",
+          body: "ダミーボディ",
+        });
+        const latestData = instance.update({
+          id: 1,
+          title: "変更後のタイトル",
+          body: "変更後のボディ",
+        });
+
+        expect(latestData.createdAt <= latestData.updatedAt).toBeTruthy();
+        expect(latestData.createdAt !== latestData.updatedAt).toBeTruthy();
       });
     });
   });
@@ -124,20 +139,16 @@ describe("TodoRepository", () => {
       expect(entity).toBeNull();
     });
 
-    it("更新時のタイトル or ボディが未入力だとエラーになる", () => {
-      const instance = new TodoRepository();
-      const dammyData = instance.save({
-        title: "ダミータイトル",
-        body: "ダミーボディ",
-      });
+    it("存在しないIDの値を更新しようとした場合、エラーオブジェクトが返る", () => {
+      const repository = new TodoRepository();
 
       expect(() => {
-        instance.update({ id: 1, title: "", body: "変更後のタイトル" });
-      }).toThrow("titleの内容は必須です");
-
-      expect(() => {
-        instance.update({ id: 1, title: "変更後のタイトル", body: "" });
-      }).toThrow("bodyの内容は必須です");
+        repository.update({
+          id: 999,
+          title: "ダミータイトル",
+          body: "ダミーボディ",
+        });
+      }).toThrow("idに該当するtodoが存在しません。");
     });
   });
 });

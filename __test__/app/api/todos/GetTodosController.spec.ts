@@ -1,5 +1,12 @@
-import { TodoEntity } from "../../../../entities/Todo";
 import { requestAPI } from "../../../helper/requestHelper";
+
+type TodoResponseType = {
+  id: number;
+  title: string;
+  body: string;
+  createdAt: Date;
+  updateAt: Date;
+};
 
 describe("getメソッドのテスト(Todo一覧取得APIの動作テスト)", () => {
   beforeAll(async () => {
@@ -22,7 +29,8 @@ describe("getメソッドのテスト(Todo一覧取得APIの動作テスト)", (
       statusCode: 200,
     });
 
-    const todoItems: TodoEntity[] = response.body;
+    const todoItems: TodoResponseType[] = response.body;
+
     expect(todoItems.length).toEqual(3);
     expect(todoItems.map((todo) => todo.id)).toEqual([1, 2, 3]);
     expect(todoItems.map((todo) => todo.title)).toEqual([

@@ -28,36 +28,26 @@ export class TodoRepository {
   }
 
   list() {
-    return this.db.slice();
+    const todos = this.db.map((todo) => todo.clone());
+    return todos;
   }
 
   find(id: number) {
-    const todo = this.db.find((e) => e.id === id);
+    const todo = this.db.find((e) => e.getTodoEntity.id === id);
     if (!todo) {
       return null;
     }
-    return todo;
+    return todo.clone();
   }
 
   update({ id, title, body }: TodoEntityInput) {
-    if (!id) {
-      throw new Error("idは必須です");
-    }
-    if (!title) {
-      throw new Error("titleの内容は必須です");
-    }
-    if (!body) {
-      throw new Error("bodyの内容は必須です");
-    }
-    const todo = this.db.find((e) => e.id === id);
+    const todo = this.db.find((e) => e.getTodoEntity.id === id);
     if (!todo) {
       throw new Error("idに該当するtodoが存在しません。");
     }
 
-    todo.title = title;
-    todo.body = body;
-    todo.updatedAt = new Date();
-
-    return todo;
+    todo.update({ title, body });
+    const entityData = todo.clone();
+    return entityData.getTodoEntity;
   }
 }
