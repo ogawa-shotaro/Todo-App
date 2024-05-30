@@ -42,11 +42,8 @@ export class TodoEntity {
   }
 
   update({ title, body }: TodoInput) {
-    if (!title) {
-      throw new Error("更新処理を中断(titleの更新データがない為)");
-    }
-    if (!body) {
-      throw new Error("更新処理を中断(bodyの更新データがない為)");
+    if (!title || !body) {
+      throw new Error("更新処理を中断(更新データがない為)");
     }
 
     this.title = title ?? this.title;

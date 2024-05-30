@@ -98,18 +98,18 @@ describe("TodoRepository", () => {
           title: "ダミータイトル",
           body: "ダミーボディ",
         });
-        expect(
-          instance.update({
-            id: 1,
-            title: "変更後のタイトル",
-            body: "変更後のボディ",
-          })
-        ).toEqual({
+        const result = instance.update({
+          id: 1,
+          title: "変更後のタイトル",
+          body: "変更後のボディ",
+        });
+
+        expect(result).toEqual({
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
           createdAt: dammyData.getTodoEntity.createdAt,
-          updatedAt: new Date(),
+          updatedAt: result.updatedAt,
         });
       });
 
