@@ -1,4 +1,4 @@
-import type { TodoInput } from "../entities/Todo";
+import type { TodoEntityInput, TodoInput } from "../entities/Todo";
 import { TodoEntity } from "../entities/Todo";
 
 export class TodoRepository {
@@ -28,14 +28,26 @@ export class TodoRepository {
   }
 
   list() {
-    return this.db.slice();
+    const todos = this.db.map((todo) => todo.clone());
+    return todos;
   }
 
   find(id: number) {
-    const todo = this.db.find((e) => e.id === id);
+    const todo = this.db.find((e) => e.getTodoEntity.id === id);
     if (!todo) {
       return null;
     }
-    return todo;
+    return todo.clone();
+  }
+
+  update({ id, title, body }: TodoEntityInput) {
+    const todo = this.db.find((e) => e.getTodoEntity.id === id);
+    if (!todo) {
+      throw new Error("idに該当するtodoが存在しません。");
+    }
+
+    todo.update({ title, body });
+    const entityData = todo.clone();
+    return entityData.getTodoEntity;
   }
 }

@@ -5,16 +5,18 @@ export interface TodoInput {
 
 export interface TodoEntityInput extends TodoInput {
   id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export class TodoEntity {
-  public readonly id: number;
-  public readonly title: string;
-  public readonly body: string;
-  public readonly createdAt: Date;
-  public readonly updatedAt: Date;
+  private id: number;
+  private title: string;
+  private body: string;
+  private createdAt: Date;
+  private updatedAt: Date;
 
-  constructor({ id, title, body }: TodoEntityInput) {
+  constructor({ id, title, body, createdAt, updatedAt }: TodoEntityInput) {
     if (!title) {
       throw new Error("titleの内容は必須です");
     }
@@ -25,7 +27,37 @@ export class TodoEntity {
     this.id = id;
     this.title = title;
     this.body = body;
-    this.createdAt = new Date();
+    this.createdAt = createdAt ?? new Date();
+    this.updatedAt = updatedAt ?? new Date();
+  }
+
+  clone() {
+    return new TodoEntity({
+      id: this.id,
+      title: this.title,
+      body: this.body,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    });
+  }
+
+  update({ title, body }: TodoInput) {
+    if (!title || !body) {
+      throw new Error("更新処理を中断(更新データがない為)");
+    }
+
+    this.title = title ?? this.title;
+    this.body = body ?? this.body;
     this.updatedAt = new Date();
+  }
+
+  public get getTodoEntity() {
+    return {
+      id: this.id,
+      title: this.title,
+      body: this.body,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
   }
 }
