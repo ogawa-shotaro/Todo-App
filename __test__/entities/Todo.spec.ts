@@ -1,4 +1,3 @@
-import { json } from "express";
 import { TodoEntity } from "../../entities/Todo";
 
 describe("TodoEntityクラス", () => {
