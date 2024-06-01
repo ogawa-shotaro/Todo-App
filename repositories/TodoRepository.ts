@@ -33,6 +33,10 @@ export class TodoRepository {
   }
 
   find(id: number) {
+    if (typeof id !== "number" || id < 1) {
+      throw new Error("idは必須です(1以上の数値)");
+    }
+
     const todo = this.db.find((e) => e.getTodoEntity.id === id);
     if (!todo) {
       return null;
@@ -41,6 +45,10 @@ export class TodoRepository {
   }
 
   update({ id, title, body }: TodoEntityInput) {
+    if (typeof id !== "number" || id < 1) {
+      throw new Error("idは必須です(1以上の数値)");
+    }
+
     const todo = this.db.find((e) => e.getTodoEntity.id === id);
     if (!todo) {
       throw new Error("idに該当するtodoが存在しません。");
@@ -49,5 +57,19 @@ export class TodoRepository {
     todo.update({ title, body });
     const entityData = todo.clone();
     return entityData.getTodoEntity;
+  }
+
+  delete(id: number) {
+    if (typeof id !== "number" || id < 1) {
+      throw new Error("idは必須です(1以上の数値)");
+    }
+
+    const deletionTodoId = this.db.findIndex((e) => e.getTodoEntity.id === id);
+    if (deletionTodoId === -1) {
+      throw new Error("idに該当するtodoが存在しません。");
+    }
+
+    const entityDeletedData = this.db.splice(deletionTodoId, 1)[1];
+    return entityDeletedData;
   }
 }

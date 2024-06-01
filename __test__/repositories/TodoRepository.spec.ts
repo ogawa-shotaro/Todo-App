@@ -129,14 +129,48 @@ describe("TodoRepository", () => {
         expect(latestData.createdAt !== latestData.updatedAt).toBeTruthy();
       });
     });
+
+    it("deleteメソッドを実行すると、DB内の指定した(ID)データを削除する事ができる。", () => {
+      const instance = new TodoRepository();
+      const dammyData = instance.save({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
+      const dbOldData = instance.list();
+      const result = instance.delete(1);
+      const dbCurrentData = instance.list();
+
+      expect(result).toBeUndefined();
+      expect(dbOldData.length > dbCurrentData.length).toBeTruthy();
+    });
   });
 
   describe("異常パターン", () => {
+    it("不正なIDを指定した場合(findメソッド実行時)、エラーオブジェクトが返る", () => {
+      const repository = new TodoRepository();
+
+      expect(() => {
+        repository.find(0);
+      }).toThrow("idは必須です(1以上の数値)");
+    });
+
     it("存在しないIDの値を取得しようとした場合、nullが返る", () => {
       const repository = new TodoRepository();
       const entity = repository.find(999);
 
       expect(entity).toBeNull();
+    });
+
+    it("不正なIDを指定した場合(updateメソッド実行時)、エラーオブジェクトが返る", () => {
+      const repository = new TodoRepository();
+
+      expect(() => {
+        repository.update({
+          id: 0,
+          title: "変更後のタイトル",
+          body: "変更後のボディ",
+        });
+      }).toThrow("idは必須です(1以上の数値)");
     });
 
     it("存在しないIDの値を更新しようとした場合、エラーオブジェクトが返る", () => {
@@ -148,6 +182,22 @@ describe("TodoRepository", () => {
           title: "ダミータイトル",
           body: "ダミーボディ",
         });
+      }).toThrow("idに該当するtodoが存在しません。");
+    });
+
+    it("不正なIDを指定した場合(deleteメソッド実行時)、エラーオブジェクトが返る", () => {
+      const repository = new TodoRepository();
+
+      expect(() => {
+        repository.delete(0);
+      }).toThrow("idは必須です(1以上の数値)");
+    });
+
+    it("存在しないIDの値を削除しようとした場合、エラーオブジェクトが返る", () => {
+      const repository = new TodoRepository();
+
+      expect(() => {
+        repository.delete(999);
       }).toThrow("idに該当するtodoが存在しません。");
     });
   });
