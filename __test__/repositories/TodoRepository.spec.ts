@@ -131,16 +131,21 @@ describe("TodoRepository", () => {
     });
 
     it("deleteメソッドを実行すると、DB内の指定した(ID)データを削除する事ができる。", () => {
-      const instance = new TodoRepository();
-      const dammyData = instance.save({
-        title: "ダミータイトル",
-        body: "ダミーボディ",
-      });
+      const instance = new TodoRepository([
+        { title: "ダミータイトル1", body: "ダミーボディ1" },
+        { title: "ダミータイトル2", body: "ダミーボディ2" },
+      ]);
+
       const dbOldData = instance.list();
-      const result = instance.delete(1);
+      instance.delete(1);
       const dbCurrentData = instance.list();
 
-      expect(result).toBeUndefined();
+      expect(dbOldData[0].getTodoEntity.id).toEqual(1);
+      expect(dbOldData[1].getTodoEntity.id).toEqual(2);
+
+      expect(dbCurrentData[0].getTodoEntity.id).not.toEqual(1);
+      expect(dbCurrentData[0].getTodoEntity.id).toEqual(2);
+
       expect(dbOldData.length > dbCurrentData.length).toBeTruthy();
     });
   });

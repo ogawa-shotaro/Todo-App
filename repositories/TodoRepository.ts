@@ -64,12 +64,14 @@ export class TodoRepository {
       throw new Error("idは必須です(1以上の数値)");
     }
 
-    const deletionTodoId = this.db.findIndex((e) => e.getTodoEntity.id === id);
-    if (deletionTodoId === -1) {
+    const deletionTodoIndex = this.db.findIndex(
+      (e) => e.getTodoEntity.id === id
+    );
+    if (deletionTodoIndex === -1) {
       throw new Error("idに該当するtodoが存在しません。");
     }
 
-    const entityDeletedData = this.db.splice(deletionTodoId, 1)[1];
+    const entityDeletedData = this.db.splice(deletionTodoIndex, 1)[0];
     return entityDeletedData;
   }
 }
