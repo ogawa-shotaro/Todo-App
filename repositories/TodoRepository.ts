@@ -71,7 +71,6 @@ export class TodoRepository {
       throw new Error("idに該当するtodoが存在しません。");
     }
 
-    const entityDeletedData = this.db.splice(deletionTodoIndex, 1)[0];
-    return entityDeletedData;
+    this.db.splice(deletionTodoIndex, 1);
   }
 }

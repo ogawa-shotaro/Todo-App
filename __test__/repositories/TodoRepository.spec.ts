@@ -135,7 +135,6 @@ describe("TodoRepository", () => {
         { title: "ダミータイトル1", body: "ダミーボディ1" },
         { title: "ダミータイトル2", body: "ダミーボディ2" },
       ]);
-
       const dbOldData = instance.list();
       instance.delete(1);
       const dbCurrentData = instance.list();
@@ -143,10 +142,9 @@ describe("TodoRepository", () => {
       expect(dbOldData[0].getTodoEntity.id).toEqual(1);
       expect(dbOldData[1].getTodoEntity.id).toEqual(2);
 
-      expect(dbCurrentData[0].getTodoEntity.id).not.toEqual(1);
       expect(dbCurrentData[0].getTodoEntity.id).toEqual(2);
-
-      expect(dbOldData.length > dbCurrentData.length).toBeTruthy();
+      expect(dbOldData.length).toEqual(2);
+      expect(dbCurrentData.length).toEqual(1);
     });
   });
 
