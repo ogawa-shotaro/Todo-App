@@ -1,5 +1,5 @@
 import { requestAPI } from "../../../helper/requestHelper";
-import { TodoResponseType } from "../../../helper/types/ITodoResponseType";
+import { TodoResponseType } from "../../../helper/types/TodoResponseType";
 
 describe("getメソッドのテスト(Todo一覧取得APIの動作テスト)", () => {
   beforeAll(async () => {
