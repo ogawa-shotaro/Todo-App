@@ -1,12 +1,5 @@
 import { requestAPI } from "../../../helper/requestHelper";
-
-type TodoResponseType = {
-  id: number;
-  title: string;
-  body: string;
-  createdAt: Date;
-  updateAt: Date;
-};
+import { TodoResponseType } from "../../../helper/types/ITodoResponseType";
 
 describe("deleteメソッドのテスト(Todo一件の削除とAPIの動作テスト)", () => {
   describe("成功パターン", () => {

@@ -15,12 +15,13 @@ export class DeleteTodoController {
     try {
       const responseData = this.repository.delete(parsedId);
       res.status(200).json(responseData);
-    } catch (error) {
+    } catch (_) {
       const errorObj = {
         code: 404,
         message: "Not found",
         stat: "fail",
       };
+
       res.status(404).json(errorObj);
     }
   }
