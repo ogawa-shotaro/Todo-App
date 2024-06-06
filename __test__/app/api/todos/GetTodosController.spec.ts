@@ -1,12 +1,5 @@
 import { requestAPI } from "../../../helper/requestHelper";
-
-type TodoResponseType = {
-  id: number;
-  title: string;
-  body: string;
-  createdAt: Date;
-  updateAt: Date;
-};
+import { TodoResponseType } from "../../../helper/types/TodoResponseType";
 
 describe("getメソッドのテスト(Todo一覧取得APIの動作テスト)", () => {
   beforeAll(async () => {
