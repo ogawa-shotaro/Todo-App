@@ -9,7 +9,7 @@ describe("updateメソッドのテスト(Todo一件の更新とAPIの動作テ�
           body: `ダミーボディ${i}`,
         };
 
-        const response = await requestAPI({
+        await requestAPI({
           method: "post",
           endPoint: "/api/todos/",
           statusCode: 200,
@@ -20,7 +20,6 @@ describe("updateメソッドのテスト(Todo一件の更新とAPIの動作テ�
     it("id:1のデータ更新(タイトルのみ)", async () => {
       const data = {
         title: "変更後のタイトル",
-        body: "ダミーボディ1",
       };
       const response = await requestAPI({
         method: "put",
@@ -37,25 +36,6 @@ describe("updateメソッドのテスト(Todo一件の更新とAPIの動作テ�
 
     it("id:1のデータ更新(ボディのみ)", async () => {
       const data = {
-        title: "ダミータイトル",
-        body: "変更後のボディ",
-      };
-      const response = await requestAPI({
-        method: "put",
-        endPoint: "/api/todos/1",
-        statusCode: 200,
-      }).send(data);
-
-      const { id, title, body } = response.body;
-
-      expect(id).toEqual(1);
-      expect(title).toEqual("ダミータイトル");
-      expect(body).toEqual("変更後のボディ");
-    });
-
-    it("id:1のデータ更新(タイトルとボディ)", async () => {
-      const data = {
-        title: "変更後のタイトル",
         body: "変更後のボディ",
       };
       const response = await requestAPI({
@@ -89,20 +69,15 @@ describe("updateメソッドのテスト(Todo一件の更新とAPIの動作テ�
       expect(body).toEqual("変更後のボディ");
     });
 
-    it("id:3のデータ更新(タイトルとボディ)", async () => {
-      const data = {
-        title: "変更後のタイトル",
-        body: "変更後のボディ",
-      };
+    it("updateメソッド実行後、DBに保存されていた内容は更新される。", async () => {
       const response = await requestAPI({
-        method: "put",
-        endPoint: "/api/todos/3",
+        method: "get",
+        endPoint: "/api/todos/1",
         statusCode: 200,
-      }).send(data);
-
+      });
       const { id, title, body } = response.body;
 
-      expect(id).toEqual(3);
+      expect(id).toEqual(1);
       expect(title).toEqual("変更後のタイトル");
       expect(body).toEqual("変更後のボディ");
     });
