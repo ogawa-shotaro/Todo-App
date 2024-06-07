@@ -42,7 +42,7 @@ export class TodoEntity {
   }
 
   update({ title, body }: TodoInput) {
-    if (!title || !body) {
+    if (!title && !body) {
       throw new Error("更新処理を中断(更新データがない為)");
     }
 

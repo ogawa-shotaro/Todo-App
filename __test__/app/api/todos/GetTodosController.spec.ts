@@ -8,7 +8,7 @@ describe("getメソッドのテスト(Todo一覧取得APIの動作テスト)", (
         title: `ダミータイトル${i}`,
         body: `ダミーボディ${i}`,
       };
-      const response = await requestAPI({
+      await requestAPI({
         method: "post",
         endPoint: "/api/todos",
         statusCode: 200,
