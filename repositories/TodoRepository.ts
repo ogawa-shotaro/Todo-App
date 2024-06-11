@@ -1,9 +1,6 @@
 import type { TodoEntityInput, TodoInput } from "../entities/Todo";
 import { TodoEntity } from "../entities/Todo";
 
-const DEFAULT_PAGE = 1;
-const DEFAULT_COUNT = 10;
-
 export class TodoRepository {
   private nextId = 1;
   private db: TodoEntity[] = [];
@@ -30,24 +27,9 @@ export class TodoRepository {
     return inputData;
   }
 
-  list(
-    { page = DEFAULT_PAGE, count = DEFAULT_COUNT } = {
-      page: DEFAULT_PAGE,
-      count: DEFAULT_COUNT,
-    }
-  ) {
-    if (page < 1 || !Number.isInteger(page)) {
-      throw new Error("pageは1以上の整数のみ");
-    }
-    if (count < 1 || !Number.isInteger(count)) {
-      throw new Error("countは1以上の整数のみ");
-    }
-
-    const offset = (page - 1) * count;
-    const scopedTodos = this.db.slice(offset, offset + count);
-    const clonedTodos = scopedTodos.map((todo) => todo.clone());
-
-    return clonedTodos;
+  list() {
+    const todos = this.db.map((todo) => todo.clone());
+    return todos;
   }
 
   find(id: number) {

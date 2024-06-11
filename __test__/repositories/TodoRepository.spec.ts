@@ -45,71 +45,21 @@ describe("TodoRepository", () => {
         expect(result2.getTodoEntity.updatedAt).toBeInstanceOf(Date);
       });
 
-      it("listメソッドを実行時、パラメーターの指定がない場合は、先頭から10件のデータを取得する", () => {
-        const instance = new TodoRepository();
-        for (let i = 1; i <= 21; i++) {
-          instance.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
-          });
-        }
+      it("初期データの後にデータを追加し、そのデータ内容を一覧取得(listメソッド)する事できる。", () => {
+        const instance = new TodoRepository([
+          { title: "ダミータイトル1", body: "ダミーボディ1" },
+          { title: "ダミータイトル2", body: "ダミーボディ2" },
+        ]);
+
+        const result = instance.save({
+          title: "ダミータイトル3",
+          body: "ダミーボディ3",
+        });
+
         const list = instance.list();
 
-        expect(list.length).toEqual(10);
-        expect(list.map((e) => e.getTodoEntity.id)).toEqual([
-          1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
-        ]);
-        expect(list[0].getTodoEntity.title).toEqual("ダミータイトル1");
-        expect(list[0].getTodoEntity.body).toEqual("ダミーボディ1");
-      });
-
-      it("listメソッドを実行時、パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する", () => {
-        const instance = new TodoRepository();
-        for (let i = 1; i <= 21; i++) {
-          instance.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
-          });
-        }
-        const list = instance.list({ page: 2 });
-
-        expect(list.length).toEqual(10);
-        expect(list.map((e) => e.getTodoEntity.id)).toEqual([
-          11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-        ]);
-        expect(list[0].getTodoEntity.title).toEqual("ダミータイトル11");
-        expect(list[0].getTodoEntity.body).toEqual("ダミーボディ11");
-      });
-
-      it("listメソッドを実行時、パラメーターの指定(count=5)をした場合、先頭から5件のデータを取得する", () => {
-        const instance = new TodoRepository();
-        for (let i = 1; i <= 11; i++) {
-          instance.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
-          });
-        }
-        const list = instance.list({ count: 5 });
-
-        expect(list.length).toEqual(5);
-        expect(list.map((e) => e.getTodoEntity.id)).toEqual([1, 2, 3, 4, 5]);
-        expect(list[4].getTodoEntity.title).toEqual("ダミータイトル5");
-        expect(list[4].getTodoEntity.body).toEqual("ダミーボディ5");
-      });
-
-      it("listメソッドを実行時、パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータを取得する", () => {
-        const instance = new TodoRepository();
-        for (let i = 1; i <= 11; i++) {
-          instance.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
-          });
-        }
-        const list = instance.list({ page: 2, count: 3 });
         expect(list.length).toEqual(3);
-        expect(list.map((e) => e.getTodoEntity.id)).toEqual([4, 5, 6]);
-        expect(list[0].getTodoEntity.title).toEqual("ダミータイトル4");
-        expect(list[0].getTodoEntity.body).toEqual("ダミーボディ4");
+        expect(result).toEqual(list[2]);
       });
 
       it("findメソッドを実行すると、DBに保持されているデータから、一件の値を取得する事ができる", () => {
@@ -178,25 +128,26 @@ describe("TodoRepository", () => {
         expect(latestData.createdAt <= latestData.updatedAt).toBeTruthy();
         expect(latestData.createdAt !== latestData.updatedAt).toBeTruthy();
       });
+    });
 
-      it("deleteメソッドを実行すると、DB内の指定した(ID)データを削除する事ができる。", () => {
-        const instance = new TodoRepository([
-          { title: "ダミータイトル1", body: "ダミーボディ1" },
-          { title: "ダミータイトル2", body: "ダミーボディ2" },
-        ]);
-        const dbOldData = instance.list();
-        instance.delete(1);
-        const dbCurrentData = instance.list({ page: 1, count: 10 });
+    it("deleteメソッドを実行すると、DB内の指定した(ID)データを削除する事ができる。", () => {
+      const instance = new TodoRepository([
+        { title: "ダミータイトル1", body: "ダミーボディ1" },
+        { title: "ダミータイトル2", body: "ダミーボディ2" },
+      ]);
+      const dbOldData = instance.list();
+      instance.delete(1);
+      const dbCurrentData = instance.list();
 
-        expect(dbOldData[0].getTodoEntity.id).toEqual(1);
-        expect(dbOldData[1].getTodoEntity.id).toEqual(2);
+      expect(dbOldData[0].getTodoEntity.id).toEqual(1);
+      expect(dbOldData[1].getTodoEntity.id).toEqual(2);
 
-        expect(dbCurrentData[0].getTodoEntity.id).toEqual(2);
-        expect(dbOldData.length).toEqual(2);
-        expect(dbCurrentData.length).toEqual(1);
-      });
+      expect(dbCurrentData[0].getTodoEntity.id).toEqual(2);
+      expect(dbOldData.length).toEqual(2);
+      expect(dbCurrentData.length).toEqual(1);
     });
   });
+
   describe("異常パターン", () => {
     it("不正なIDを指定した場合(findメソッド実行時)、エラーオブジェクトが返る", () => {
       const repository = new TodoRepository();
