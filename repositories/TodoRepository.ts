@@ -1,6 +1,8 @@
 import type { TodoEntityInput, TodoInput } from "../entities/Todo";
 import { TodoEntity } from "../entities/Todo";
+import { PrismaClient, Prisma } from "@prisma/client";
 
+const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
 const DEFAULT_COUNT = 10;
 
@@ -18,16 +20,21 @@ export class TodoRepository {
     }
   }
 
-  save(input: TodoInput) {
+  async save(input: TodoInput) {
     const inputData = new TodoEntity({
       id: this.nextId,
       ...input,
     });
+    const todoData = await prisma.todo.create({
+      data: {
+        title: inputData.getTodoEntity.title,
+        body: inputData.getTodoEntity.body,
+        createdAt: inputData.getTodoEntity.createdAt,
+        updatedAt: inputData.getTodoEntity.updatedAt,
+      },
+    });
 
-    this.db.push(inputData);
-    this.nextId++;
-
-    return inputData;
+    return todoData;
   }
 
   list(
