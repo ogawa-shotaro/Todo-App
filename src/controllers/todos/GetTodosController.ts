@@ -8,10 +8,9 @@ export class GetTodosController {
     this.repository = repository;
   }
 
-  list(req: Request, res: Response) {
-    const todos = this.repository.list();
-    const responseData = todos.map((todo) => todo.getTodoEntity);
+  async list(req: Request, res: Response) {
+    const todos = await this.repository.list();
 
-    return res.status(200).json(responseData);
+    res.status(200).json(todos);
   }
 }

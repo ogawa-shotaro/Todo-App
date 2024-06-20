@@ -1,15 +1,17 @@
-import type { TodoEntityInput, TodoInput } from "../entities/Todo";
+import type { TodoInput, TodoEntityInput } from "../entities/Todo";
 import { TodoEntity } from "../entities/Todo";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+interface TodoUpdatedInput extends TodoEntityInput {
+  id: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
 const DEFAULT_COUNT = 10;
 
 export class TodoRepository {
-  private nextId = 1;
-  private db: TodoEntity[] = [];
-
   constructor(initialInputData?: TodoInput[]) {
     if (!initialInputData || initialInputData.length === 0) {
       return;
@@ -22,7 +24,6 @@ export class TodoRepository {
 
   async save(input: TodoInput) {
     const inputData = new TodoEntity({
-      id: this.nextId,
       ...input,
     });
     const todoData = await prisma.todo.create({
@@ -37,7 +38,7 @@ export class TodoRepository {
     return todoData;
   }
 
-  list(
+  async list(
     { page = DEFAULT_PAGE, count = DEFAULT_COUNT } = {
       page: DEFAULT_PAGE,
       count: DEFAULT_COUNT,
@@ -49,54 +50,45 @@ export class TodoRepository {
     if (count < 1 || !Number.isInteger(count)) {
       throw new Error("countは1以上の整数のみ");
     }
-
     const offset = (page - 1) * count;
-    const scopedTodos = this.db.slice(offset, offset + count);
-    const clonedTodos = scopedTodos.map((todo) => todo.clone());
-
-    return clonedTodos;
+    const todos = await prisma.todo.findMany({
+      skip: offset,
+      take: offset + count,
+    });
+    return todos;
   }
 
-  find(id: number) {
+  async find(id: number) {
     if (typeof id !== "number" || id < 1) {
       throw new Error("idは必須です(1以上の数値)");
     }
+    const todoItem = await prisma.todo.findUnique({
+      where: {
+        id: id,
+      },
+    });
 
-    const todo = this.db.find((e) => e.getTodoEntity.id === id);
-    if (!todo) {
-      return null;
-    }
-    return todo.clone();
+    return todoItem;
   }
 
-  update({ id, title, body }: TodoEntityInput) {
-    if (typeof id !== "number" || id < 1) {
-      throw new Error("idは必須です(1以上の数値)");
-    }
+  async update({ id, title, body }: TodoUpdatedInput) {
+    const updateTodo = await prisma.todo.update({
+      where: {
+        id: id,
+      },
+      data: { title: title, body: body, updatedAt: new Date() },
+    });
 
-    const todo = this.db.find((e) => e.getTodoEntity.id === id);
-    if (!todo) {
-      throw new Error("idに該当するtodoが存在しません。");
-    }
-
-    todo.update({ title, body });
-    const entityData = todo.clone();
-    return entityData.getTodoEntity;
+    return updateTodo;
   }
 
-  delete(id: number) {
-    if (typeof id !== "number" || id < 1) {
-      throw new Error("idは必須です(1以上の数値)");
-    }
+  async delete(id: number) {
+    const deleteTodo = await prisma.todo.delete({
+      where: {
+        id: id,
+      },
+    });
 
-    const deletionTodoIndex = this.db.findIndex(
-      (e) => e.getTodoEntity.id === id
-    );
-    if (deletionTodoIndex === -1) {
-      throw new Error("idに該当するtodoが存在しません。");
-    }
-
-    const deletionTodoEntity = this.db.splice(deletionTodoIndex, 1)[0];
-    return deletionTodoEntity;
+    return deleteTodo;
   }
 }

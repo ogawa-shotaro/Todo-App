@@ -8,13 +8,13 @@ export class UpdateTodoController {
     this.repository = repository;
   }
 
-  update(req: Request, res: Response) {
+  async update(req: Request, res: Response) {
     const id = req.params.id;
     const parsedId = parseInt(id, 10);
     const { title, body } = req.body;
 
     try {
-      const responseData = this.repository.update({
+      const responseData = await this.repository.update({
         id: parsedId,
         title: title,
         body: body,

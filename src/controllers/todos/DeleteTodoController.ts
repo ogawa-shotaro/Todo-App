@@ -8,12 +8,12 @@ export class DeleteTodoController {
     this.repository = repository;
   }
 
-  delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response) {
     const id = req.params.id;
     const parsedId = parseInt(id, 10);
 
     try {
-      const responseData = this.repository.delete(parsedId);
+      const responseData = await this.repository.delete(parsedId);
       res.status(200).json(responseData);
     } catch (_) {
       const errorObj = {

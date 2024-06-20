@@ -8,21 +8,18 @@ export class GetTodoController {
     this.repository = repository;
   }
 
-  find(req: Request, res: Response) {
+  async find(req: Request, res: Response) {
     const id = req.params.id;
     const parsedId = parseInt(id, 10);
-    const todoItem = this.repository.find(parsedId);
+    const todoItem = await this.repository.find(parsedId);
     if (!todoItem) {
       const errorObj = {
         code: 404,
         message: "Not found",
         stat: "fail",
       };
-
       res.status(404).json(errorObj);
-      return;
     }
-    const responseData = todoItem.getTodoEntity;
-    return res.status(200).json(responseData);
+    res.status(200).json(todoItem);
   }
 }
