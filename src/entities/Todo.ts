@@ -28,16 +28,6 @@ export class TodoEntity {
     this.updatedAt = updatedAt ?? new Date();
   }
 
-  // clone() {
-  //   return new TodoEntity({
-  //     id: this.id,
-  //     title: this.title,
-  //     body: this.body,
-  //     createdAt: this.createdAt,
-  //     updatedAt: this.updatedAt,
-  //   });
-  // }
-
   public get getTodoEntity() {
     return {
       title: this.title,
