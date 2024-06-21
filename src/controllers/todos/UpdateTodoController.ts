@@ -1,18 +1,27 @@
 import type { Request, Response } from "express";
 import { TodoRepository } from "../../repositories/TodoRepository";
 
-export class GetTodoController {
+export class UpdateTodoController {
   private repository: TodoRepository;
 
   constructor(repository: TodoRepository) {
     this.repository = repository;
   }
 
-  find(req: Request, res: Response) {
+  async update(req: Request, res: Response) {
     const id = req.params.id;
     const parsedId = parseInt(id, 10);
-    const todoItem = this.repository.find(parsedId);
-    if (!todoItem) {
+    const { title, body } = req.body;
+
+    try {
+      const responseData = await this.repository.update({
+        id: parsedId,
+        title: title,
+        body: body,
+      });
+
+      res.status(200).json(responseData);
+    } catch (_) {
       const errorObj = {
         code: 404,
         message: "Not found",
@@ -20,9 +29,6 @@ export class GetTodoController {
       };
 
       res.status(404).json(errorObj);
-      return;
     }
-    const responseData = todoItem.getTodoEntity;
-    return res.status(200).json(responseData);
   }
 }
