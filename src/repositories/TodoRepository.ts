@@ -1,11 +1,6 @@
-import type { TodoInput, TodoEntityInput } from "../entities/Todo";
-import { TodoEntity } from "../entities/Todo";
+import type { TodoInput } from "../types/type";
+import { TodoUpdatedInput } from "../types/type";
 import { PrismaClient } from "@prisma/client";
-interface TodoUpdatedInput extends TodoEntityInput {
-  id: number;
-  createdAt?: Date;
-  updatedAt?: Date;
-}
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
@@ -22,16 +17,11 @@ export class TodoRepository {
     }
   }
 
-  async save(input: TodoInput) {
-    const inputData = new TodoEntity({
-      ...input,
-    });
+  async save(inputData: TodoInput) {
     const todoData = await prisma.todo.create({
       data: {
-        title: inputData.getTodoEntity.title,
-        body: inputData.getTodoEntity.body,
-        createdAt: inputData.getTodoEntity.createdAt,
-        updatedAt: inputData.getTodoEntity.updatedAt,
+        title: inputData.title,
+        body: inputData.body,
       },
     });
 
@@ -55,6 +45,7 @@ export class TodoRepository {
       skip: offset,
       take: offset + count,
     });
+
     return todos;
   }
 
@@ -76,7 +67,7 @@ export class TodoRepository {
       where: {
         id: id,
       },
-      data: { title: title, body: body, updatedAt: new Date() },
+      data: { title: title, body: body },
     });
 
     return updateTodo;
