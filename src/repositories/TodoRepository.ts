@@ -1,6 +1,6 @@
-import type { TodoInput } from "../types/type";
-import { TodoUpdatedInput } from "../types/type";
-import { PrismaClient } from "@prisma/client";
+import type { TodoInput } from "../types/TodoRequest.type";
+import { TodoUpdatedInput } from "../types/TodoRequest.type";
+import { PrismaClient, Todo } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
@@ -18,7 +18,7 @@ export class TodoRepository {
   }
 
   async save(inputData: TodoInput) {
-    const todoData = await prisma.todo.create({
+    const todoData: Todo = await prisma.todo.create({
       data: {
         title: inputData.title,
         body: inputData.body,
@@ -43,43 +43,56 @@ export class TodoRepository {
     const offset = (page - 1) * count;
     const todos = await prisma.todo.findMany({
       skip: offset,
-      take: offset + count,
+      take: count,
     });
 
     return todos;
   }
 
   async find(id: number) {
-    if (typeof id !== "number" || id < 1) {
-      throw new Error("idは必須です(1以上の数値)");
-    }
     const todoItem = await prisma.todo.findUnique({
       where: {
         id: id,
       },
     });
+    if (!todoItem) {
+      throw new Error("存在しないIDを指定しました。");
+    }
 
     return todoItem;
   }
 
   async update({ id, title, body }: TodoUpdatedInput) {
-    const updateTodo = await prisma.todo.update({
-      where: {
-        id: id,
-      },
-      data: { title: title, body: body },
+    const updateItem = await prisma.todo.findUnique({
+      where: { id: id },
     });
 
-    return updateTodo;
+    if (!updateItem) {
+      throw new Error("存在しないIDを指定しました。");
+    }
+
+    const updatedItem = await prisma.todo.update({
+      where: { id: id },
+      data: {
+        title: title,
+        body: body,
+      },
+    });
+
+    return updatedItem;
   }
 
   async delete(id: number) {
-    const deleteTodo = await prisma.todo.delete({
-      where: {
-        id: id,
-      },
+    const deleteItem = await prisma.todo.findUnique({
+      where: { id: id },
     });
 
-    return deleteTodo;
+    if (!deleteItem) {
+      throw new Error("存在しないIDを指定しました。");
+    }
+
+    await prisma.todo.delete({
+      where: { id: id },
+    });
   }
 }
