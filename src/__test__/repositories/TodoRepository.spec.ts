@@ -1,5 +1,6 @@
 import { TodoRepository } from "../../repositories/TodoRepository";
-import { Todo } from "@prisma/client";
+import { PrismaClient, Todo } from "@prisma/client";
+const prisma = new PrismaClient();
 
 describe("TodoRepository", () => {
   describe("成功パターン", () => {
@@ -33,7 +34,7 @@ describe("TodoRepository", () => {
       });
       it("listメソッドを実行時、パラメーターの指定がない場合は、先頭から10件のデータを取得する", async () => {
         const repository = new TodoRepository();
-        for (let i = 3; i <= 21; i++) {
+        for (let i = 1; i <= 21; i++) {
           await repository.save({
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,

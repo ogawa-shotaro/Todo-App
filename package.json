@@ -4,13 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "migrate:postgres": "dotenv -e .env.test -- npx prisma migrate dev --name postgres-init",
     "start": "nodemon src/index.ts",
-    "test": "jest"
+    "test": "dotenv -e .env.test -- jest"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.15.0",
+    "dotenv-cli": "^7.4.2",
     "express": "^4.19.2"
   },
   "devDependencies": {
