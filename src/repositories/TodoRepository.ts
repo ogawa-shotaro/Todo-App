@@ -40,6 +40,7 @@ export class TodoRepository {
     if (count < 1 || !Number.isInteger(count)) {
       throw new Error("countは1以上の整数のみ");
     }
+
     const offset = (page - 1) * count;
     const todos = await prisma.todo.findMany({
       skip: offset,
@@ -55,6 +56,7 @@ export class TodoRepository {
         id: id,
       },
     });
+
     if (!todoItem) {
       throw new Error("存在しないIDを指定しました。");
     }
