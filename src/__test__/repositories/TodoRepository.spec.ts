@@ -48,12 +48,12 @@ describe("TodoRepository", () => {
           });
         }
 
-        const list = await repository.list();
+        const listDataResult = await repository.list();
 
-        expect(list.length).toEqual(10);
-        expect(list[2].id).toEqual(3);
-        expect(list[2].title).toEqual("ダミータイトル3");
-        expect(list[2].body).toEqual("ダミーボディ3");
+        expect(listDataResult.length).toEqual(10);
+        expect(listDataResult[2].id).toEqual(3);
+        expect(listDataResult[2].title).toEqual("ダミータイトル3");
+        expect(listDataResult[2].body).toEqual("ダミーボディ3");
       });
       it("listメソッドを実行時、パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する", async () => {
         const repository = new TodoRepository();
@@ -65,12 +65,12 @@ describe("TodoRepository", () => {
           });
         }
 
-        const list = await repository.list({ page: 2 });
+        const listDataResult = await repository.list({ page: 2 });
 
-        expect(list.length).toEqual(10);
-        expect(list[0].id).toEqual(11);
-        expect(list[0].title).toEqual("ダミータイトル11");
-        expect(list[0].body).toEqual("ダミーボディ11");
+        expect(listDataResult.length).toEqual(10);
+        expect(listDataResult[0].id).toEqual(11);
+        expect(listDataResult[0].title).toEqual("ダミータイトル11");
+        expect(listDataResult[0].body).toEqual("ダミーボディ11");
       });
       it("listメソッドを実行時、パラメーターの指定(count=5)をした場合、先頭から5件のデータを取得する", async () => {
         const repository = new TodoRepository();
@@ -81,12 +81,12 @@ describe("TodoRepository", () => {
             body: `ダミーボディ${i}`,
           });
         }
-        const list = await repository.list({ count: 5 });
+        const listDataResult = await repository.list({ count: 5 });
 
-        expect(list.length).toEqual(5);
-        expect(list[4].id).toEqual(5);
-        expect(list[4].title).toEqual("ダミータイトル5");
-        expect(list[4].body).toEqual("ダミーボディ5");
+        expect(listDataResult.length).toEqual(5);
+        expect(listDataResult[4].id).toEqual(5);
+        expect(listDataResult[4].title).toEqual("ダミータイトル5");
+        expect(listDataResult[4].body).toEqual("ダミーボディ5");
       });
       it("listメソッドを実行時、パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータを取得する", async () => {
         const repository = new TodoRepository();
@@ -97,12 +97,12 @@ describe("TodoRepository", () => {
             body: `ダミーボディ${i}`,
           });
         }
-        const list = await repository.list({ page: 2, count: 3 });
+        const listDataResult = await repository.list({ page: 2, count: 3 });
 
-        expect(list.length).toEqual(3);
-        expect(list[0].id).toEqual(4);
-        expect(list[0].title).toEqual("ダミータイトル4");
-        expect(list[0].body).toEqual("ダミーボディ4");
+        expect(listDataResult.length).toEqual(3);
+        expect(listDataResult[0].id).toEqual(4);
+        expect(listDataResult[0].title).toEqual("ダミータイトル4");
+        expect(listDataResult[0].body).toEqual("ダミーボディ4");
       });
       it("findメソッドを実行すると、DBに保持されているデータから、一件の値を取得する事ができる", async () => {
         const repository = new TodoRepository();
