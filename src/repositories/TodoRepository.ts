@@ -1,6 +1,7 @@
 import type { TodoInput } from "../types/TodoRequest.type";
-import { TodoUpdatedInput } from "../types/TodoRequest.type";
-import { PrismaClient, Todo } from "@prisma/client";
+import type { TodoUpdatedInput } from "../types/TodoRequest.type";
+import type { Todo } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
