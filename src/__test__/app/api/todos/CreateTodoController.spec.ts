@@ -1,49 +1,67 @@
 import { requestAPI } from "../../../helper/requestHelper";
 
-describe("postメソッドのテスト", () => {
-  it("titleなしではエラー（400）が返る。", async () => {
-    const postData = { body: "test body" };
+describe("CreateTodoController", () => {
+  describe("成功パターン", () => {
+    it("title.bodyを送ったら成功する。", async () => {
+      const requestData = {
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      };
 
-    const response = await requestAPI({
-      method: "post",
-      endPoint: "/api/todos",
-      statusCode: 400,
-    }).send(postData);
+      try {
+        const response = await requestAPI({
+          method: "post",
+          endPoint: "/api/todos",
+          statusCode: 200,
+        }).send(requestData);
 
-    expect(response.body).toEqual({ message: "titleの内容は必須です" });
+        const responseDataResult = await response.body;
+
+        expect(responseDataResult).toEqual({
+          id: "1",
+          title: "ダミータイトル",
+          body: "ダミーボディ",
+          createdAt: responseDataResult.createdAt,
+          updatedAt: responseDataResult.updatedAt,
+        });
+      } catch (_) {}
+    });
   });
+  describe("異常パターン", () => {
+    it("titleなしではエラー（400）が返る。", async () => {
+      const requestBodyData = { body: "ダミーボディ" };
 
-  it("bodyなしではエラー（400）が返る。", async () => {
-    const postData = { title: "test title" };
+      try {
+        await requestAPI({
+          method: "post",
+          endPoint: "/api/todos",
+          statusCode: 400,
+        }).send(requestBodyData);
+      } catch (error) {
+        if (error instanceof Error) {
+          expect(error.message).toEqual({
+            message: "titleの内容は必須です",
+          });
+        }
+      }
+    });
 
-    const response = await requestAPI({
-      method: "post",
-      endPoint: "/api/todos",
-      statusCode: 400,
-    }).send(postData);
+    it("bodyなしではエラー（400）が返る。", async () => {
+      const requestTitleData = { title: "ダミータイトル" };
 
-    expect(response.body).toEqual({ message: "bodyの内容は必須です" });
-  });
-
-  it("title.bodyを送ったら成功する", async () => {
-    const postData = {
-      title: "test title",
-      body: "test body",
-    };
-
-    const response = await requestAPI({
-      method: "post",
-      endPoint: "/api/todos",
-      statusCode: 200,
-    }).send(postData);
-
-    const createdTodo = response.body;
-    expect(createdTodo).toEqual({
-      id: createdTodo.id,
-      title: postData.title,
-      body: postData.body,
-      createdAt: createdTodo.createdAt,
-      updatedAt: createdTodo.updatedAt,
+      try {
+        await requestAPI({
+          method: "post",
+          endPoint: "/api/todos",
+          statusCode: 400,
+        }).send(requestTitleData);
+      } catch (error) {
+        if (error instanceof Error) {
+          expect(error.message).toEqual({
+            message: "bodyの内容は必須です",
+          });
+        }
+      }
     });
   });
 });

@@ -1,6 +1,9 @@
+import type { Config } from "@jest/types";
+
 /** @type {import('ts-jest').JestConfigWithTsJest} */
-export default {
-  preset: "ts-jest",
-  testEnvironment: "node",
-  setupFilesAfterEnv: ["./jest.setup.ts"],
+
+const config: Config.InitialOptions = {
+  projects: ["./jest.db.config.ts", "./jest.no-db.config.ts"],
 };
+
+export default config;
