@@ -1,5 +1,5 @@
-jest.mock("@prisma/client", () => {
-  const mockPrismaClient = {
+jest.mock("./src/repositories/TodoRepository.ts", () => {
+  const repository = {
     todo: {
       create: jest.fn((requestData) => {
         if (!requestData.title) {
@@ -9,7 +9,7 @@ jest.mock("@prisma/client", () => {
           return Promise.reject(new Error("bodyの内容は必須です"));
         }
         return Promise.resolve({
-          id: String(1),
+          id: Number(1),
           title: requestData.title,
           body: requestData.body,
           createdAt: new Date(),
@@ -19,7 +19,7 @@ jest.mock("@prisma/client", () => {
     },
   };
 
-  return { PrismaClient: jest.fn(() => mockPrismaClient) };
+  return { TodoRepository: jest.fn(() => repository) };
 });
 
 beforeEach(() => {
