@@ -3,10 +3,16 @@ jest.mock("./src/repositories/TodoRepository.ts", () => {
     todo: {
       create: jest.fn((requestData) => {
         if (!requestData.title) {
-          return Promise.reject(new Error("titleの内容は必須です"));
+          return Promise.reject({
+            status: 400,
+            message: "titleの内容は必須です",
+          });
         }
         if (!requestData.body) {
-          return Promise.reject(new Error("bodyの内容は必須です"));
+          return Promise.reject({
+            status: 400,
+            message: "bodyの内容は必須です",
+          });
         }
         return Promise.resolve({
           id: Number(1),
