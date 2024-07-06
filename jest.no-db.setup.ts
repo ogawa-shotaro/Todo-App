@@ -1,7 +1,9 @@
+import type { Todo } from "@prisma/client";
+
 jest.mock("./src/repositories/TodoRepository.ts", () => {
   const repository = {
     todo: {
-      create: jest.fn((requestData) => {
+      create: jest.fn((requestData): Promise<Todo> => {
         if (!requestData.title) {
           return Promise.reject({
             status: 400,
@@ -15,7 +17,7 @@ jest.mock("./src/repositories/TodoRepository.ts", () => {
           });
         }
         return Promise.resolve({
-          id: Number(1),
+          id: 1,
           title: requestData.title,
           body: requestData.body,
           createdAt: new Date(),
