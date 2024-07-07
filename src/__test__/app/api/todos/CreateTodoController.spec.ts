@@ -31,25 +31,21 @@ describe("CreateTodoController", () => {
     it("titleなしではエラー（400）が返る。", async () => {
       const requestBodyData = { body: "ダミーボディ" };
 
-      try {
-        await requestAPI({
-          method: "post",
-          endPoint: "/api/todos",
-          statusCode: 400,
-        }).send(requestBodyData);
-      } catch (_) {}
+      await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: 400,
+      }).send(requestBodyData);
     });
 
     it("bodyなしではエラー（400）が返る。", async () => {
       const requestTitleData = { title: "ダミータイトル" };
 
-      try {
-        await requestAPI({
-          method: "post",
-          endPoint: "/api/todos",
-          statusCode: 400,
-        }).send(requestTitleData);
-      } catch (_) {}
+      await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: 400,
+      }).send(requestTitleData);
     });
   });
 });
