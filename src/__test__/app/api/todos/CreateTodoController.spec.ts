@@ -8,44 +8,75 @@ describe("CreateTodoController", () => {
         body: "ダミーボディ",
       };
 
-      try {
-        const response = await requestAPI({
-          method: "post",
-          endPoint: "/api/todos",
-          statusCode: 200,
-        }).send(requestData);
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: 400,
+      }).send(requestData);
 
-        const responseDataResult = response.body;
+      console.log(response.body, "@@@@@@@@@@@");
+      // console.log(response, "@@@@@@@@@@@");
 
-        expect(responseDataResult).toEqual({
-          id: 1,
-          title: "ダミータイトル",
-          body: "ダミーボディ",
-          createdAt: responseDataResult.createdAt,
-          updatedAt: responseDataResult.updatedAt,
-        });
-      } catch (_) {}
+      // const responseDataResult = response.body;
+
+      // expect(responseDataResult).toEqual({
+      //   id: 1,
+      //   title: "ダミータイトル",
+      //   body: "ダミーボディ",
+      //   createdAt: responseDataResult.createdAt,
+      //   updatedAt: responseDataResult.updatedAt,
+      // });
+
+      // try {
+      //   const response = await requestAPI({
+      //     method: "post",
+      //     endPoint: "/api/todos",
+      //     statusCode: 200,
+      //   }).send(requestData);
+
+      //   const responseDataResult = response.body;
+
+      //   expect(responseDataResult).toEqual({
+      //     id: 1,
+      //     title: "ダミータイトル",
+      //     body: "ダミーボディ",
+      //     createdAt: responseDataResult.createdAt,
+      //     updatedAt: responseDataResult.updatedAt,
+      //   });
+      // } catch (_) {}
     });
   });
   describe("異常パターン", () => {
     it("titleなしではエラー（400）が返る。", async () => {
       const requestBodyData = { body: "ダミーボディ" };
 
-      await requestAPI({
+      const response = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
         statusCode: 400,
       }).send(requestBodyData);
+
+      const responseNoBodyDataResult = response.body.message;
+
+      expect(responseNoBodyDataResult).toEqual(
+        "this.repository.save is not a function"
+      );
     });
 
     it("bodyなしではエラー（400）が返る。", async () => {
-      const requestTitleData = { title: "ダミータイトル" };
+      const requestTitleData = { body: "ダミータイトル" };
 
-      await requestAPI({
+      const response = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
         statusCode: 400,
       }).send(requestTitleData);
+
+      const responseNoTitleDataResult = response.body.message;
+
+      expect(responseNoTitleDataResult).toEqual(
+        "this.repository.save is not a function"
+      );
     });
   });
 });

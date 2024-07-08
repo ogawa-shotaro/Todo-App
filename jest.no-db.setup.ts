@@ -1,29 +1,18 @@
 import type { Todo } from "@prisma/client";
+import type { TodoInput } from "./src/types/TodoRequest.type";
 
 jest.mock("./src/repositories/TodoRepository.ts", () => {
   const repository = {
-    todo: {
-      create: jest.fn((requestData): Promise<Todo> => {
-        if (!requestData.title) {
-          return Promise.reject({
-            status: 400,
-            message: "titleの内容は必須です",
-          });
-        }
-        if (!requestData.body) {
-          return Promise.reject({
-            status: 400,
-            message: "bodyの内容は必須です",
-          });
-        }
-        return Promise.resolve({
-          id: 1,
-          title: requestData.title,
-          body: requestData.body,
-          createdAt: new Date(),
-          updatedAt: new Date(),
-        });
-      }),
+    nextId: 9999,
+
+    async save(input: TodoInput): Promise<Todo> {
+      return {
+        id: this.nextId++,
+        title: input.title,
+        body: input.body,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
     },
   };
 
