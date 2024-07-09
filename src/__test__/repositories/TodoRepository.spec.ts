@@ -1,7 +1,6 @@
 import { TodoRepository } from "../../repositories/TodoRepository";
 import { PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
-import { title } from "process";
 
 const prisma = new PrismaClient();
 
