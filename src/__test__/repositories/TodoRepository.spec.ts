@@ -1,8 +1,5 @@
 import { TodoRepository } from "../../repositories/TodoRepository";
-import { PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 describe("TodoRepository", () => {
   describe("成功パターン", () => {
