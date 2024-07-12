@@ -25,24 +25,12 @@ describe("[APIテスト] Todo1件新規作成", () => {
       });
 
       expect(typeof Number(responseDataResult.id)).toEqual("number");
-      expect(typeof String(responseDataResult.title)).toEqual("string");
-      expect(typeof String(responseDataResult.body)).toEqual("string");
 
       const responseCreatedAtDateObj = new Date(responseDataResult.createdAt);
       const responseUpdatedAtDateObj = new Date(responseDataResult.updatedAt);
 
-      expect(responseCreatedAtDateObj instanceof Date).toEqual(true);
-      expect(responseUpdatedAtDateObj instanceof Date).toEqual(true);
-
       expect(!isNaN(responseCreatedAtDateObj.getTime())).toEqual(true);
-      expect(!isNaN(responseCreatedAtDateObj.getTime())).toEqual(true);
-
-      expect(
-        responseCreatedAtDateObj.toDateString() !== "Invalid Date"
-      ).toEqual(true);
-      expect(
-        responseUpdatedAtDateObj.toDateString() !== "Invalid Date"
-      ).toEqual(true);
+      expect(!isNaN(responseUpdatedAtDateObj.getTime())).toEqual(true);
     });
   });
   describe("異常パターン", () => {
