@@ -1,8 +1,5 @@
 import { TodoRepository } from "../../repositories/TodoRepository";
-import { PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
-
-const prisma = new PrismaClient();
 
 describe("TodoRepository", () => {
   describe("成功パターン", () => {
@@ -195,6 +192,17 @@ describe("TodoRepository", () => {
     });
   });
   describe("異常パターン", () => {
+    it("タイトル or ボディに値がない場合、エラーオブジェクトが返る", () => {
+      const repository = new TodoRepository();
+
+      expect(async () => {
+        await repository.save({ title: "", body: "ダミーボディ" });
+      }).rejects.toThrow("titleの内容は必須です");
+
+      expect(async () => {
+        await repository.save({ title: "ダミータイトル", body: "" });
+      }).rejects.toThrow("bodyの内容は必須です");
+    });
     it("不正なIDを指定した場合(listメソッド実行時)、エラーオブジェクトが返る", () => {
       const repository = new TodoRepository();
 
