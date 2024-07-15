@@ -9,18 +9,8 @@ export class GetTodosController {
   }
 
   async list(req: Request, res: Response) {
-    try {
-      const todos = await this.repository.list();
+    const todos = await this.repository.list();
 
-      res.status(200).json(todos);
-    } catch (_) {
-      const errorObj = {
-        code: 404,
-        message: "Not found",
-        stat: "fail",
-      };
-
-      res.status(404).json(errorObj);
-    }
+    res.status(200).json(todos);
   }
 }
