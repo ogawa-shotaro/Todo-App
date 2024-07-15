@@ -9,8 +9,18 @@ export class GetTodosController {
   }
 
   async list(req: Request, res: Response) {
-    const todos = await this.repository.list();
+    try {
+      const todos = await this.repository.list();
 
-    res.status(200).json(todos);
+      res.status(200).json(todos);
+    } catch (_) {
+      const errorObj = {
+        code: 404,
+        message: "Not found",
+        stat: "fail",
+      };
+
+      res.status(404).json(errorObj);
+    }
   }
 }
