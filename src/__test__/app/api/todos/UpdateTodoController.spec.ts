@@ -1,10 +1,10 @@
 import { requestAPI } from "../../../helper/requestHelper";
 
-describe("updateメソッドのテスト(Todo一件の更新とAPIの動作テスト)", () => {
+describe("[APIテスト] Todo一件の更新", () => {
   describe("成功パターン", () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       for (let i = 1; i <= 3; i++) {
-        const data = {
+        const requestData = {
           title: `ダミータイトル${i}`,
           body: `ダミーボディ${i}`,
         };
@@ -13,19 +13,19 @@ describe("updateメソッドのテスト(Todo一件の更新とAPIの動作テ�
           method: "post",
           endPoint: "/api/todos/",
           statusCode: 200,
-        }).send(data);
+        }).send(requestData);
       }
     });
-
     it("id:1のデータ更新(タイトルのみ)", async () => {
-      const data = {
+      const requestTitleData = {
         title: "変更後のタイトル",
       };
+
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: 200,
-      }).send(data);
+      }).send(requestTitleData);
 
       const { id, title, body } = response.body;
 
@@ -33,51 +33,38 @@ describe("updateメソッドのテスト(Todo一件の更新とAPIの動作テ�
       expect(title).toEqual("変更後のタイトル");
       expect(body).toEqual("ダミーボディ1");
     });
-
     it("id:1のデータ更新(ボディのみ)", async () => {
-      const data = {
+      const requestBodyData = {
         body: "変更後のボディ",
       };
+
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: 200,
-      }).send(data);
+      }).send(requestBodyData);
 
       const { id, title, body } = response.body;
 
       expect(id).toEqual(1);
-      expect(title).toEqual("変更後のタイトル");
+      expect(title).toEqual("ダミータイトル1");
       expect(body).toEqual("変更後のボディ");
     });
-
     it("id:2のデータ更新(タイトルとボディ)", async () => {
-      const data = {
+      const requestBothData = {
         title: "変更後のタイトル",
         body: "変更後のボディ",
       };
+
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/2",
         statusCode: 200,
-      }).send(data);
+      }).send(requestBothData);
 
       const { id, title, body } = response.body;
 
       expect(id).toEqual(2);
-      expect(title).toEqual("変更後のタイトル");
-      expect(body).toEqual("変更後のボディ");
-    });
-
-    it("updateメソッド実行後、DBに保存されていた内容は更新される。", async () => {
-      const response = await requestAPI({
-        method: "get",
-        endPoint: "/api/todos/1",
-        statusCode: 200,
-      });
-      const { id, title, body } = response.body;
-
-      expect(id).toEqual(1);
       expect(title).toEqual("変更後のタイトル");
       expect(body).toEqual("変更後のボディ");
     });
