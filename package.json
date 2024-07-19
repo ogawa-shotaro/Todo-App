@@ -6,7 +6,7 @@
   "scripts": {
     "migrate:postgres": "dotenv -e .env.test -- npx prisma migrate dev --name postgres-init",
     "start": "nodemon src/index.ts",
-    "test": "dotenv -e .env.test -- jest"
+    "test": "dotenv -e .env.test -- jest --runInBand"
   },
   "author": "",
   "license": "ISC",

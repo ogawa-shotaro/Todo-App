@@ -1,54 +1,66 @@
 import { requestAPI } from "../../../helper/requestHelper";
 import { TodoResponseType } from "../../../helper/types/TodoResponseType";
+import { PrismaClient } from "@prisma/client";
 
-describe("deleteメソッドのテスト(Todo一件の削除とAPIの動作テスト)", () => {
+const prisma = new PrismaClient();
+
+describe("[APIテスト] Todo一件の削除", () => {
   describe("成功パターン", () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
       for (let i = 1; i <= 3; i++) {
-        const data = {
-          title: `ダミータイトル${i}`,
-          body: `ダミーボディ${i}`,
-        };
-        await requestAPI({
-          method: "post",
-          endPoint: "/api/todos/",
-          statusCode: 200,
-        }).send(data);
+        await prisma.todo.create({
+          data: {
+            title: "ダミータイトル" + i,
+            body: "ダミーボディ" + i,
+          },
+        });
       }
     });
-
     it("deleteメソッド実行前、DBに格納されているTodoは3件である。", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos",
         statusCode: 200,
       });
+
       const todoItems: TodoResponseType[] = response.body;
       const dbOldData = todoItems;
+
       expect(dbOldData.length).toEqual(3);
     });
-
     it("id:1のデータ削除", async () => {
-      const response = await requestAPI({
+      await requestAPI({
         method: "delete",
         endPoint: "/api/todos/1",
         statusCode: 200,
       });
-      const { id, title, body } = response.body;
 
-      expect(id).toEqual(1);
-      expect(title).toEqual("ダミータイトル1");
-      expect(body).toEqual("ダミーボディ1");
-    });
-
-    it("deleteメソッド実行後、3件のTodoから1件のデータが削除されている。", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos",
         statusCode: 200,
       });
-      const todoItems: TodoResponseType[] = response.body;
-      const dbCurrentData = todoItems;
+
+      const notFirstIdTodos: TodoResponseType[] = response.body;
+      const actualIds = notFirstIdTodos.map((todo) => todo.id);
+
+      expect(actualIds).toEqual([2, 3]);
+    });
+    it("deleteメソッド実行後、3件のTodoから1件のデータが削除されている。", async () => {
+      await requestAPI({
+        method: "delete",
+        endPoint: "/api/todos/1",
+        statusCode: 200,
+      });
+
+      const response = await requestAPI({
+        method: "get",
+        endPoint: "/api/todos",
+        statusCode: 200,
+      });
+      const notFirstIdTodos: TodoResponseType[] = response.body;
+      const dbCurrentData = notFirstIdTodos;
+
       expect(dbCurrentData.length).toEqual(2);
     });
   });
