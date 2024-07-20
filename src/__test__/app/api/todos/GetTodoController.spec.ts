@@ -5,14 +5,17 @@ const prisma = new PrismaClient();
 
 describe("[APIテスト] Todo1件の取得", () => {
   describe("成功パターン", () => {
+    beforeEach(async () => {
+      for (let i = 1; i <= 2; i++) {
+        await prisma.todo.create({
+          data: {
+            title: "ダミータイトル" + i,
+            body: "ダミーボディ" + i,
+          },
+        });
+      }
+    });
     it("id:1のデータ取得", async () => {
-      await prisma.todo.create({
-        data: {
-          title: "ダミータイトル1",
-          body: "ダミーボディ1",
-        },
-      });
-
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/1",
@@ -26,15 +29,6 @@ describe("[APIテスト] Todo1件の取得", () => {
       expect(body).toEqual("ダミーボディ1");
     });
     it("id:2のデータ取得", async () => {
-      for (let i = 1; i <= 2; i++) {
-        await prisma.todo.create({
-          data: {
-            title: "ダミータイトル" + i,
-            body: "ダミーボディ" + i,
-          },
-        });
-      }
-
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/2",
@@ -48,20 +42,20 @@ describe("[APIテスト] Todo1件の取得", () => {
       expect(body).toEqual("ダミーボディ2");
     });
   });
-  describe("異常パターン", () => {
-    it("存在しないIDへのリクエストはエラーになる", async () => {
-      const response = await requestAPI({
-        method: "get",
-        endPoint: "/api/todos/999",
-        statusCode: 404,
-      });
-
-      const { code, message, stat } = response.body;
-
-      expect(response.statusCode).toEqual(404);
-      expect(code).toEqual(404);
-      expect(message).toEqual("Not found");
-      expect(stat).toEqual("fail");
+});
+describe("異常パターン", () => {
+  it("存在しないIDへのリクエストはエラーになる", async () => {
+    const response = await requestAPI({
+      method: "get",
+      endPoint: "/api/todos/999",
+      statusCode: 404,
     });
+
+    const { code, message, stat } = response.body;
+
+    expect(response.statusCode).toEqual(404);
+    expect(code).toEqual(404);
+    expect(message).toEqual("Not found");
+    expect(stat).toEqual("fail");
   });
 });
