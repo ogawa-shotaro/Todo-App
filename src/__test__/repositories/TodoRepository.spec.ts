@@ -1,5 +1,8 @@
 import { TodoRepository } from "../../repositories/TodoRepository";
 import type { Todo } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 describe("TodoRepository", () => {
   describe("成功パターン", () => {
@@ -40,9 +43,11 @@ describe("TodoRepository", () => {
         const repository = new TodoRepository();
 
         for (let i = 1; i <= 11; i++) {
-          await repository.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
+          await prisma.todo.create({
+            data: {
+              title: "ダミータイトル" + i,
+              body: "ダミーボディ" + i,
+            },
           });
         }
 
@@ -57,9 +62,11 @@ describe("TodoRepository", () => {
         const repository = new TodoRepository();
 
         for (let i = 1; i <= 21; i++) {
-          await repository.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
+          await prisma.todo.create({
+            data: {
+              title: "ダミータイトル" + i,
+              body: "ダミーボディ" + i,
+            },
           });
         }
 
@@ -74,11 +81,14 @@ describe("TodoRepository", () => {
         const repository = new TodoRepository();
 
         for (let i = 1; i <= 11; i++) {
-          await repository.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
+          await prisma.todo.create({
+            data: {
+              title: "ダミータイトル" + i,
+              body: "ダミーボディ" + i,
+            },
           });
         }
+
         const listDataResult = await repository.list({ count: 5 });
 
         expect(listDataResult.length).toEqual(5);
@@ -90,11 +100,14 @@ describe("TodoRepository", () => {
         const repository = new TodoRepository();
 
         for (let i = 1; i <= 11; i++) {
-          await repository.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
+          await prisma.todo.create({
+            data: {
+              title: "ダミータイトル" + i,
+              body: "ダミーボディ" + i,
+            },
           });
         }
+
         const listDataResult = await repository.list({ page: 2, count: 3 });
 
         expect(listDataResult.length).toEqual(3);
@@ -105,10 +118,12 @@ describe("TodoRepository", () => {
       it("findメソッドを実行すると、DBに保持されているデータから、一件の値を取得する事ができる", async () => {
         const repository = new TodoRepository();
 
-        for (let i = 1; i <= 3; i++) {
-          await repository.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
+        for (let i = 1; i <= 2; i++) {
+          await prisma.todo.create({
+            data: {
+              title: "ダミータイトル" + i,
+              body: "ダミーボディ" + i,
+            },
           });
         }
 
@@ -130,10 +145,12 @@ describe("TodoRepository", () => {
       it("updateメソッドを実行すると、DB内のデータを更新する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        for (let i = 1; i <= 3; i++) {
-          await repository.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
+        for (let i = 1; i <= 2; i++) {
+          await prisma.todo.create({
+            data: {
+              title: "ダミータイトル" + i,
+              body: "ダミーボディ" + i,
+            },
           });
         }
 
@@ -154,10 +171,12 @@ describe("TodoRepository", () => {
       it("updateメソッドを実行した後は、updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
         const repository = new TodoRepository();
 
-        for (let i = 1; i <= 3; i++) {
-          await repository.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
+        for (let i = 1; i <= 2; i++) {
+          await prisma.todo.create({
+            data: {
+              title: "ダミータイトル" + i,
+              body: "ダミーボディ" + i,
+            },
           });
         }
 
@@ -172,21 +191,23 @@ describe("TodoRepository", () => {
       it("deleteメソッドを実行すると、DB内の指定した(ID)データを削除する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        for (let i = 1; i <= 3; i++) {
-          await repository.save({
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
+        for (let i = 1; i <= 2; i++) {
+          await prisma.todo.create({
+            data: {
+              title: "ダミータイトル" + i,
+              body: "ダミーボディ" + i,
+            },
           });
         }
         const dbOldData = await repository.list();
         await repository.delete(1);
         const dbCurrentData = await repository.list();
 
-        expect(dbOldData.length).toEqual(3);
+        expect(dbOldData.length).toEqual(2);
         expect(dbOldData[0].id).toEqual(1);
         expect(dbOldData[1].id).toEqual(2);
 
-        expect(dbCurrentData.length).toEqual(2);
+        expect(dbCurrentData.length).toEqual(1);
         expect(dbCurrentData[0].id).toEqual(2);
       });
     });

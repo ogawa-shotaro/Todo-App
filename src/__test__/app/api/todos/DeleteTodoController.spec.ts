@@ -1,5 +1,4 @@
 import { requestAPI } from "../../../helper/requestHelper";
-import { TodoResponseType } from "../../../helper/types/TodoResponseType";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -17,34 +16,21 @@ describe("[APIテスト] Todo一件の削除", () => {
       }
     });
     it("deleteメソッド実行前、DBに格納されているTodoは3件である。", async () => {
-      const response = await requestAPI({
-        method: "get",
-        endPoint: "/api/todos",
-        statusCode: 200,
-      });
-
-      const todoItems: TodoResponseType[] = response.body;
-      const dbOldData = todoItems;
+      const dbOldData = await prisma.todo.findMany({});
 
       expect(dbOldData.length).toEqual(3);
     });
     it("id:1のデータ削除", async () => {
-      await requestAPI({
+      const response = await requestAPI({
         method: "delete",
         endPoint: "/api/todos/1",
         statusCode: 200,
       });
+      const { id, title, body } = response.body;
 
-      const response = await requestAPI({
-        method: "get",
-        endPoint: "/api/todos",
-        statusCode: 200,
-      });
-
-      const notFirstIdTodos: TodoResponseType[] = response.body;
-      const actualIds = notFirstIdTodos.map((todo) => todo.id);
-
-      expect(actualIds).toEqual([2, 3]);
+      expect(id).toEqual(1);
+      expect(title).toEqual("ダミータイトル1");
+      expect(body).toEqual("ダミーボディ1");
     });
     it("deleteメソッド実行後、3件のTodoから1件のデータが削除されている。", async () => {
       await requestAPI({
@@ -53,13 +39,7 @@ describe("[APIテスト] Todo一件の削除", () => {
         statusCode: 200,
       });
 
-      const response = await requestAPI({
-        method: "get",
-        endPoint: "/api/todos",
-        statusCode: 200,
-      });
-      const notFirstIdTodos: TodoResponseType[] = response.body;
-      const dbCurrentData = notFirstIdTodos;
+      const dbCurrentData = await prisma.todo.findMany({});
 
       expect(dbCurrentData.length).toEqual(2);
     });

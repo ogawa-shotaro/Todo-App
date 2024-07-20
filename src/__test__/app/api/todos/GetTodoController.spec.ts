@@ -1,18 +1,17 @@
 import { requestAPI } from "../../../helper/requestHelper";
+import { PrismaClient } from "@prisma/client";
+
+const prisma = new PrismaClient();
 
 describe("[APIテスト] Todo1件の取得", () => {
   describe("成功パターン", () => {
     it("id:1のデータ取得", async () => {
-      const requestFirstData = {
-        title: "ダミータイトル1",
-        body: "ダミーボディ1",
-      };
-
-      await requestAPI({
-        method: "post",
-        endPoint: "/api/todos/",
-        statusCode: 200,
-      }).send(requestFirstData);
+      await prisma.todo.create({
+        data: {
+          title: "ダミータイトル1",
+          body: "ダミーボディ1",
+        },
+      });
 
       const response = await requestAPI({
         method: "get",
@@ -28,17 +27,14 @@ describe("[APIテスト] Todo1件の取得", () => {
     });
     it("id:2のデータ取得", async () => {
       for (let i = 1; i <= 2; i++) {
-        const requestSecondData = {
-          title: `ダミータイトル${i}`,
-          body: `ダミーボディ${i}`,
-        };
-
-        await requestAPI({
-          method: "post",
-          endPoint: "/api/todos/",
-          statusCode: 200,
-        }).send(requestSecondData);
+        await prisma.todo.create({
+          data: {
+            title: "ダミータイトル" + i,
+            body: "ダミーボディ" + i,
+          },
+        });
       }
+
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/2",
