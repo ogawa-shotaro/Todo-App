@@ -13,7 +13,7 @@ describe("TodoRepository", () => {
         expect(repository).toBeInstanceOf(TodoRepository);
       });
     });
-    describe("メソッドのテスト", () => {
+    describe("saveメソッドのテスト", () => {
       it("saveメソッドを実行すると、DBに値を保持し、その値に重複しないIDが付与される", async () => {
         const repository = new TodoRepository();
 
@@ -39,10 +39,10 @@ describe("TodoRepository", () => {
         expect(secondDataResult.createdAt).toBeInstanceOf(Date);
         expect(secondDataResult.updatedAt).toBeInstanceOf(Date);
       });
-      it("listメソッドを実行時、パラメーターの指定がない場合は、先頭から10件のデータを取得する", async () => {
-        const repository = new TodoRepository();
-
-        for (let i = 1; i <= 11; i++) {
+    });
+    describe("list・update・deleteメソッドのテスト", () => {
+      beforeEach(async () => {
+        for (let i = 1; i <= 21; i++) {
           await prisma.todo.create({
             data: {
               title: "ダミータイトル" + i,
@@ -50,7 +50,9 @@ describe("TodoRepository", () => {
             },
           });
         }
-
+      });
+      it("listメソッドを実行時、パラメーターの指定がない場合は、先頭から10件のデータを取得する", async () => {
+        const repository = new TodoRepository();
         const listDataResult = await repository.list();
 
         expect(listDataResult.length).toEqual(10);
@@ -60,16 +62,6 @@ describe("TodoRepository", () => {
       });
       it("listメソッドを実行時、パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する", async () => {
         const repository = new TodoRepository();
-
-        for (let i = 1; i <= 21; i++) {
-          await prisma.todo.create({
-            data: {
-              title: "ダミータイトル" + i,
-              body: "ダミーボディ" + i,
-            },
-          });
-        }
-
         const listDataResult = await repository.list({ page: 2 });
 
         expect(listDataResult.length).toEqual(10);
@@ -79,16 +71,6 @@ describe("TodoRepository", () => {
       });
       it("listメソッドを実行時、パラメーターの指定(count=5)をした場合、先頭から5件のデータを取得する", async () => {
         const repository = new TodoRepository();
-
-        for (let i = 1; i <= 11; i++) {
-          await prisma.todo.create({
-            data: {
-              title: "ダミータイトル" + i,
-              body: "ダミーボディ" + i,
-            },
-          });
-        }
-
         const listDataResult = await repository.list({ count: 5 });
 
         expect(listDataResult.length).toEqual(5);
@@ -98,16 +80,6 @@ describe("TodoRepository", () => {
       });
       it("listメソッドを実行時、パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータを取得する", async () => {
         const repository = new TodoRepository();
-
-        for (let i = 1; i <= 11; i++) {
-          await prisma.todo.create({
-            data: {
-              title: "ダミータイトル" + i,
-              body: "ダミーボディ" + i,
-            },
-          });
-        }
-
         const listDataResult = await repository.list({ page: 2, count: 3 });
 
         expect(listDataResult.length).toEqual(3);
@@ -117,15 +89,6 @@ describe("TodoRepository", () => {
       });
       it("findメソッドを実行すると、DBに保持されているデータから、一件の値を取得する事ができる", async () => {
         const repository = new TodoRepository();
-
-        for (let i = 1; i <= 2; i++) {
-          await prisma.todo.create({
-            data: {
-              title: "ダミータイトル" + i,
-              body: "ダミーボディ" + i,
-            },
-          });
-        }
 
         const initialDataResult = await repository.find(1);
         const secondDataResult = await repository.find(2);
@@ -145,15 +108,6 @@ describe("TodoRepository", () => {
       it("updateメソッドを実行すると、DB内のデータを更新する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        for (let i = 1; i <= 2; i++) {
-          await prisma.todo.create({
-            data: {
-              title: "ダミータイトル" + i,
-              body: "ダミーボディ" + i,
-            },
-          });
-        }
-
         const latestResult: Todo = await repository.update({
           id: 1,
           title: "変更後のタイトル",
@@ -171,15 +125,6 @@ describe("TodoRepository", () => {
       it("updateメソッドを実行した後は、updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
         const repository = new TodoRepository();
 
-        for (let i = 1; i <= 2; i++) {
-          await prisma.todo.create({
-            data: {
-              title: "ダミータイトル" + i,
-              body: "ダミーボディ" + i,
-            },
-          });
-        }
-
         const latestDate = await repository.update({
           id: 1,
           title: "変更後のタイトル",
@@ -191,24 +136,15 @@ describe("TodoRepository", () => {
       it("deleteメソッドを実行すると、DB内の指定した(ID)データを削除する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        for (let i = 1; i <= 2; i++) {
-          await prisma.todo.create({
-            data: {
-              title: "ダミータイトル" + i,
-              body: "ダミーボディ" + i,
-            },
-          });
-        }
         const dbOldData = await repository.list();
         await repository.delete(1);
         const dbCurrentData = await repository.list();
 
-        expect(dbOldData.length).toEqual(2);
-        expect(dbOldData[0].id).toEqual(1);
-        expect(dbOldData[1].id).toEqual(2);
+        const oldDataId = dbOldData.map((todo) => todo.id);
+        const currentDataId = dbCurrentData.map((todo) => todo.id);
 
-        expect(dbCurrentData.length).toEqual(1);
-        expect(dbCurrentData[0].id).toEqual(2);
+        expect(oldDataId).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        expect(currentDataId).toEqual([2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
       });
     });
   });
