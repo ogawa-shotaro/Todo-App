@@ -125,24 +125,27 @@ describe("TodoRepository", () => {
       it("updateメソッドを実行した後は、updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
         const repository = new TodoRepository();
 
-        const latestDate = await repository.update({
+        const latestDateResult = await repository.update({
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
         });
 
-        expect(latestDate.createdAt < latestDate.updatedAt).toBeTruthy();
+        expect(
+          latestDateResult.createdAt < latestDateResult.updatedAt
+        ).toBeTruthy();
       });
       it("deleteメソッドを実行すると、DB内の指定した(ID)データを削除する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        const dbOldData = await repository.list();
-        await repository.delete(1);
-        const dbCurrentData = await repository.list();
+        const dbOldDataResult = await repository.list();
+        const deletedDataResult = await repository.delete(1);
+        const dbCurrentDataResult = await repository.list();
 
-        const oldDataId = dbOldData.map((todo) => todo.id);
-        const currentDataId = dbCurrentData.map((todo) => todo.id);
+        const oldDataId = dbOldDataResult.map((todo) => todo.id);
+        const currentDataId = dbCurrentDataResult.map((todo) => todo.id);
 
+        expect(deletedDataResult.id).toEqual(1);
         expect(oldDataId).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
         expect(currentDataId).toEqual([2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
       });
