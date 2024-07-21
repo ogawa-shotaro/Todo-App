@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 describe("[APIテスト] Todo一件の更新", () => {
   describe("成功パターン", () => {
     beforeEach(async () => {
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 2; i++) {
         await prisma.todo.create({
           data: {
             title: "ダミータイトル" + i,

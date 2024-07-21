@@ -14,6 +14,7 @@ export class DeleteTodoController {
 
     try {
       const responseData = await this.repository.delete(parsedId);
+
       res.status(200).json(responseData);
     } catch (_) {
       const errorObj = {

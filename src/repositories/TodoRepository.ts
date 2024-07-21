@@ -102,8 +102,10 @@ export class TodoRepository {
       throw new Error("存在しないIDを指定しました。");
     }
 
-    await prisma.todo.delete({
+    const responseDeleteItem = prisma.todo.delete({
       where: { id: id },
     });
+
+    return responseDeleteItem;
   }
 }
