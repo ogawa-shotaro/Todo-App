@@ -1,11 +1,11 @@
 import type { Request, Response } from "express";
 import type { TodoInput } from "../../types/TodoRequest.type";
-import type { TodoRepository } from "../../repositories/TodoRepository";
+import { IRepository } from "../../repositories/IRepository";
 
 export class CreateTodoController {
-  private repository: TodoRepository;
+  private repository: IRepository;
 
-  constructor(repository: TodoRepository) {
+  constructor(repository: IRepository) {
     this.repository = repository;
   }
 
