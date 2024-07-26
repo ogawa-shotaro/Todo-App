@@ -1,8 +1,8 @@
+import { CreateTodoController } from "../../../../controllers/todos/CreateTodoController";
 import type { Request, Response } from "express";
 import type { IRepository } from "../../../../repositories/IRepository";
 import type { Todo } from "@prisma/client";
-import { CreateTodoController } from "../../../../controllers/todos/CreateTodoController";
-import {
+import type {
   TodoInput,
   TodoUpdatedInput,
 } from "../../../../types/TodoRequest.type";
@@ -15,6 +15,14 @@ class MockRepository implements IRepository {
   }
 
   async save(inputData: TodoInput): Promise<Todo> {
+    if (!inputData.title) {
+      throw new Error("titleの内容は必須です");
+    }
+
+    if (!inputData.body) {
+      throw new Error("bodyの内容は必須です");
+    }
+
     const savedTodo: Todo = {
       id: this.nextId++,
       title: inputData.title,
@@ -49,13 +57,77 @@ class MockRepository implements IRepository {
   }
 }
 
+const mockRequest = (
+  body: Partial<{ title: string; body: string }>
+): Request => {
+  return {
+    body: {
+      ...body,
+    },
+  } as Request;
+};
+
+const mockResponse = (): Response => {
+  const res: Partial<Response> = {};
+
+  res.status = jest.fn().mockReturnValue(res);
+  res.json = jest.fn().mockReturnValue(res);
+
+  return res as Response;
+};
+
 describe("【ユニットテスト】Todo1件新規作成", () => {
   describe("成功パターン", () => {
-    it("id付きのTodoEntityを返す", async () => {
+    it("Todo(json)とstatus 200が返る", async () => {
       const repository = new MockRepository();
       const todoCreateController = new CreateTodoController(repository);
 
-      todoCreateController.create();
+      const req = mockRequest({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
+      const res = mockResponse();
+
+      await todoCreateController.create(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        id: 1,
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
+    });
+  });
+  describe("異常パターン", () => {
+    it("タイトルなしでは、エラーメッセージとstatus400が返る", async () => {
+      const repository = new MockRepository();
+      const todoCreateController = new CreateTodoController(repository);
+
+      const req = mockRequest({ title: "", body: "ダミーボディ" });
+      const res = mockResponse();
+
+      await todoCreateController.create(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({
+        message: "titleの内容は必須です",
+      });
+      expect(res.status).toHaveBeenCalledWith(400);
+    });
+    it("ボディなしでは、エラーメッセージとstatus400が返る", async () => {
+      const repository = new MockRepository();
+      const todoCreateController = new CreateTodoController(repository);
+
+      const req = mockRequest({ title: "ダミータイトル", body: "" });
+      const res = mockResponse();
+
+      await todoCreateController.create(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({
+        message: "bodyの内容は必須です",
+      });
+      expect(res.status).toHaveBeenCalledWith(400);
     });
   });
 });
