@@ -1,133 +1,60 @@
-import { CreateTodoController } from "../../../../controllers/todos/CreateTodoController";
-import type { Request, Response } from "express";
-import type { IRepository } from "../../../../repositories/IRepository";
-import type { Todo } from "@prisma/client";
-import type {
-  TodoInput,
-  TodoUpdatedInput,
-} from "../../../../types/TodoRequest.type";
+import { requestAPI } from "../../../helper/requestHelper";
 
-class MockRepository implements IRepository {
-  private nextId: number;
-
-  constructor() {
-    this.nextId = 1;
-  }
-
-  async save(inputData: TodoInput): Promise<Todo> {
-    if (!inputData.title) {
-      throw new Error("titleの内容は必須です");
-    }
-
-    if (!inputData.body) {
-      throw new Error("bodyの内容は必須です");
-    }
-
-    const savedTodo: Todo = {
-      id: this.nextId++,
-      title: inputData.title,
-      body: inputData.body,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-
-    return savedTodo;
-  }
-
-  async list({
-    page = 1,
-    count = 10,
-  }: {
-    page: number;
-    count: number;
-  }): Promise<Todo[]> {
-    throw new Error("Method not implemented.");
-  }
-
-  async find(id: number): Promise<Todo | null> {
-    throw new Error("Method not implemented.");
-  }
-
-  async update({ id, title, body }: TodoUpdatedInput): Promise<Todo> {
-    throw new Error("Method not implemented.");
-  }
-
-  async delete(id: number): Promise<Todo> {
-    throw new Error("Method not implemented.");
-  }
-}
-
-const mockRequest = (
-  body: Partial<{ title: string; body: string }>
-): Request => {
-  return {
-    body: {
-      ...body,
-    },
-  } as Request;
-};
-
-const mockResponse = (): Response => {
-  const res: Partial<Response> = {};
-
-  res.status = jest.fn().mockReturnValue(res);
-  res.json = jest.fn().mockReturnValue(res);
-
-  return res as Response;
-};
-
-describe("【ユニットテスト】Todo1件新規作成", () => {
+describe("[APIテスト] Todo1件新規作成", () => {
   describe("成功パターン", () => {
-    it("Todo(json)とstatus 200が返る", async () => {
-      const repository = new MockRepository();
-      const todoCreateController = new CreateTodoController(repository);
-
-      const req = mockRequest({
+    it("title.bodyを送ったら成功する", async () => {
+      const requestData = {
         title: "ダミータイトル",
         body: "ダミーボディ",
-      });
-      const res = mockResponse();
+      };
 
-      await todoCreateController.create(req, res);
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: 200,
+      }).send(requestData);
 
-      expect(res.status).toHaveBeenCalledWith(200);
-      expect(res.json).toHaveBeenCalledWith({
-        id: 1,
+      const responseDataResult = response.body;
+
+      expect(responseDataResult).toEqual({
+        id: responseDataResult.id,
         title: "ダミータイトル",
         body: "ダミーボディ",
-        createdAt: expect.any(Date),
-        updatedAt: expect.any(Date),
+        createdAt: responseDataResult.createdAt,
+        updatedAt: responseDataResult.updatedAt,
       });
+
+      expect(typeof Number(responseDataResult.id)).toEqual("number");
+
+      const responseCreatedAtDateObj = new Date(responseDataResult.createdAt);
+      const responseUpdatedAtDateObj = new Date(responseDataResult.updatedAt);
+
+      expect(!isNaN(responseCreatedAtDateObj.getTime())).toEqual(true);
+      expect(!isNaN(responseUpdatedAtDateObj.getTime())).toEqual(true);
     });
   });
   describe("異常パターン", () => {
-    it("タイトルなしでは、エラーメッセージとstatus400が返る", async () => {
-      const repository = new MockRepository();
-      const todoCreateController = new CreateTodoController(repository);
+    it("titleなしではエラー（400）が返る。", async () => {
+      const requestNotTitleData = { body: "ダミーボディ" };
 
-      const req = mockRequest({ title: "", body: "ダミーボディ" });
-      const res = mockResponse();
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: 400,
+      }).send(requestNotTitleData);
 
-      await todoCreateController.create(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({
-        message: "titleの内容は必須です",
-      });
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(response.body).toEqual({ message: "titleの内容は必須です" });
     });
-    it("ボディなしでは、エラーメッセージとstatus400が返る", async () => {
-      const repository = new MockRepository();
-      const todoCreateController = new CreateTodoController(repository);
+    it("bodyなしではエラー（400）が返る。", async () => {
+      const requestNotBodyData = { title: "ダミータイトル" };
 
-      const req = mockRequest({ title: "ダミータイトル", body: "" });
-      const res = mockResponse();
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: 400,
+      }).send(requestNotBodyData);
 
-      await todoCreateController.create(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({
-        message: "bodyの内容は必須です",
-      });
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(response.body).toEqual({ message: "bodyの内容は必須です" });
     });
   });
 });
