@@ -1,13 +1,14 @@
 import type { TodoInput } from "../types/TodoRequest.type";
 import type { TodoUpdatedInput } from "../types/TodoRequest.type";
 import type { Todo } from "@prisma/client";
+import type { ITodoRepository } from "./ITodoRepository";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
 const DEFAULT_COUNT = 10;
 
-export class TodoRepository {
+export class TodoRepository implements ITodoRepository {
   constructor(initialInputData?: TodoInput[]) {
     if (!initialInputData || initialInputData.length === 0) {
       return;
