@@ -5,5 +5,6 @@ export default {
   testEnvironment: "node",
   testMatch: [
     "<rootDir>/src/__test__/app/controllers/todos/CreateTodoController.spec.ts",
+    "<rootDir>/src/__test__/app/controllers/todos/GetTodoController.spec.ts",
   ],
 };
