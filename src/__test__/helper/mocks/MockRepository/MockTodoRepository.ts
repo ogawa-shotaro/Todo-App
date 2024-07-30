@@ -4,6 +4,7 @@ import type {
   TodoInput,
   TodoUpdatedInput,
 } from "../../../../types/TodoRequest.type";
+import { error } from "console";
 
 export class MockRepository implements ITodoRepository {
   private nextId: number;
@@ -42,9 +43,9 @@ export class MockRepository implements ITodoRepository {
     throw new Error("Method not implemented.");
   }
 
-  async find(id: number): Promise<Todo> {
+  async find(id: number): Promise<Todo | null> {
     if (id !== 1) {
-      throw new Error("存在しないIDを指定しました。");
+      throw error;
     }
 
     const todoItem: Todo = {
