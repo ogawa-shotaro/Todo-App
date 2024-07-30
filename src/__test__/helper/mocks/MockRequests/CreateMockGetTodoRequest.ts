@@ -1,9 +1,9 @@
 import type { Request } from "express";
 
 export const createMockGetTodoRequest = (
-  params: Partial<{ id: string }>
+  id: Partial<{ id: string }>
 ): Request => {
   return {
-    params: { ...params },
+    params: { ...id },
   } as Request;
 };
