@@ -1,16 +1,17 @@
-import type { ITodoRepository } from "../../../../repositories/ITodoRepository";
+import type { ITodoRepository } from "../../../repositories/ITodoRepository";
 import type { Todo } from "@prisma/client";
 import type {
   TodoInput,
   TodoUpdatedInput,
-} from "../../../../types/TodoRequest.type";
-import { error } from "console";
+} from "../../../types/TodoRequest.type";
 
 export class MockRepository implements ITodoRepository {
   private nextId: number;
+  private todos: Todo[] = [];
 
   constructor() {
     this.nextId = 1;
+    this.todos = [];
   }
 
   async save(inputData: TodoInput): Promise<Todo> {
@@ -30,6 +31,8 @@ export class MockRepository implements ITodoRepository {
       updatedAt: new Date(),
     };
 
+    this.todos.push(savedTodo);
+
     return savedTodo;
   }
 
@@ -44,17 +47,11 @@ export class MockRepository implements ITodoRepository {
   }
 
   async find(id: number): Promise<Todo | null> {
-    if (id !== 1) {
-      throw error;
-    }
+    const todoItem = this.todos.find((todo) => todo.id === id);
 
-    const todoItem: Todo = {
-      id: 1,
-      title: "ダミータイトル",
-      body: "ダミーボディ",
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
+    if (!todoItem) {
+      throw new Error();
+    }
 
     return todoItem;
   }
