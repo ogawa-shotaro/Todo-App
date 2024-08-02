@@ -1,20 +1,19 @@
 import { CreateTodoController } from "../../../controllers/todos/CreateTodoController";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
-import { CreateMockRequests } from "../../helper/mocks/CreateMockRequest";
-import { CreateMockResponse } from "../../helper/mocks/CreateMockResponse";
+import { createMockRequest } from "../../helper/mocks/CreateMockRequest";
+import { createMockResponse } from "../../helper/mocks/CreateMockResponse";
 
 const repository = new MockRepository();
 const todoCreateController = new CreateTodoController(repository);
-const createMockRequest = new CreateMockRequests();
 
 describe("【ユニットテスト】Todo1件新規作成", () => {
   describe("成功パターン", () => {
     it("Todo(json)とstatus 200が返る", async () => {
-      const req = createMockRequest.createTodo({
+      const req = createMockRequest({
         title: "ダミータイトル",
         body: "ダミーボディ",
       });
-      const res = CreateMockResponse();
+      const res = createMockResponse();
 
       await todoCreateController.create(req, res);
 
@@ -30,11 +29,11 @@ describe("【ユニットテスト】Todo1件新規作成", () => {
   });
   describe("異常パターン", () => {
     it("タイトルなしでは、エラーメッセージとstatus400が返る", async () => {
-      const req = createMockRequest.createTodo({
+      const req = createMockRequest({
         title: "",
         body: "ダミーボディ",
       });
-      const res = CreateMockResponse();
+      const res = createMockResponse();
 
       await todoCreateController.create(req, res);
 
@@ -44,11 +43,11 @@ describe("【ユニットテスト】Todo1件新規作成", () => {
       expect(res.status).toHaveBeenCalledWith(400);
     });
     it("ボディなしでは、エラーメッセージとstatus400が返る", async () => {
-      const req = createMockRequest.createTodo({
+      const req = createMockRequest({
         title: "ダミータイトル",
         body: "",
       });
-      const res = CreateMockResponse();
+      const res = createMockResponse();
 
       await todoCreateController.create(req, res);
 

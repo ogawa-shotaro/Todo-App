@@ -1,11 +1,10 @@
 import { GetTodoController } from "../../../controllers/todos/GetTodoController";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
-import { CreateMockRequests } from "../../helper/mocks/CreateMockRequest";
-import { CreateMockResponse } from "../../helper/mocks/CreateMockResponse";
+import { createMockRequest } from "../../helper/mocks/CreateMockRequest";
+import { createMockResponse } from "../../helper/mocks/CreateMockResponse";
 
 const repository = new MockRepository();
 const todoGetController = new GetTodoController(repository);
-const createMockRequest = new CreateMockRequests();
 
 describe("【ユニットテスト】Todo1件を取得", () => {
   describe("成功パターン", () => {
@@ -18,8 +17,8 @@ describe("【ユニットテスト】Todo1件を取得", () => {
       }
     });
     it("id:1のTodoデータ(jsonとstatus200)が返る", async () => {
-      const req = createMockRequest.getTodo({ id: "1" });
-      const res = CreateMockResponse();
+      const req = createMockRequest({}, { id: "1" });
+      const res = createMockResponse();
 
       await todoGetController.find(req, res);
 
@@ -32,10 +31,9 @@ describe("【ユニットテスト】Todo1件を取得", () => {
         updatedAt: expect.any(Date),
       });
     });
-
     it("id:2のTodoデータ(jsonとstatus200)が返る", async () => {
-      const req = createMockRequest.getTodo({ id: "2" });
-      const res = CreateMockResponse();
+      const req = createMockRequest({}, { id: "2" });
+      const res = createMockResponse();
 
       await todoGetController.find(req, res);
 
@@ -51,8 +49,8 @@ describe("【ユニットテスト】Todo1件を取得", () => {
   });
   describe("異常パターン", () => {
     it("存在しないIDへのリクエストは、エラーメッセージとstatus404が返る", async () => {
-      const req = createMockRequest.getTodo({ id: "999" });
-      const res = CreateMockResponse();
+      const req = createMockRequest({ id: "999" });
+      const res = createMockResponse();
 
       await todoGetController.find(req, res);
 

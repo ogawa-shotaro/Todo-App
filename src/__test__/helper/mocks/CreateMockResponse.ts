@@ -1,6 +1,6 @@
 import type { Response } from "express";
 
-export const CreateMockResponse = (): Response => {
+export const createMockResponse = (): Response => {
   const res: Response = {} as Response;
 
   res.status = jest.fn().mockReturnValue(res);

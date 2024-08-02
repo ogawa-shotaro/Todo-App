@@ -1,20 +1,14 @@
 import type { Request } from "express";
 
-type requestId = any;
-type requestBody = { title: string; body: string };
+type RequestBody = Record<string, string | number>;
+type RequestParams = Record<string, string>;
 
-export class CreateMockRequests {
-  createTodo(requestData: requestBody): Request {
-    return {
-      body: {
-        ...requestData,
-      },
-    } as Request;
-  }
-
-  getTodo(requestData: requestId): Request {
-    return {
-      params: { ...requestData },
-    } as Request;
-  }
-}
+export const createMockRequest = (
+  body?: RequestBody,
+  params?: RequestParams
+): Request => {
+  return {
+    body: body ?? {},
+    params: params ?? {},
+  } as Request;
+};
