@@ -1,7 +1,7 @@
 import { GetTodoController } from "../../../controllers/todos/GetTodoController";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
-import { createMockRequest } from "../../helper/mocks/CreateMockRequest";
-import { createMockResponse } from "../../helper/mocks/CreateMockResponse";
+import { createMockRequest } from "../../helper/mocks/request";
+import { createMockResponse } from "../../helper/mocks/response";
 
 const repository = new MockRepository();
 const todoGetController = new GetTodoController(repository);
