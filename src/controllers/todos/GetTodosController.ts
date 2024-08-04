@@ -9,7 +9,9 @@ export class GetTodosController {
   }
 
   async list(req: Request, res: Response) {
-    const todos = await this.repository.list();
+    const { page, count } = req.body;
+
+    const todos = await this.repository.list({ page, count });
 
     res.status(200).json(todos);
   }

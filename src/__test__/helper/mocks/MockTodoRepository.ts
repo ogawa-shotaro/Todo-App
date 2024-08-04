@@ -53,7 +53,7 @@ export class MockRepository implements ITodoRepository {
     }
 
     const offset = (page - 1) * count;
-    const todoItems = this.todos.slice(offset, count);
+    const todoItems = this.todos.slice(offset, offset + count);
 
     return todoItems;
   }
