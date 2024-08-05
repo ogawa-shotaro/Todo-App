@@ -5,6 +5,9 @@ import type {
   TodoUpdatedInput,
 } from "../../../types/TodoRequest.type";
 
+const DEFAULT_PAGE = 1;
+const DEFAULT_COUNT = 10;
+
 export class MockRepository implements ITodoRepository {
   private nextId: number;
   private todos: Todo[] = [];
@@ -36,14 +39,23 @@ export class MockRepository implements ITodoRepository {
     return savedTodo;
   }
 
-  async list({
-    page = 1,
-    count = 10,
-  }: {
-    page: number;
-    count: number;
-  }): Promise<Todo[]> {
-    throw new Error("Method not implemented.");
+  async list(
+    { page = DEFAULT_PAGE, count = DEFAULT_COUNT } = {
+      page: DEFAULT_PAGE,
+      count: DEFAULT_COUNT,
+    }
+  ) {
+    if (page < 1 || !Number.isInteger(page)) {
+      throw new Error("pageは1以上の整数のみ");
+    }
+    if (count < 1 || !Number.isInteger(count)) {
+      throw new Error("countは1以上の整数のみ");
+    }
+
+    const offset = (page - 1) * count;
+    const todoItems = this.todos.slice(offset, offset + count);
+
+    return todoItems;
   }
 
   async find(id: number): Promise<Todo | null> {
