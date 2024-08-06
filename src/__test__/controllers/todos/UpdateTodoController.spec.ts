@@ -3,10 +3,9 @@ import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
-let controller: UpdateTodoController;
-let repository: MockRepository;
-
 describe("【ユニットテスト】 Todo一件の更新", () => {
+  let controller: UpdateTodoController;
+  let repository: MockRepository;
   describe("成功パターン", () => {
     beforeEach(async () => {
       repository = new MockRepository();
