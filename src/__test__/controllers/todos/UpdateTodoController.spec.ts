@@ -43,7 +43,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         title: "変更後のタイトル",
         body: "変更後のボディ",
         createdAt: expect.any(Date),
-        updatedAt: new Date(),
+        updatedAt: expect.any(Date),
       });
     });
     it("id:2のデータ更新(タイトルとボディ)", async () => {
