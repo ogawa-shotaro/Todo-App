@@ -76,7 +76,7 @@ export class MockRepository implements ITodoRepository {
 
     updatedItem.title = title ? title : updatedItem.title;
     updatedItem.body = body ? body : updatedItem.body;
-    updatedItem.createdAt = new Date();
+    updatedItem.updatedAt = new Date();
 
     return updatedItem;
   }

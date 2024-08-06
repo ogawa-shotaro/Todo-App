@@ -3,12 +3,15 @@ import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
-const repository = new MockRepository();
-const todoUpdateController = new UpdateTodoController(repository);
+let controller: UpdateTodoController;
+let repository: MockRepository;
 
 describe("【ユニットテスト】 Todo一件の更新", () => {
   describe("成功パターン", () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
+      repository = new MockRepository();
+      controller = new UpdateTodoController(repository);
+
       for (let i = 1; i <= 2; i++) {
         await repository.save({
           title: `ダミータイトル${i}`,
@@ -20,7 +23,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
       const req = createMockRequest({ title: "変更後のタイトル" }, { id: "1" });
       const res = createMockResponse();
 
-      await todoUpdateController.update(req, res);
+      await controller.update(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -35,12 +38,12 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
       const req = createMockRequest({ body: "変更後のボディ" }, { id: "1" });
       const res = createMockResponse();
 
-      await todoUpdateController.update(req, res);
+      await controller.update(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
         id: 1,
-        title: "変更後のタイトル",
+        title: "ダミータイトル1",
         body: "変更後のボディ",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
@@ -53,7 +56,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
       );
       const res = createMockResponse();
 
-      await todoUpdateController.update(req, res);
+      await controller.update(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -72,7 +75,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         );
         const res = createMockResponse();
 
-        await todoUpdateController.update(req, res);
+        await controller.update(req, res);
 
         expect(res.json).toHaveBeenCalledWith({
           code: 404,
