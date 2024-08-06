@@ -69,7 +69,16 @@ export class MockRepository implements ITodoRepository {
   }
 
   async update({ id, title, body }: TodoUpdatedInput): Promise<Todo> {
-    throw new Error("Method not implemented.");
+    const updatedItem = this.todos.find((todo) => todo.id === id);
+    if (!updatedItem) {
+      throw new Error("存在しないIDを指定しました。");
+    }
+
+    updatedItem.title = title ? title : updatedItem.title;
+    updatedItem.body = body ? body : updatedItem.body;
+    updatedItem.createdAt = new Date();
+
+    return updatedItem;
   }
 
   async delete(id: number): Promise<Todo> {
