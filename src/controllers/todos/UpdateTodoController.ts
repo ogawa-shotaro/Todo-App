@@ -1,10 +1,10 @@
 import type { Request, Response } from "express";
-import { TodoRepository } from "../../repositories/TodoRepository";
+import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
 export class UpdateTodoController {
-  private repository: TodoRepository;
+  private repository: ITodoRepository;
 
-  constructor(repository: TodoRepository) {
+  constructor(repository: ITodoRepository) {
     this.repository = repository;
   }
 
