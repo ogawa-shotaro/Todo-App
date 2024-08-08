@@ -82,6 +82,14 @@ export class MockRepository implements ITodoRepository {
   }
 
   async delete(id: number): Promise<Todo> {
-    throw new Error("Method not implemented.");
+    const deleteId = this.todos.findIndex((todo) => todo.id === id);
+
+    if (deleteId === -1) {
+      throw new Error();
+    }
+
+    const deletedItem = this.todos.splice(deleteId, 1)[0];
+
+    return deletedItem;
   }
 }
