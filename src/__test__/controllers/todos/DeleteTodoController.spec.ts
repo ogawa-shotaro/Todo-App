@@ -6,10 +6,6 @@ import { createMockResponse } from "../../helper/mocks/response";
 describe("【ユニットテスト】Todo1件の削除", () => {
   let controller: DeleteTodoController;
   let repository: MockRepository;
-
-  let dbOldData;
-  let dbCurrentData;
-
   describe("成功パターン", () => {
     beforeEach(async () => {
       repository = new MockRepository();
@@ -26,9 +22,9 @@ describe("【ユニットテスト】Todo1件の削除", () => {
       const req = createMockRequest({}, { id: "1" });
       const res = createMockResponse();
 
-      dbOldData = repository.list();
+      const dbOldData = repository.list();
       await controller.delete(req, res);
-      dbCurrentData = repository.list();
+      const dbCurrentData = repository.list();
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -45,9 +41,9 @@ describe("【ユニットテスト】Todo1件の削除", () => {
       const req = createMockRequest({}, { id: "2" });
       const res = createMockResponse();
 
-      dbOldData = repository.list();
+      const dbOldData = repository.list();
       await controller.delete(req, res);
-      dbCurrentData = repository.list();
+      const dbCurrentData = repository.list();
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({

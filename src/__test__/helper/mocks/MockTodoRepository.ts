@@ -58,7 +58,7 @@ export class MockRepository implements ITodoRepository {
     return todoItems;
   }
 
-  async find(id: number): Promise<Todo | null> {
+  async find(id: number): Promise<Todo> {
     const todoItem = this.todos.find((todo) => todo.id === id);
 
     if (!todoItem) {
