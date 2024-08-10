@@ -6,25 +6,18 @@ import { createMockResponse } from "../../helper/mocks/response";
 describe("【ユニットテスト】Todo1件の削除", () => {
   let controller: DeleteTodoController;
   let repository: MockRepository;
-  describe("成功パターン", () => {
+  describe("【成功パターン】削除したTodoデータ(jsonとstatus200)が返る", () => {
     beforeEach(async () => {
       repository = new MockRepository();
       controller = new DeleteTodoController(repository);
-
-      for (let i = 1; i <= 2; i++) {
-        await repository.save({
-          title: `ダミータイトル${i}`,
-          body: `ダミーボディ${i}`,
-        });
-      }
     });
-    it("仮DB(todos)から一件のTodoが削除され、削除したTodoデータ(id:1)が返る", async () => {
+    it("deleteメソッドが1回実行されて、削除したTodoデータが返る(id:1)", async () => {
       const req = createMockRequest({}, { id: "1" });
       const res = createMockResponse();
 
-      const dbOldData = repository.list();
       await controller.delete(req, res);
-      const dbCurrentData = repository.list();
+
+      expect(repository.getCallCount()).toEqual(1);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -34,16 +27,14 @@ describe("【ユニットテスト】Todo1件の削除", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
-      expect((await dbOldData).length).toEqual(2);
-      expect((await dbCurrentData).length).toEqual(1);
     });
-    it("仮DB(todos)から一件のTodoが削除され、削除したTodoデータ(id:2)が返る", async () => {
+    it("deleteメソッドが1回実行されて、削除したTodoデータが返る(id:2)", async () => {
       const req = createMockRequest({}, { id: "2" });
       const res = createMockResponse();
 
-      const dbOldData = repository.list();
       await controller.delete(req, res);
-      const dbCurrentData = repository.list();
+
+      expect(repository.getCallCount()).toEqual(1);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -53,8 +44,6 @@ describe("【ユニットテスト】Todo1件の削除", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
-      expect((await dbOldData).length).toEqual(2);
-      expect((await dbCurrentData).length).toEqual(1);
     });
   });
   describe("異常パターン", () => {
@@ -63,6 +52,8 @@ describe("【ユニットテスト】Todo1件の削除", () => {
       const res = createMockResponse();
 
       await controller.delete(req, res);
+
+      expect(repository.getCallCount()).toEqual(1);
 
       expect(res.json).toHaveBeenCalledWith({
         code: 404,

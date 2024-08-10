@@ -10,11 +10,37 @@ const DEFAULT_COUNT = 10;
 
 export class MockRepository implements ITodoRepository {
   private nextId: number;
-  private todos: Todo[] = [];
+  private callCount = 0;
+  private argumentStack: Todo[] = [];
 
   constructor() {
     this.nextId = 1;
-    this.todos = [];
+    this.argumentStack = [];
+  }
+
+  getCallCount() {
+    return this.callCount;
+  }
+
+  inputArgumentStack(inputTodoLength: number) {
+    for (let i = 1; i <= inputTodoLength; i++) {
+      const inputTodoData = {
+        id: this.nextId++,
+        title: `ダミータイトル${i}`,
+        body: `ダミーボディ${i}`,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      this.argumentStack.push(inputTodoData);
+    }
+  }
+
+  getArgumentStack(index: number) {
+    return this.argumentStack[index];
+  }
+
+  getArgumentStacks() {
+    return this.argumentStack;
   }
 
   async save(inputData: TodoInput): Promise<Todo> {
@@ -34,7 +60,9 @@ export class MockRepository implements ITodoRepository {
       updatedAt: new Date(),
     };
 
-    this.todos.push(savedTodo);
+    this.argumentStack.push(savedTodo);
+
+    this.callCount++;
 
     return savedTodo;
   }
@@ -52,24 +80,34 @@ export class MockRepository implements ITodoRepository {
       throw new Error("countは1以上の整数のみ");
     }
 
+    this.inputArgumentStack(20);
+
     const offset = (page - 1) * count;
-    const todoItems = this.todos.slice(offset, offset + count);
+    const todoItems = this.argumentStack.slice(offset, offset + count);
+
+    this.callCount++;
 
     return todoItems;
   }
 
   async find(id: number): Promise<Todo> {
-    const todoItem = this.todos.find((todo) => todo.id === id);
+    this.inputArgumentStack(2);
+
+    const todoItem = this.argumentStack.find((todo) => todo.id === id);
 
     if (!todoItem) {
       throw new Error();
     }
 
+    this.callCount++;
+
     return todoItem;
   }
 
   async update({ id, title, body }: TodoUpdatedInput): Promise<Todo> {
-    const updatedItem = this.todos.find((todo) => todo.id === id);
+    this.inputArgumentStack(2);
+
+    const updatedItem = this.argumentStack.find((todo) => todo.id === id);
     if (!updatedItem) {
       throw new Error("存在しないIDを指定しました。");
     }
@@ -78,17 +116,23 @@ export class MockRepository implements ITodoRepository {
     updatedItem.body = body ? body : updatedItem.body;
     updatedItem.updatedAt = new Date();
 
+    this.callCount++;
+
     return updatedItem;
   }
 
   async delete(id: number): Promise<Todo> {
-    const deleteId = this.todos.findIndex((todo) => todo.id === id);
+    this.inputArgumentStack(2);
+
+    const deleteId = this.argumentStack.findIndex((todo) => todo.id === id);
 
     if (deleteId === -1) {
       throw new Error();
     }
 
-    const deletedItem = this.todos.splice(deleteId, 1)[0];
+    const deletedItem = this.argumentStack.splice(deleteId, 1)[0];
+
+    this.callCount++;
 
     return deletedItem;
   }

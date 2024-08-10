@@ -6,23 +6,18 @@ import { createMockResponse } from "../../helper/mocks/response";
 describe("【ユニットテスト】 Todo一件の更新", () => {
   let controller: UpdateTodoController;
   let repository: MockRepository;
-  describe("成功パターン", () => {
+  describe("【成功パターン】更新されたTodoデータ(jsonとstatus200)が返る", () => {
     beforeEach(async () => {
       repository = new MockRepository();
       controller = new UpdateTodoController(repository);
-
-      for (let i = 1; i <= 2; i++) {
-        await repository.save({
-          title: `ダミータイトル${i}`,
-          body: `ダミーボディ${i}`,
-        });
-      }
     });
-    it("id:1のデータ更新(タイトルのみ)", async () => {
+    it("updateメソッドが1回実行されて、更新されたTodoデータが返る(id:1タイトルのみ)", async () => {
       const req = createMockRequest({ title: "変更後のタイトル" }, { id: "1" });
       const res = createMockResponse();
 
       await controller.update(req, res);
+
+      expect(repository.getCallCount()).toEqual(1);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -33,11 +28,13 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         updatedAt: expect.any(Date),
       });
     });
-    it("id:1のデータ更新(ボディのみ)", async () => {
+    it("updateメソッドが1回実行されて、更新されたTodoデータが返る(id:1のボディのみ)", async () => {
       const req = createMockRequest({ body: "変更後のボディ" }, { id: "1" });
       const res = createMockResponse();
 
       await controller.update(req, res);
+
+      expect(repository.getCallCount()).toEqual(1);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -48,7 +45,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         updatedAt: expect.any(Date),
       });
     });
-    it("id:2のデータ更新(タイトルとボディ)", async () => {
+    it("updateメソッドが1回実行されて、更新されたTodoデータが返る(id:2のタイトルとボディ) ", async () => {
       const req = createMockRequest(
         { title: "変更後のタイトル", body: "変更後のボディ" },
         { id: "2" }
@@ -56,6 +53,8 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
       const res = createMockResponse();
 
       await controller.update(req, res);
+
+      expect(repository.getCallCount()).toEqual(1);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
