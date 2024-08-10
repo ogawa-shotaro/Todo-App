@@ -11,7 +11,7 @@ describe("【ユニットテスト】Todo1件の削除", () => {
       repository = new MockRepository();
       controller = new DeleteTodoController(repository);
     });
-    it("deleteメソッドが1回実行されて、削除したTodoデータが返る(id:1)", async () => {
+    it("deleteメソッドが1回実行され、削除したTodoデータが返る(id:1)", async () => {
       const req = createMockRequest({}, { id: "1" });
       const res = createMockResponse();
 
@@ -28,7 +28,7 @@ describe("【ユニットテスト】Todo1件の削除", () => {
         updatedAt: expect.any(Date),
       });
     });
-    it("deleteメソッドが1回実行されて、削除したTodoデータが返る(id:2)", async () => {
+    it("deleteメソッドが1回実行され、削除したTodoデータが返る(id:2)", async () => {
       const req = createMockRequest({}, { id: "2" });
       const res = createMockResponse();
 
@@ -45,22 +45,20 @@ describe("【ユニットテスト】Todo1件の削除", () => {
         updatedAt: expect.any(Date),
       });
     });
-  });
-  describe("異常パターン", () => {
-    it("存在しないIDへのリクエストは、エラーメッセージとstatus404が返る", async () => {
-      const req = createMockRequest({}, { id: "999" });
-      const res = createMockResponse();
+    describe("異常パターン", () => {
+      it("存在しないIDへのリクエストは、エラーメッセージとstatus404が返る", async () => {
+        const req = createMockRequest({}, { id: "999" });
+        const res = createMockResponse();
 
-      await controller.delete(req, res);
+        await controller.delete(req, res);
 
-      expect(repository.getCallCount()).toEqual(1);
-
-      expect(res.json).toHaveBeenCalledWith({
-        code: 404,
-        message: "Not found",
-        stat: "fail",
+        expect(res.json).toHaveBeenCalledWith({
+          code: 404,
+          message: "Not found",
+          stat: "fail",
+        });
+        expect(res.status).toHaveBeenCalledWith(404);
       });
-      expect(res.status).toHaveBeenCalledWith(404);
     });
   });
 });

@@ -108,8 +108,9 @@ export class MockRepository implements ITodoRepository {
     this.inputArgumentStack(2);
 
     const updatedItem = this.argumentStack.find((todo) => todo.id === id);
+
     if (!updatedItem) {
-      throw new Error("存在しないIDを指定しました。");
+      throw new Error();
     }
 
     updatedItem.title = title ? title : updatedItem.title;

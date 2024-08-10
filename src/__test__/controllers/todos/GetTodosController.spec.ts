@@ -4,14 +4,18 @@ import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】 Todo一覧取得", () => {
-  const repository = new MockRepository();
-  const todosGetController = new GetTodosController(repository);
+  let controller: GetTodosController;
+  let repository: MockRepository;
   describe("【成功パターン】Todoデータ(jsonとstatus200)が返る", () => {
+    beforeEach(async () => {
+      repository = new MockRepository();
+      controller = new GetTodosController(repository);
+    });
     it("Todo一覧を取得できる", async () => {
       const req = createMockRequest();
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
       expect(repository.getCallCount()).toEqual(1);
 
@@ -35,25 +39,25 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const req = createMockRequest({ page: 2, count: 5 });
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
-      expect(repository.getCallCount()).toEqual(2);
+      expect(repository.getCallCount()).toEqual(1);
     });
     it("パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する", async () => {
       const req = createMockRequest({ page: 2 });
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
-      expect(repository.getCallCount()).toEqual(3);
+      expect(repository.getCallCount()).toEqual(1);
     });
     it("パラメーターの指定(count=3)をした場合、先頭から3件のデータを取得する", async () => {
       const req = createMockRequest({ count: 3 });
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
-      expect(repository.getCallCount()).toEqual(4);
+      expect(repository.getCallCount()).toEqual(1);
     });
   });
 });

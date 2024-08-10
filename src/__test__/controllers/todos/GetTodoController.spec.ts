@@ -4,14 +4,18 @@ import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】Todo1件を取得", () => {
-  const repository = new MockRepository();
-  const todoGetController = new GetTodoController(repository);
+  let controller: GetTodoController;
+  let repository: MockRepository;
   describe("【成功パターン】Todoデータ(jsonとstatus200)が返る", () => {
-    it("findメソッドが1回実行されて、仮DB(argumentStack)から、id:1のTodoを取得する", async () => {
+    beforeEach(async () => {
+      repository = new MockRepository();
+      controller = new GetTodoController(repository);
+    });
+    it("findメソッドが1回実行され、仮DB(argumentStack)からID:1のTodoを取得する", async () => {
       const req = createMockRequest({}, { id: "1" });
       const res = createMockResponse();
 
-      await todoGetController.find(req, res);
+      await controller.find(req, res);
 
       expect(repository.getCallCount()).toEqual(1);
       expect(repository.getArgumentStack(0)).toEqual({
@@ -31,13 +35,13 @@ describe("【ユニットテスト】Todo1件を取得", () => {
         updatedAt: expect.any(Date),
       });
     });
-    it("findメソッドが2回実行されて、仮DB(argumentStack)から、id:2のTodoを取得する", async () => {
+    it("findメソッドが2回実行され、仮DB(argumentStack)からID:2のTodoを取得する", async () => {
       const req = createMockRequest({}, { id: "2" });
       const res = createMockResponse();
 
-      await todoGetController.find(req, res);
+      await controller.find(req, res);
 
-      expect(repository.getCallCount()).toEqual(2);
+      expect(repository.getCallCount()).toEqual(1);
       expect(repository.getArgumentStack(1)).toEqual({
         id: 2,
         title: "ダミータイトル2",
@@ -61,7 +65,9 @@ describe("【ユニットテスト】Todo1件を取得", () => {
       const req = createMockRequest({ id: "999" });
       const res = createMockResponse();
 
-      await todoGetController.find(req, res);
+      await controller.find(req, res);
+
+      expect(repository.getCallCount()).toEqual(1);
 
       expect(res.json).toHaveBeenCalledWith({
         code: 404,

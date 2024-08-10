@@ -3,11 +3,11 @@ import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
-describe("【ユニットテスト】Todo1件新規作成", () => {
+describe("【ユニットテスト】Todo1件の新規作成", () => {
   const repository = new MockRepository();
   const todoCreateController = new CreateTodoController(repository);
   describe("【成功パターン】Todo(json)とstatus 200が返る", () => {
-    it("saveメソッドが1回実行されて、仮DB(argumentStack)から、一件のTodoデータが返る", async () => {
+    it("saveメソッドが1回実行され、仮DB(argumentStack)から、1件のTodoデータが返る", async () => {
       const req = createMockRequest({
         title: "ダミータイトル",
         body: "ダミーボディ",

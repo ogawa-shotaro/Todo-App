@@ -11,7 +11,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
       repository = new MockRepository();
       controller = new UpdateTodoController(repository);
     });
-    it("updateメソッドが1回実行されて、更新されたTodoデータが返る(id:1タイトルのみ)", async () => {
+    it("updateメソッドが1回実行され、更新されたTodoデータが返る(id:1タイトルのみ)", async () => {
       const req = createMockRequest({ title: "変更後のタイトル" }, { id: "1" });
       const res = createMockResponse();
 
