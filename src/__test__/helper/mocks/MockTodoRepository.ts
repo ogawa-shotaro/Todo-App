@@ -10,12 +10,14 @@ const DEFAULT_COUNT = 10;
 
 export class MockRepository implements ITodoRepository {
   private nextId: number;
+  private todos: Todo[];
   private callCount = 0;
   private argumentStack: any[];
   //argumentStackには、各メソッドの引数の値が入る。
   //各メソッドの引数は、異なるデータ構造の為、型指定はany型とする。
   constructor() {
     this.nextId = 1;
+    this.todos = [];
     this.argumentStack = [];
   }
 
@@ -64,13 +66,13 @@ export class MockRepository implements ITodoRepository {
     }
 
     const offset = (page - 1) * count;
-    const todoItems = this.argumentStack.slice(offset, offset + count);
+    const todoItems = this.todos.slice(offset, offset + count);
 
     return todoItems;
   }
 
   async find(id: number): Promise<Todo> {
-    const todoItem = this.argumentStack.find((todo) => todo.id === id);
+    const todoItem = this.todos.find((todo) => todo.id === id);
 
     if (!todoItem) {
       throw new Error();
@@ -80,7 +82,7 @@ export class MockRepository implements ITodoRepository {
   }
 
   async update({ id, title, body }: TodoUpdatedInput): Promise<Todo> {
-    const updatedItem = this.argumentStack.find((todo) => todo.id === id);
+    const updatedItem = this.todos.find((todo) => todo.id === id);
     if (!updatedItem) {
       throw new Error("存在しないIDを指定しました。");
     }
@@ -93,13 +95,13 @@ export class MockRepository implements ITodoRepository {
   }
 
   async delete(id: number): Promise<Todo> {
-    const deleteId = this.argumentStack.findIndex((todo) => todo.id === id);
+    const deleteId = this.todos.findIndex((todo) => todo.id === id);
 
     if (deleteId === -1) {
       throw new Error();
     }
 
-    const deletedItem = this.argumentStack.splice(deleteId, 1)[0];
+    const deletedItem = this.todos.splice(deleteId, 1)[0];
 
     return deletedItem;
   }
