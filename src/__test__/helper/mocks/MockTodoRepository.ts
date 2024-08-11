@@ -29,6 +29,10 @@ export class MockRepository implements ITodoRepository {
     return this.argumentStack[index];
   }
 
+  getTodos() {
+    return this.todos;
+  }
+
   async save(inputData: TodoInput): Promise<Todo> {
     if (!inputData.title) {
       throw new Error("titleの内容は必須です");
@@ -48,6 +52,8 @@ export class MockRepository implements ITodoRepository {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
+    this.todos.push(savedTodo);
 
     return savedTodo;
   }
