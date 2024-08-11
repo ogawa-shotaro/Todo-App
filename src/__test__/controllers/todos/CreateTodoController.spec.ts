@@ -3,12 +3,11 @@ import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
-const repository = new MockRepository();
-const todoCreateController = new CreateTodoController(repository);
-
-describe("【ユニットテスト】Todo1件新規作成", () => {
-  describe("成功パターン", () => {
-    it("Todo(json)とstatus 200が返る", async () => {
+describe("【ユニットテスト】Todo1件の新規作成", () => {
+  const repository = new MockRepository();
+  const todoCreateController = new CreateTodoController(repository);
+  describe("【成功パターン】Todo(json)とstatus 200が返る", () => {
+    it("saveメソッドが1回実行され、メソッド実行時に渡した引数の値を確認できる", async () => {
       const req = createMockRequest({
         title: "ダミータイトル",
         body: "ダミーボディ",
@@ -16,6 +15,12 @@ describe("【ユニットテスト】Todo1件新規作成", () => {
       const res = createMockResponse();
 
       await todoCreateController.create(req, res);
+
+      expect(repository.getCallCount()).toEqual(1);
+      expect(repository.getArgumentStack(0)).toEqual({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
