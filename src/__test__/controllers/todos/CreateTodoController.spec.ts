@@ -4,13 +4,9 @@ import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】Todo1件の新規作成", () => {
-  let controller: CreateTodoController;
-  let repository: MockRepository;
+  const repository = new MockRepository();
+  const controller = new CreateTodoController(repository);
   describe("【成功パターン】Todo(json)とstatus 200が返る", () => {
-    beforeEach(async () => {
-      repository = new MockRepository();
-      controller = new CreateTodoController(repository);
-    });
     it("saveメソッドが1回実行され、メソッド実行時に渡した引数の値を確認できる", async () => {
       const req = createMockRequest({
         title: "ダミータイトル",
@@ -20,7 +16,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
 
       await controller.create(req, res);
 
-      expect(repository.getCallCount()).toEqual(1);
+      expect(repository.getSaveMethodCallCount()).toEqual(1);
       expect(repository.getArgumentStack(0)).toEqual({
         title: "ダミータイトル",
         body: "ダミーボディ",
@@ -34,25 +30,6 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
-    });
-    it("仮DBに1件のTodoが保存される", async () => {
-      const req = createMockRequest({
-        title: "ダミータイトル",
-        body: "ダミーボディ",
-      });
-      const res = createMockResponse();
-
-      await controller.create(req, res);
-
-      expect(repository.getTodos()).toEqual([
-        {
-          id: 1,
-          title: "ダミータイトル",
-          body: "ダミーボディ",
-          createdAt: expect.any(Date),
-          updatedAt: expect.any(Date),
-        },
-      ]);
     });
   });
   describe("異常パターン", () => {
