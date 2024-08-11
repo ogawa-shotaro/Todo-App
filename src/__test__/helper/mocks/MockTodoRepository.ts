@@ -12,7 +12,8 @@ export class MockRepository implements ITodoRepository {
   private nextId: number;
   private callCount = 0;
   private argumentStack: any[];
-
+  //argumentStackには、各メソッドの引数の値が入る。
+  //各メソッドの引数は、異なるデータ構造の為、型指定はany型とする。
   constructor() {
     this.nextId = 1;
     this.argumentStack = [];
