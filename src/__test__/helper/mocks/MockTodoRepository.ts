@@ -5,52 +5,42 @@ import type {
   TodoUpdatedInput,
 } from "../../../types/TodoRequest.type";
 
+type KeyOfMethods = "save" | "list" | "find" | "update" | "delete";
+
 const DEFAULT_PAGE = 1;
 const DEFAULT_COUNT = 10;
 
 export class MockRepository implements ITodoRepository {
   private nextId: number;
   private todos: Todo[];
-  private callCount: { [callCommands: string]: number } = {
-    save: 0,
-    list: 0,
-    find: 0,
-    update: 0,
-    delete: 0,
-  };
-  private argumentStack: any[];
   //argumentStackには、各メソッドの引数の値が入る。
   //各メソッドの引数は、異なるデータ構造の為、型指定はany型とする。
+  private callDataMap: Record<KeyOfMethods, any> = {
+    save: { callCount: 0, argumentStack: [] },
+    list: { callCount: 0, argumentStack: [] },
+    find: { callCount: 0, argumentStack: [] },
+    update: { callCount: 0, argumentStack: [] },
+    delete: { callCount: 0, argumentStack: [] },
+  };
+
   constructor() {
     this.nextId = 1;
     this.todos = [];
-    this.argumentStack = [];
+    this.callDataMap = {
+      save: { callCount: 0, argumentStack: [] },
+      list: { callCount: 0, argumentStack: [] },
+      find: { callCount: 0, argumentStack: [] },
+      update: { callCount: 0, argumentStack: [] },
+      delete: { callCount: 0, argumentStack: [] },
+    };
   }
 
-  getCallCount(methodName: string) {
-    if (methodName === "save") {
-      return this.callCount["save"];
-    }
-
-    // if (methodName === "list") {
-    //
-    // }
-
-    // if (methodName === "find") {
-    //
-    // }
-
-    // if (methodName === "update") {
-    //
-    // }
-
-    // if (methodName === "delete") {
-    //
-    // }
+  getCallCount(key: KeyOfMethods) {
+    return this.callDataMap[key].callCount;
   }
 
-  getArgumentStack(index: number) {
-    return this.argumentStack[index];
+  getArgumentStack(key: KeyOfMethods) {
+    return this.callDataMap[key].argumentStack;
   }
 
   async save(inputData: TodoInput): Promise<Todo> {
@@ -62,8 +52,8 @@ export class MockRepository implements ITodoRepository {
       throw new Error("bodyの内容は必須です");
     }
 
-    this.argumentStack.push(inputData);
-    this.callCount["save"]++;
+    this.callDataMap["save"].argumentStack = { ...inputData };
+    this.callDataMap["save"].callCount++;
 
     const savedTodo: Todo = {
       id: this.nextId++,
