@@ -11,11 +11,13 @@ const DEFAULT_COUNT = 10;
 export class MockRepository implements ITodoRepository {
   private nextId: number;
   private todos: Todo[];
-  private saveMethodCallCount = 0;
-  private listMethodCallCount = 0;
-  private findMethodCallCount = 0;
-  private updateMethodCallCount = 0;
-  private deleteMethodCallCount = 0;
+  private callCount: { [callCommands: string]: number } = {
+    save: 0,
+    list: 0,
+    find: 0,
+    update: 0,
+    delete: 0,
+  };
   private argumentStack: any[];
   //argumentStackには、各メソッドの引数の値が入る。
   //各メソッドの引数は、異なるデータ構造の為、型指定はany型とする。
@@ -25,24 +27,26 @@ export class MockRepository implements ITodoRepository {
     this.argumentStack = [];
   }
 
-  getSaveMethodCallCount() {
-    return this.saveMethodCallCount;
-  }
+  getCallCount(methodName: string) {
+    if (methodName === "save") {
+      return this.callCount["save"];
+    }
 
-  getListMethodCallCount() {
-    return this.listMethodCallCount;
-  }
+    // if (methodName === "list") {
+    //
+    // }
 
-  getFindMethodCallCount() {
-    return this.findMethodCallCount;
-  }
+    // if (methodName === "find") {
+    //
+    // }
 
-  getUpdateMethodCallCount() {
-    return this.updateMethodCallCount;
-  }
+    // if (methodName === "update") {
+    //
+    // }
 
-  getDeleteMethodCallCount() {
-    return this.deleteMethodCallCount;
+    // if (methodName === "delete") {
+    //
+    // }
   }
 
   getArgumentStack(index: number) {
@@ -59,7 +63,7 @@ export class MockRepository implements ITodoRepository {
     }
 
     this.argumentStack.push(inputData);
-    this.saveMethodCallCount++;
+    this.callCount["save"]++;
 
     const savedTodo: Todo = {
       id: this.nextId++,
