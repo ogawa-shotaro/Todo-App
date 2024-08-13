@@ -9,7 +9,7 @@ import type {
 import type {
   KeyOfMethods,
   CallDataMapType,
-} from "../types/MockRepository.type";
+} from "../types/MockRepository.Type";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_COUNT = 10;
