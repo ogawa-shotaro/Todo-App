@@ -17,7 +17,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       await controller.create(req, res);
 
       expect(repository.getCallCount("save")).toEqual(1);
-      expect(repository.getArgumentStack("save")).toEqual({
+      expect(repository.getArgumentAt("save", 0)).toEqual({
         title: "ダミータイトル",
         body: "ダミーボディ",
       });
