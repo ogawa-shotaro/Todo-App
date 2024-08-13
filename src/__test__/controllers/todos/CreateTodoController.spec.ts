@@ -4,9 +4,13 @@ import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】Todo1件の新規作成", () => {
-  const repository = new MockRepository();
-  const controller = new CreateTodoController(repository);
+  let controller: CreateTodoController;
+  let repository: MockRepository;
   describe("【成功パターン】Todo(json)とstatus 200が返る", () => {
+    beforeEach(async () => {
+      repository = new MockRepository();
+      controller = new CreateTodoController(repository);
+    });
     it("saveメソッドが1回実行され、メソッド実行時に渡した引数の値を確認できる", async () => {
       const req = createMockRequest({
         title: "ダミータイトル",

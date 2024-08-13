@@ -6,10 +6,7 @@ import type {
   TodoUpdatedInput,
 } from "../../../types/TodoRequest.type";
 
-import type {
-  KeyOfMethods,
-  CallDataMapType,
-} from "../types/MockRepository.Type";
+import type { KeyOfMethods, CallDataMapType } from "../types/testTypes";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_COUNT = 10;

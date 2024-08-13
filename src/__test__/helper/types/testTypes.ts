@@ -22,3 +22,11 @@ export type ArgumentStackTypeMap = {
   update: TodoUpdatedInput[];
   delete: number[];
 };
+
+export type TodoResponseType = {
+  id: number;
+  title: string;
+  body: string;
+  createdAt: Date;
+  updateAt: Date;
+};
