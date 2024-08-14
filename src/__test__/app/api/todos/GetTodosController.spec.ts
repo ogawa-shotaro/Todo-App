@@ -1,5 +1,5 @@
 import { requestAPI } from "../../../helper/requestHelper";
-import type { TodoResponseType } from "../../../helper/types/TodoResponseType";
+import type { TodoResponseType } from "../../../helper/types/testTypes";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();

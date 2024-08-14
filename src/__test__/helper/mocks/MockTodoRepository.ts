@@ -1,20 +1,39 @@
 import type { ITodoRepository } from "../../../repositories/ITodoRepository";
 import type { Todo } from "@prisma/client";
+
 import type {
   TodoInput,
   TodoUpdatedInput,
 } from "../../../types/TodoRequest.type";
+
+import type { KeyOfMethods, CallDataMapType } from "../types/testTypes";
 
 const DEFAULT_PAGE = 1;
 const DEFAULT_COUNT = 10;
 
 export class MockRepository implements ITodoRepository {
   private nextId: number;
-  private todos: Todo[] = [];
+  private todos: Todo[];
+  private callDataMap: CallDataMapType;
 
   constructor() {
     this.nextId = 1;
     this.todos = [];
+    this.callDataMap = {
+      save: { callCount: 0, argumentStack: [] },
+      list: { callCount: 0, argumentStack: [] },
+      find: { callCount: 0, argumentStack: [] },
+      update: { callCount: 0, argumentStack: [] },
+      delete: { callCount: 0, argumentStack: [] },
+    };
+  }
+
+  getCallCount(key: KeyOfMethods) {
+    return this.callDataMap[key].callCount;
+  }
+
+  getArgumentAt(key: KeyOfMethods, index: number) {
+    return this.callDataMap[key].argumentStack[index];
   }
 
   async save(inputData: TodoInput): Promise<Todo> {
@@ -25,6 +44,9 @@ export class MockRepository implements ITodoRepository {
     if (!inputData.body) {
       throw new Error("bodyの内容は必須です");
     }
+
+    this.callDataMap["save"].argumentStack.push(inputData);
+    this.callDataMap["save"].callCount++;
 
     const savedTodo: Todo = {
       id: this.nextId++,
