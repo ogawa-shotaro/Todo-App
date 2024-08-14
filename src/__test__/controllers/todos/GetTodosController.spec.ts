@@ -3,34 +3,36 @@ import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
-const repository = new MockRepository();
-const todosGetController = new GetTodosController(repository);
-
 describe("【ユニットテスト】 Todo一覧取得", () => {
+  let controller: GetTodosController;
+  let repository: MockRepository;
+  beforeEach(async () => {
+    repository = new MockRepository();
+    controller = new GetTodosController(repository);
+  });
   describe("DBにデータなし", () => {
     it("空配列が返る", async () => {
       const req = createMockRequest();
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith([]);
     });
   });
   describe("DBにデータあり", () => {
-    it("Todo一覧を取得できる、", async () => {
+    it("Todo一覧の取得(jsonとstatus200が返る)、", async () => {
       for (let i = 1; i <= 3; i++) {
         await repository.save({
           title: `ダミータイトル${i}`,
           body: `ダミーボディ${i}`,
         });
       }
-
       const req = createMockRequest();
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith([
@@ -57,63 +59,51 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
         },
       ]);
     });
-    it("パラメーターの指定(page=2,count=5)をした場合、6件目のデータから10件のデータを取得する", async () => {
-      for (let i = 4; i <= 20; i++) {
+  });
+  describe("パラメーターを指定した場合", () => {
+    beforeEach(async () => {
+      for (let i = 1; i <= 20; i++) {
         await repository.save({
           title: `ダミータイトル${i}`,
           body: `ダミーボディ${i}`,
         });
       }
-
+    });
+    it("【page=2,count=5】listメソッドが1回実行され、page=2,count=5が返る", async () => {
       const req = createMockRequest({ page: 2, count: 5 });
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({ id: 6 }),
-          expect.objectContaining({ id: 7 }),
-          expect.objectContaining({ id: 8 }),
-          expect.objectContaining({ id: 9 }),
-          expect.objectContaining({ id: 10 }),
-        ])
-      );
+      expect(repository.getCallCount("list")).toEqual(1);
+      expect(repository.getArgumentAt("list", 0)).toEqual({
+        page: 2,
+        count: 5,
+      });
     });
-    it("パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する", async () => {
+    it("【page=2】listメソッドが1回実行され、page=2,count=10(デフォルト値)が返る", async () => {
       const req = createMockRequest({ page: 2 });
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({ id: 11 }),
-          expect.objectContaining({ id: 12 }),
-          expect.objectContaining({ id: 13 }),
-          expect.objectContaining({ id: 14 }),
-          expect.objectContaining({ id: 15 }),
-          expect.objectContaining({ id: 16 }),
-          expect.objectContaining({ id: 17 }),
-          expect.objectContaining({ id: 18 }),
-          expect.objectContaining({ id: 19 }),
-          expect.objectContaining({ id: 20 }),
-        ])
-      );
+      expect(repository.getCallCount("list")).toEqual(1);
+      expect(repository.getArgumentAt("list", 0)).toEqual({
+        page: 2,
+        count: 10,
+      });
     });
-    it("パラメーターの指定(count=3)をした場合、先頭から3件のデータを取得する", async () => {
+    it("【count:3】listメソッドが1回実行され、page=1(デフォルト値),count=3が返る", async () => {
       const req = createMockRequest({ count: 3 });
       const res = createMockResponse();
 
-      await todosGetController.list(req, res);
+      await controller.list(req, res);
 
-      expect(res.json).toHaveBeenCalledWith(
-        expect.arrayContaining([
-          expect.objectContaining({ id: 1 }),
-          expect.objectContaining({ id: 2 }),
-          expect.objectContaining({ id: 3 }),
-        ])
-      );
+      expect(repository.getCallCount("list")).toEqual(1);
+      expect(repository.getArgumentAt("list", 0)).toEqual({
+        page: 1,
+        count: 3,
+      });
     });
   });
 });

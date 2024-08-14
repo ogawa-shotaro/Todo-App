@@ -70,9 +70,13 @@ export class MockRepository implements ITodoRepository {
     if (page < 1 || !Number.isInteger(page)) {
       throw new Error("pageは1以上の整数のみ");
     }
+
     if (count < 1 || !Number.isInteger(count)) {
       throw new Error("countは1以上の整数のみ");
     }
+
+    this.callDataMap["list"].argumentStack.push({ page: page, count: count });
+    this.callDataMap["list"].callCount++;
 
     const offset = (page - 1) * count;
     const todoItems = this.todos.slice(offset, offset + count);
