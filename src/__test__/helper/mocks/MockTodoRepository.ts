@@ -56,6 +56,8 @@ export class MockRepository implements ITodoRepository {
       updatedAt: new Date(),
     };
 
+    this.todos.push(savedTodo);
+
     return savedTodo;
   }
 

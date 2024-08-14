@@ -6,11 +6,11 @@ import { createMockResponse } from "../../helper/mocks/response";
 describe("【ユニットテスト】Todo1件の新規作成", () => {
   let controller: CreateTodoController;
   let repository: MockRepository;
+  beforeEach(async () => {
+    repository = new MockRepository();
+    controller = new CreateTodoController(repository);
+  });
   describe("【成功パターン】Todo(json)とstatus 200が返る", () => {
-    beforeEach(async () => {
-      repository = new MockRepository();
-      controller = new CreateTodoController(repository);
-    });
     it("saveメソッドが1回実行され、メソッド実行時に渡した引数の値を確認できる", async () => {
       const req = createMockRequest({
         title: "ダミータイトル",
