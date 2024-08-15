@@ -81,6 +81,17 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
     });
   });
   describe("パラメーターを指定した場合", () => {
+    it("listメソッドのパラメーターが【page=undefined,count=undefined】で呼び出される", async () => {
+      const req = createMockRequest({});
+      const res = createMockResponse();
+
+      await controller.list(req, res);
+
+      expect(repository.list).toHaveBeenCalledWith({
+        page: undefined,
+        count: undefined,
+      });
+    });
     it("listメソッドのパラメーターが【page=2,count=5】で呼び出される", async () => {
       const req = createMockRequest({ page: 2, count: 5 });
       const res = createMockResponse();
