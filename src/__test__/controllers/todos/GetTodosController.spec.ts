@@ -11,9 +11,11 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
     controller = new GetTodosController(repository);
   });
   describe("DBにデータなし", () => {
-    it("空配列が返る", async () => {
+    it("空配列が返る(jsonとstatus200が返る)", async () => {
       const req = createMockRequest();
       const res = createMockResponse();
+
+      repository.list.mockResolvedValue([]);
 
       await controller.list(req, res);
 
@@ -22,15 +24,33 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
     });
   });
   describe("DBにデータあり", () => {
-    it("Todo一覧の取得(jsonとstatus200が返る)、", async () => {
-      for (let i = 1; i <= 3; i++) {
-        await repository.save({
-          title: `ダミータイトル${i}`,
-          body: `ダミーボディ${i}`,
-        });
-      }
+    it("Todo一覧の取得(jsonとstatus200が返る)", async () => {
       const req = createMockRequest();
       const res = createMockResponse();
+
+      repository.list.mockResolvedValue([
+        {
+          id: 1,
+          title: "ダミータイトル1",
+          body: "ダミーボディ1",
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        },
+        {
+          id: 2,
+          title: "ダミータイトル2",
+          body: "ダミーボディ2",
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        },
+        {
+          id: 3,
+          title: "ダミータイトル3",
+          body: "ダミーボディ3",
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        },
+      ]);
 
       await controller.list(req, res);
 
@@ -61,49 +81,32 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
     });
   });
   describe("パラメーターを指定した場合", () => {
-    beforeEach(async () => {
-      for (let i = 1; i <= 20; i++) {
-        await repository.save({
-          title: `ダミータイトル${i}`,
-          body: `ダミーボディ${i}`,
-        });
-      }
-    });
-    it("【page=2,count=5】listメソッドが1回実行され、page=2,count=5が返る", async () => {
+    it("listメソッドのパラメーターが【page=2,count=5】で呼び出される", async () => {
       const req = createMockRequest({ page: 2, count: 5 });
       const res = createMockResponse();
 
       await controller.list(req, res);
 
-      expect(repository.getCallCount("list")).toEqual(1);
-      expect(repository.getArgumentAt("list", 0)).toEqual({
+      expect(repository.list).toHaveBeenCalledWith({
         page: 2,
         count: 5,
       });
     });
-    it("【page=2】listメソッドが1回実行され、page=2,count=10(デフォルト値)が返る", async () => {
+    it("listメソッドのパラメーターが【page=2】で呼び出される", async () => {
       const req = createMockRequest({ page: 2 });
       const res = createMockResponse();
 
       await controller.list(req, res);
 
-      expect(repository.getCallCount("list")).toEqual(1);
-      expect(repository.getArgumentAt("list", 0)).toEqual({
-        page: 2,
-        count: 10,
-      });
+      expect(repository.list).toHaveBeenCalledWith({ page: 2 });
     });
-    it("【count:3】listメソッドが1回実行され、page=1(デフォルト値),count=3が返る", async () => {
+    it("listメソッドのパラメーターが【count=3】で呼び出される", async () => {
       const req = createMockRequest({ count: 3 });
       const res = createMockResponse();
 
       await controller.list(req, res);
 
-      expect(repository.getCallCount("list")).toEqual(1);
-      expect(repository.getArgumentAt("list", 0)).toEqual({
-        page: 1,
-        count: 3,
-      });
+      expect(repository.list).toHaveBeenCalledWith({ count: 3 });
     });
   });
 });

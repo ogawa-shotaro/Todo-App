@@ -10,21 +10,23 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
     repository = new MockRepository();
     controller = new CreateTodoController(repository);
   });
-  describe("【成功パターン】Todo(json)とstatus 200が返る", () => {
-    it("saveメソッドが1回実行され、メソッド実行時に渡した引数の値を確認できる", async () => {
+  describe("【成功パターン】", () => {
+    it("saveメソッド実行時、正しいパラメーターを渡すと、Todo(jsonとstatus200)が返る", async () => {
       const req = createMockRequest({
         title: "ダミータイトル",
         body: "ダミーボディ",
       });
       const res = createMockResponse();
 
-      await controller.create(req, res);
-
-      expect(repository.getCallCount("save")).toEqual(1);
-      expect(repository.getArgumentAt("save", 0)).toEqual({
+      repository.save.mockResolvedValue({
+        id: 1,
         title: "ダミータイトル",
         body: "ダミーボディ",
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
       });
+
+      await controller.create(req, res);
 
       expect(res.status).toHaveBeenCalledWith(200);
       expect(res.json).toHaveBeenCalledWith({
@@ -35,6 +37,20 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         updatedAt: expect.any(Date),
       });
     });
+    it("saveメソッドのパラメーターが【title:ダミータイトル,body:ダミーボディ】で呼び出される", async () => {
+      const req = createMockRequest({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
+      const res = createMockResponse();
+
+      await controller.create(req, res);
+
+      expect(repository.save).toHaveBeenCalledWith({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
+    });
   });
   describe("異常パターン", () => {
     it("タイトルなしでは、エラーメッセージとstatus400が返る", async () => {
@@ -43,6 +59,8 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         body: "ダミーボディ",
       });
       const res = createMockResponse();
+
+      repository.save.mockRejectedValue(new Error("titleの内容は必須です"));
 
       await controller.create(req, res);
 
@@ -57,6 +75,8 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         body: "",
       });
       const res = createMockResponse();
+
+      repository.save.mockRejectedValue(new Error("bodyの内容は必須です"));
 
       await controller.create(req, res);
 
