@@ -11,8 +11,14 @@ export class GetTodosController {
   async list(req: Request, res: Response) {
     const { page, count } = req.body;
 
-    const todos = await this.repository.list({ page, count });
+    try {
+      const todos = await this.repository.list({ page, count });
 
-    res.status(200).json(todos);
+      res.status(200).json(todos);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      }
+    }
   }
 }
