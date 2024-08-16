@@ -134,7 +134,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       expect(res.json).toHaveBeenCalledWith({
         message: "pageは1以上の整数のみ",
       });
-      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.status).toHaveBeenCalledWith(400);
     });
     it("パラメーターに指定した値が不正(count=整数の1以上でない値)の場合、エラーになる", async () => {
       const req = createMockRequest({
@@ -149,7 +149,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       expect(res.json).toHaveBeenCalledWith({
         message: "countは1以上の整数のみ",
       });
-      expect(res.status).toHaveBeenCalledWith(404);
+      expect(res.status).toHaveBeenCalledWith(400);
     });
   });
 });

@@ -19,8 +19,6 @@ export class GetTodosController {
       if (error instanceof Error) {
         res.status(400).json({ message: error.message });
       }
-
-      res.status(404).json();
     }
   }
 }
