@@ -1,4 +1,4 @@
-import { query, type Request, type Response } from "express";
+import type { Request, Response } from "express";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
 export class GetTodosController {

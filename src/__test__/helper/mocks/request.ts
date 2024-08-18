@@ -1,4 +1,4 @@
-import { query, type Request } from "express";
+import type { Request } from "express";
 
 type RequestBody = Record<string, string | number>;
 type RequestParams = Record<string, string>;
