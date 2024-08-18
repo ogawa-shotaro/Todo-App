@@ -48,14 +48,9 @@ describe("異常パターン", () => {
     const response = await requestAPI({
       method: "get",
       endPoint: "/api/todos/999",
-      statusCode: 404,
+      statusCode: 400,
     });
 
-    const { code, message, stat } = response.body;
-
-    expect(response.statusCode).toEqual(404);
-    expect(code).toEqual(404);
-    expect(message).toEqual("Not found");
-    expect(stat).toEqual("fail");
+    expect(response.body).toEqual({ message: "存在しないIDを指定しました。" });
   });
 });

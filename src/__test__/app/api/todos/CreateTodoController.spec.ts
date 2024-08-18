@@ -43,7 +43,7 @@ describe("[APIテスト] Todo1件新規作成", () => {
         statusCode: 400,
       }).send(requestNotTitleData);
 
-      expect(response.body).toEqual({ message: "titleの内容は必須です" });
+      expect(response.body).toEqual({ message: "titleの内容は必須です。" });
     });
     it("bodyなしではエラー（400）が返る。", async () => {
       const requestNotBodyData = { title: "ダミータイトル" };
@@ -54,7 +54,7 @@ describe("[APIテスト] Todo1件新規作成", () => {
         statusCode: 400,
       }).send(requestNotBodyData);
 
-      expect(response.body).toEqual({ message: "bodyの内容は必須です" });
+      expect(response.body).toEqual({ message: "bodyの内容は必須です。" });
     });
   });
 });

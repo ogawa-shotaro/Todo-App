@@ -16,14 +16,10 @@ export class GetTodoController {
       const todoItem = await this.repository.find(parsedId);
 
       res.status(200).json(todoItem);
-    } catch (_) {
-      const errorObj = {
-        code: 404,
-        message: "Not found",
-        stat: "fail",
-      };
-
-      res.status(404).json(errorObj);
+    } catch (error) {
+      if (error instanceof Error) {
+        res.status(400).json({ message: error.message });
+      }
     }
   }
 }

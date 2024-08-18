@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import { query, type Request, type Response } from "express";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
 export class GetTodosController {
@@ -9,7 +9,8 @@ export class GetTodosController {
   }
 
   async list(req: Request, res: Response) {
-    const { page, count } = req.body;
+    const page = req.query.page ? Number(req.query.page) : undefined;
+    const count = req.query.count ? Number(req.query.count) : undefined;
 
     try {
       const todos = await this.repository.list({ page, count });

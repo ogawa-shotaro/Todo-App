@@ -21,11 +21,11 @@ export class TodoRepository implements ITodoRepository {
 
   async save(inputData: TodoInput) {
     if (!inputData.title) {
-      throw new Error("titleの内容は必須です");
+      throw new Error("titleの内容は必須です。");
     }
 
     if (!inputData.body) {
-      throw new Error("bodyの内容は必須です");
+      throw new Error("bodyの内容は必須です。");
     }
 
     const todoData: Todo = await prisma.todo.create({
@@ -45,10 +45,10 @@ export class TodoRepository implements ITodoRepository {
     }
   ) {
     if (page < 1 || !Number.isInteger(page)) {
-      throw new Error("pageは1以上の整数のみ");
+      throw new Error("pageは1以上の整数のみ。");
     }
     if (count < 1 || !Number.isInteger(count)) {
-      throw new Error("countは1以上の整数のみ");
+      throw new Error("countは1以上の整数のみ。");
     }
 
     const offset = (page - 1) * count;
