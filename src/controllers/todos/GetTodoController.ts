@@ -1,3 +1,5 @@
+import { InvalidError } from "../../__test__/helper/CustomErrors/InvalidError";
+import { NotFoundError } from "../../__test__/helper/CustomErrors/NotFoundError";
 import type { Request, Response } from "express";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
@@ -17,8 +19,8 @@ export class GetTodoController {
 
       res.status(200).json(todoItem);
     } catch (error) {
-      if (error instanceof Error) {
-        res.status(400).json({ message: error.message });
+      if (error instanceof InvalidError || error instanceof NotFoundError) {
+        res.status(error.statusCode).json({ message: error.message });
       }
     }
   }

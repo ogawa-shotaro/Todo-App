@@ -4,11 +4,17 @@ type RequestBody = Record<string, string | number>;
 type RequestParams = Record<string, string>;
 type RequestQuery = Record<string, string | number | undefined>;
 
-export const createMockRequest = (
-  body?: RequestBody,
-  params?: RequestParams,
-  query?: RequestQuery
-): Request => {
+type MockRequestArgMap = {
+  body?: RequestBody;
+  params?: RequestParams;
+  query?: RequestQuery;
+};
+
+export const createMockRequest = ({
+  body,
+  params,
+  query,
+}: MockRequestArgMap): Request => {
   return {
     body: body ?? {},
     params: params ?? {},
