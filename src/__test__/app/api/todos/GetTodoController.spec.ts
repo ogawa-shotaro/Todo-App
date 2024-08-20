@@ -53,4 +53,13 @@ describe("異常パターン", () => {
 
     expect(response.body).toEqual({ message: "存在しないIDを指定しました。" });
   });
+  it("指定したIDが不正(整数の1以上でない値)の場合、エラーになる", async () => {
+    const response = await requestAPI({
+      method: "get",
+      endPoint: "/api/todos/0",
+      statusCode: 400,
+    });
+
+    expect(response.body).toEqual({ message: "IDは1以上の整数のみ。" });
+  });
 });
