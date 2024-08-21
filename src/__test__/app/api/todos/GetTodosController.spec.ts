@@ -1,6 +1,7 @@
 import { requestAPI } from "../../../helper/requestHelper";
-import type { TodoResponseType } from "../../../helper/types/testTypes";
 import { PrismaClient } from "@prisma/client";
+import { StatusCodes } from "http-status-codes";
+import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
 
@@ -20,7 +21,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -58,7 +59,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?page=2&count=5",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -84,7 +85,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?page=2",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -122,7 +123,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?count=3",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -146,7 +147,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -159,7 +160,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?page=0",
-        statusCode: 400,
+        statusCode: StatusCodes.BAD_REQUEST,
       });
 
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
@@ -168,7 +169,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?count=0",
-        statusCode: 400,
+        statusCode: StatusCodes.BAD_REQUEST,
       });
 
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });

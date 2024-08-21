@@ -2,7 +2,8 @@ import { GetTodosController } from "../../../controllers/todos/GetTodosControlle
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
-import { InvalidError } from "../../helper/CustomErrors/InvalidError";
+import { InvalidError } from "../../../errors/InvalidError";
+import { StatusCodes } from "http-status-codes";
 
 describe("【ユニットテスト】 Todo一覧取得", () => {
   let controller: GetTodosController;
@@ -12,7 +13,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
     controller = new GetTodosController(repository);
   });
   describe("DBにデータなし", () => {
-    it("空配列が返る(jsonとstatus200が返る)", async () => {
+    it("空配列が返る(jsonとstatus(ok=200)が返る)", async () => {
       const req = createMockRequest({ query: {} });
       const res = createMockResponse();
 
@@ -20,12 +21,12 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
 
       await controller.list(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith([]);
     });
   });
   describe("DBにデータあり", () => {
-    it("Todo一覧の取得(jsonとstatus200が返る)", async () => {
+    it("Todo一覧の取得(jsonとstatus(ok=200)が返る)", async () => {
       const req = createMockRequest({ query: {} });
       const res = createMockResponse();
 
@@ -55,7 +56,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
 
       await controller.list(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith([
         {
           id: 1,
@@ -127,7 +128,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const res = createMockResponse();
 
       repository.list.mockRejectedValue(
-        new InvalidError("pageは1以上の整数のみ", 400)
+        new InvalidError("pageは1以上の整数のみ")
       );
 
       await controller.list(req, res);
@@ -135,14 +136,14 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       expect(res.json).toHaveBeenCalledWith({
         message: "pageは1以上の整数のみ",
       });
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
     });
     it("パラメーターに指定した値が不正(count=整数の1以上でない値)の場合、エラーになる", async () => {
       const req = createMockRequest({ query: { count: 0 } });
       const res = createMockResponse();
 
       repository.list.mockRejectedValue(
-        new InvalidError("countは1以上の整数のみ", 400)
+        new InvalidError("countは1以上の整数のみ")
       );
 
       await controller.list(req, res);
@@ -150,7 +151,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       expect(res.json).toHaveBeenCalledWith({
         message: "countは1以上の整数のみ",
       });
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
     });
   });
 });

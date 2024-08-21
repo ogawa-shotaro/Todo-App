@@ -1,4 +1,5 @@
-import { InvalidError } from "../../__test__/helper/CustomErrors/InvalidError";
+import { InvalidError } from "../../errors/InvalidError";
+import { StatusCodes } from "http-status-codes";
 import type { Request, Response } from "express";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
@@ -20,6 +21,10 @@ export class GetTodosController {
     } catch (error) {
       if (error instanceof InvalidError) {
         res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ message: "Internal Server Error" });
       }
     }
   }

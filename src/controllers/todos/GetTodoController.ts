@@ -1,5 +1,6 @@
-import { InvalidError } from "../../__test__/helper/CustomErrors/InvalidError";
-import { NotFoundError } from "../../__test__/helper/CustomErrors/NotFoundError";
+import { InvalidError } from "../../errors/InvalidError";
+import { NotFoundError } from "../../errors/NotFoundError";
+import { StatusCodes } from "http-status-codes";
 import type { Request, Response } from "express";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
@@ -21,6 +22,10 @@ export class GetTodoController {
     } catch (error) {
       if (error instanceof InvalidError || error instanceof NotFoundError) {
         res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ message: "Internal Server Error" });
       }
     }
   }

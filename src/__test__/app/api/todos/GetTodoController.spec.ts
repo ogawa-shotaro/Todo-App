@@ -1,5 +1,6 @@
 import { requestAPI } from "../../../helper/requestHelper";
 import { PrismaClient } from "@prisma/client";
+import { StatusCodes } from "http-status-codes";
 
 const prisma = new PrismaClient();
 
@@ -19,7 +20,7 @@ describe("[APIテスト] Todo1件の取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/1",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const { id, title, body } = response.body;
@@ -32,7 +33,7 @@ describe("[APIテスト] Todo1件の取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/2",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const { id, title, body } = response.body;
@@ -48,7 +49,7 @@ describe("異常パターン", () => {
     const response = await requestAPI({
       method: "get",
       endPoint: "/api/todos/999",
-      statusCode: 404,
+      statusCode: StatusCodes.NOT_FOUND,
     });
 
     expect(response.body).toEqual({ message: "存在しないIDを指定しました。" });
@@ -57,7 +58,7 @@ describe("異常パターン", () => {
     const response = await requestAPI({
       method: "get",
       endPoint: "/api/todos/0",
-      statusCode: 400,
+      statusCode: StatusCodes.BAD_REQUEST,
     });
 
     expect(response.body).toEqual({ message: "IDは1以上の整数のみ。" });

@@ -2,6 +2,7 @@ import { CreateTodoController } from "../../../controllers/todos/CreateTodoContr
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
+import { StatusCodes } from "http-status-codes";
 
 describe("【ユニットテスト】Todo1件の新規作成", () => {
   let controller: CreateTodoController;
@@ -11,10 +12,12 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
     controller = new CreateTodoController(repository);
   });
   describe("【成功パターン】", () => {
-    it("saveメソッド実行時、正しいパラメーターを渡すと、Todo(jsonとstatus200)が返る", async () => {
+    it("saveメソッドのパラメータが正しい【titleとbodyの値を含む】と、Todo(jsonとstatus(ok=200))が返る", async () => {
       const req = createMockRequest({
-        title: "ダミータイトル",
-        body: "ダミーボディ",
+        body: {
+          title: "ダミータイトル",
+          body: "ダミーボディ",
+        },
       });
       const res = createMockResponse();
 
@@ -28,7 +31,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
 
       await controller.create(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
         id: 1,
         title: "ダミータイトル",
@@ -36,15 +39,6 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
-    });
-    it("saveメソッドのパラメーターが【title:ダミータイトル,body:ダミーボディ】で呼び出される", async () => {
-      const req = createMockRequest({
-        title: "ダミータイトル",
-        body: "ダミーボディ",
-      });
-      const res = createMockResponse();
-
-      await controller.create(req, res);
 
       expect(repository.save).toHaveBeenCalledWith({
         title: "ダミータイトル",
@@ -53,10 +47,12 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
     });
   });
   describe("異常パターン", () => {
-    it("タイトルなしでは、エラーメッセージとstatus400が返る", async () => {
+    it("タイトルなしでは、エラーメッセージとstatus(BAD_REQUEST=400)が返る", async () => {
       const req = createMockRequest({
-        title: "",
-        body: "ダミーボディ",
+        body: {
+          title: "",
+          body: "ダミーボディ",
+        },
       });
       const res = createMockResponse();
 
@@ -67,12 +63,14 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       expect(res.json).toHaveBeenCalledWith({
         message: "titleの内容は必須です",
       });
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
     });
-    it("ボディなしでは、エラーメッセージとstatus400が返る", async () => {
+    it("ボディなしでは、エラーメッセージとstatus(BAD_REQUEST=400)が返る", async () => {
       const req = createMockRequest({
-        title: "ダミータイトル",
-        body: "",
+        body: {
+          title: "ダミータイトル",
+          body: "",
+        },
       });
       const res = createMockResponse();
 
@@ -83,7 +81,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       expect(res.json).toHaveBeenCalledWith({
         message: "bodyの内容は必須です",
       });
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
     });
   });
 });
