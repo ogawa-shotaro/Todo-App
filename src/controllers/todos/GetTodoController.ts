@@ -18,7 +18,7 @@ export class GetTodoController {
     try {
       const todoItem = await this.repository.find(parsedId);
 
-      res.status(200).json(todoItem);
+      res.status(StatusCodes.OK).json(todoItem);
     } catch (error) {
       if (error instanceof InvalidError || error instanceof NotFoundError) {
         res.status(error.statusCode).json({ message: error.message });

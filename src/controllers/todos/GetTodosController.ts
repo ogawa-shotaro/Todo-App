@@ -17,7 +17,7 @@ export class GetTodosController {
     try {
       const todos = await this.repository.list({ page, count });
 
-      res.status(200).json(todos);
+      res.status(StatusCodes.OK).json(todos);
     } catch (error) {
       if (error instanceof InvalidError) {
         res.status(error.statusCode).json({ message: error.message });
