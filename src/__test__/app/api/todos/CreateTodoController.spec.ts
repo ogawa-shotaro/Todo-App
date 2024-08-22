@@ -1,5 +1,6 @@
 import { requestAPI } from "../../../helper/requestHelper";
 import { StatusCodes } from "http-status-codes";
+import { TodoRepository } from "../../../../repositories/TodoRepository";
 
 describe("[APIテスト] Todo1件新規作成", () => {
   describe("成功パターン", () => {
@@ -56,6 +57,21 @@ describe("[APIテスト] Todo1件新規作成", () => {
       }).send(requestNotBodyData);
 
       expect(response.body).toEqual({ message: "bodyの内容は必須です。" });
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+      jest.spyOn(TodoRepository.prototype, "save").mockImplementation(() => {
+        throw new Error("Unexpected Error");
+      });
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      }).send({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
+
+      expect(response.body).toEqual({ message: "Internal Server Error" });
     });
   });
 });

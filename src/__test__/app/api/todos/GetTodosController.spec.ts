@@ -1,6 +1,7 @@
 import { requestAPI } from "../../../helper/requestHelper";
 import { PrismaClient } from "@prisma/client";
 import { StatusCodes } from "http-status-codes";
+import { TodoRepository } from "../../../../repositories/TodoRepository";
 import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
@@ -173,6 +174,19 @@ describe("[APIテスト] Todo一覧取得", () => {
       });
 
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+      jest.spyOn(TodoRepository.prototype, "list").mockImplementation(() => {
+        throw new Error("Unexpected Error");
+      });
+
+      const response = await requestAPI({
+        method: "get",
+        endPoint: "/api/todos",
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      });
+
+      expect(response.body).toEqual({ message: "Internal Server Error" });
     });
   });
 });

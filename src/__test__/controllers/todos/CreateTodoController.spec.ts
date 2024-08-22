@@ -1,4 +1,5 @@
 import { CreateTodoController } from "../../../controllers/todos/CreateTodoController";
+import { InvalidError } from "../../../errors/InvalidError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
@@ -56,7 +57,9 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       });
       const res = createMockResponse();
 
-      repository.save.mockRejectedValue(new Error("titleの内容は必須です"));
+      repository.save.mockRejectedValue(
+        new InvalidError("titleの内容は必須です")
+      );
 
       await controller.create(req, res);
 
@@ -74,7 +77,9 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       });
       const res = createMockResponse();
 
-      repository.save.mockRejectedValue(new Error("bodyの内容は必須です"));
+      repository.save.mockRejectedValue(
+        new InvalidError("bodyの内容は必須です")
+      );
 
       await controller.create(req, res);
 
@@ -82,6 +87,21 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         message: "bodyの内容は必須です",
       });
       expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+      const req = createMockRequest({});
+      const res = createMockResponse();
+
+      repository.save.mockRejectedValue(new Error("Internal Server Error"));
+
+      await controller.create(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Internal Server Error",
+      });
+      expect(res.status).toHaveBeenCalledWith(
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
     });
   });
 });

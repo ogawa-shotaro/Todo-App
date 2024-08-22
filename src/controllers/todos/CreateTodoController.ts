@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-codes";
 import type { Request, Response } from "express";
 import type { TodoInput } from "../../types/TodoRequest.type";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
+import { InvalidError } from "../../errors/InvalidError";
 
 export class CreateTodoController {
   private repository: ITodoRepository;
@@ -17,7 +18,7 @@ export class CreateTodoController {
 
       res.status(StatusCodes.OK).json(createdTodo);
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof InvalidError) {
         res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
       } else {
         res

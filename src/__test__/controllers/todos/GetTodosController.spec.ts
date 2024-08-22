@@ -153,5 +153,20 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       });
       expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
     });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+      const req = createMockRequest({});
+      const res = createMockResponse();
+
+      repository.list.mockRejectedValue(new Error("Internal Server Error"));
+
+      await controller.list(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Internal Server Error",
+      });
+      expect(res.status).toHaveBeenCalledWith(
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
+    });
   });
 });
