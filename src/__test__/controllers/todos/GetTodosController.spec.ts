@@ -2,6 +2,8 @@ import { GetTodosController } from "../../../controllers/todos/GetTodosControlle
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
+import { InvalidError } from "../../../errors/InvalidError";
+import { StatusCodes } from "http-status-codes";
 
 describe("【ユニットテスト】 Todo一覧取得", () => {
   let controller: GetTodosController;
@@ -11,21 +13,21 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
     controller = new GetTodosController(repository);
   });
   describe("DBにデータなし", () => {
-    it("空配列が返る(jsonとstatus200が返る)", async () => {
-      const req = createMockRequest();
+    it("空配列が返る(jsonとstatus(ok=200)が返る)", async () => {
+      const req = createMockRequest({ query: {} });
       const res = createMockResponse();
 
       repository.list.mockResolvedValue([]);
 
       await controller.list(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith([]);
     });
   });
   describe("DBにデータあり", () => {
-    it("Todo一覧の取得(jsonとstatus200が返る)", async () => {
-      const req = createMockRequest();
+    it("Todo一覧の取得(jsonとstatus(ok=200)が返る)", async () => {
+      const req = createMockRequest({ query: {} });
       const res = createMockResponse();
 
       repository.list.mockResolvedValue([
@@ -54,7 +56,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
 
       await controller.list(req, res);
 
-      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith([
         {
           id: 1,
@@ -82,7 +84,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
   });
   describe("パラメーターの指定有り・無しの場合", () => {
     it("listメソッドのパラメーターが【page=undefined,count=undefined】で呼び出される", async () => {
-      const req = createMockRequest({});
+      const req = createMockRequest({ query: {} });
       const res = createMockResponse();
 
       await controller.list(req, res);
@@ -93,7 +95,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       });
     });
     it("listメソッドのパラメーターが【page=2,count=5】で呼び出される", async () => {
-      const req = createMockRequest({ page: 2, count: 5 });
+      const req = createMockRequest({ query: { page: 2, count: 5 } });
       const res = createMockResponse();
 
       await controller.list(req, res);
@@ -104,7 +106,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       });
     });
     it("listメソッドのパラメーターが【page=2】で呼び出される", async () => {
-      const req = createMockRequest({ page: 2 });
+      const req = createMockRequest({ query: { page: 2 } });
       const res = createMockResponse();
 
       await controller.list(req, res);
@@ -112,7 +114,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       expect(repository.list).toHaveBeenCalledWith({ page: 2 });
     });
     it("listメソッドのパラメーターが【count=3】で呼び出される", async () => {
-      const req = createMockRequest({ count: 3 });
+      const req = createMockRequest({ query: { count: 3 } });
       const res = createMockResponse();
 
       await controller.list(req, res);
@@ -122,34 +124,49 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
   });
   describe("異常パターン", () => {
     it("パラメーターに指定した値が不正(page=整数の1以上でない値)の場合、エラーになる", async () => {
-      const req = createMockRequest({
-        page: 0,
-      });
+      const req = createMockRequest({ query: { page: 0 } });
       const res = createMockResponse();
 
-      repository.list.mockRejectedValue(new Error("pageは1以上の整数のみ"));
+      repository.list.mockRejectedValue(
+        new InvalidError("pageは1以上の整数のみ")
+      );
 
       await controller.list(req, res);
 
       expect(res.json).toHaveBeenCalledWith({
         message: "pageは1以上の整数のみ",
       });
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
     });
     it("パラメーターに指定した値が不正(count=整数の1以上でない値)の場合、エラーになる", async () => {
-      const req = createMockRequest({
-        count: 0,
-      });
+      const req = createMockRequest({ query: { count: 0 } });
       const res = createMockResponse();
 
-      repository.list.mockRejectedValue(new Error("countは1以上の整数のみ"));
+      repository.list.mockRejectedValue(
+        new InvalidError("countは1以上の整数のみ")
+      );
 
       await controller.list(req, res);
 
       expect(res.json).toHaveBeenCalledWith({
         message: "countは1以上の整数のみ",
       });
-      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+      const req = createMockRequest({});
+      const res = createMockResponse();
+
+      repository.list.mockRejectedValue(new Error("Internal Server Error"));
+
+      await controller.list(req, res);
+
+      expect(res.json).toHaveBeenCalledWith({
+        message: "Internal Server Error",
+      });
+      expect(res.status).toHaveBeenCalledWith(
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
     });
   });
 });

@@ -1,4 +1,6 @@
 import { requestAPI } from "../../../helper/requestHelper";
+import { StatusCodes } from "http-status-codes";
+import { TodoRepository } from "../../../../repositories/TodoRepository";
 
 describe("[APIテスト] Todo1件新規作成", () => {
   describe("成功パターン", () => {
@@ -11,7 +13,7 @@ describe("[APIテスト] Todo1件新規作成", () => {
       const response = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       }).send(requestData);
 
       const responseDataResult = response.body;
@@ -34,27 +36,42 @@ describe("[APIテスト] Todo1件新規作成", () => {
     });
   });
   describe("異常パターン", () => {
-    it("titleなしではエラー（400）が返る。", async () => {
+    it("titleなしではエラー（BAD_REQUEST=400）が返る。", async () => {
       const requestNotTitleData = { body: "ダミーボディ" };
 
       const response = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
-        statusCode: 400,
+        statusCode: StatusCodes.BAD_REQUEST,
       }).send(requestNotTitleData);
 
-      expect(response.body).toEqual({ message: "titleの内容は必須です" });
+      expect(response.body).toEqual({ message: "titleの内容は必須です。" });
     });
-    it("bodyなしではエラー（400）が返る。", async () => {
+    it("bodyなしではエラー（BAD_REQUEST=400）が返る。", async () => {
       const requestNotBodyData = { title: "ダミータイトル" };
 
       const response = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
-        statusCode: 400,
+        statusCode: StatusCodes.BAD_REQUEST,
       }).send(requestNotBodyData);
 
-      expect(response.body).toEqual({ message: "bodyの内容は必須です" });
+      expect(response.body).toEqual({ message: "bodyの内容は必須です。" });
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+      jest.spyOn(TodoRepository.prototype, "save").mockImplementation(() => {
+        throw new Error("Unexpected Error");
+      });
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      }).send({
+        title: "ダミータイトル",
+        body: "ダミーボディ",
+      });
+
+      expect(response.body).toEqual({ message: "Internal Server Error" });
     });
   });
 });

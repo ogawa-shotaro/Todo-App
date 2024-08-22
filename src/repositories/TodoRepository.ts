@@ -1,8 +1,10 @@
+import { PrismaClient } from "@prisma/client";
+import { InvalidError } from "../errors/InvalidError";
+import { NotFoundError } from "../errors/NotFoundError";
 import type { TodoInput } from "../types/TodoRequest.type";
 import type { TodoUpdatedInput } from "../types/TodoRequest.type";
 import type { Todo } from "@prisma/client";
 import type { ITodoRepository } from "./ITodoRepository";
-import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
@@ -21,11 +23,11 @@ export class TodoRepository implements ITodoRepository {
 
   async save(inputData: TodoInput) {
     if (!inputData.title) {
-      throw new Error("titleの内容は必須です");
+      throw new InvalidError("titleの内容は必須です。");
     }
 
     if (!inputData.body) {
-      throw new Error("bodyの内容は必須です");
+      throw new InvalidError("bodyの内容は必須です。");
     }
 
     const todoData: Todo = await prisma.todo.create({
@@ -45,10 +47,10 @@ export class TodoRepository implements ITodoRepository {
     }
   ) {
     if (page < 1 || !Number.isInteger(page)) {
-      throw new Error("pageは1以上の整数のみ");
+      throw new InvalidError("pageは1以上の整数のみ。");
     }
     if (count < 1 || !Number.isInteger(count)) {
-      throw new Error("countは1以上の整数のみ");
+      throw new InvalidError("countは1以上の整数のみ。");
     }
 
     const offset = (page - 1) * count;
@@ -61,6 +63,10 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async find(id: number) {
+    if (id < 1 || !Number.isInteger(id)) {
+      throw new InvalidError("IDは1以上の整数のみ。");
+    }
+
     const todoItem = await prisma.todo.findUnique({
       where: {
         id: id,
@@ -68,7 +74,7 @@ export class TodoRepository implements ITodoRepository {
     });
 
     if (!todoItem) {
-      throw new Error("存在しないIDを指定しました。");
+      throw new NotFoundError("存在しないIDを指定しました。");
     }
 
     return todoItem;

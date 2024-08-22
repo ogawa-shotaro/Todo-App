@@ -1,3 +1,6 @@
+import { InvalidError } from "../../errors/InvalidError";
+import { NotFoundError } from "../../errors/NotFoundError";
+import { StatusCodes } from "http-status-codes";
 import type { Request, Response } from "express";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
@@ -15,15 +18,15 @@ export class GetTodoController {
     try {
       const todoItem = await this.repository.find(parsedId);
 
-      res.status(200).json(todoItem);
-    } catch (_) {
-      const errorObj = {
-        code: 404,
-        message: "Not found",
-        stat: "fail",
-      };
-
-      res.status(404).json(errorObj);
+      res.status(StatusCodes.OK).json(todoItem);
+    } catch (error) {
+      if (error instanceof InvalidError || error instanceof NotFoundError) {
+        res.status(error.statusCode).json({ message: error.message });
+      } else {
+        res
+          .status(StatusCodes.INTERNAL_SERVER_ERROR)
+          .json({ message: "Internal Server Error" });
+      }
     }
   }
 }

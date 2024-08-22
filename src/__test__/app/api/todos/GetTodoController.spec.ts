@@ -1,5 +1,7 @@
 import { requestAPI } from "../../../helper/requestHelper";
 import { PrismaClient } from "@prisma/client";
+import { StatusCodes } from "http-status-codes";
+import { TodoRepository } from "../../../../repositories/TodoRepository";
 
 const prisma = new PrismaClient();
 
@@ -19,7 +21,7 @@ describe("[APIテスト] Todo1件の取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/1",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const { id, title, body } = response.body;
@@ -32,7 +34,7 @@ describe("[APIテスト] Todo1件の取得", () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/2",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const { id, title, body } = response.body;
@@ -48,14 +50,31 @@ describe("異常パターン", () => {
     const response = await requestAPI({
       method: "get",
       endPoint: "/api/todos/999",
-      statusCode: 404,
+      statusCode: StatusCodes.NOT_FOUND,
     });
 
-    const { code, message, stat } = response.body;
+    expect(response.body).toEqual({ message: "存在しないIDを指定しました。" });
+  });
+  it("指定したIDが不正(整数の1以上でない値)の場合、エラーになる", async () => {
+    const response = await requestAPI({
+      method: "get",
+      endPoint: "/api/todos/0",
+      statusCode: StatusCodes.BAD_REQUEST,
+    });
 
-    expect(response.statusCode).toEqual(404);
-    expect(code).toEqual(404);
-    expect(message).toEqual("Not found");
-    expect(stat).toEqual("fail");
+    expect(response.body).toEqual({ message: "IDは1以上の整数のみ。" });
+  });
+  it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+    jest.spyOn(TodoRepository.prototype, "find").mockImplementation(() => {
+      throw new Error("Unexpected Error");
+    });
+
+    const response = await requestAPI({
+      method: "get",
+      endPoint: "/api/todos/1",
+      statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+    });
+
+    expect(response.body).toEqual({ message: "Internal Server Error" });
   });
 });
