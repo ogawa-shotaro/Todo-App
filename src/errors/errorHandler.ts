@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { StatusCodes } from "http-status-codes";
 import { InvalidError } from "./InvalidError";
 import { NotFoundError } from "./NotFoundError";
-import type { TypeErrors } from "../types/TodoRequest.type";
+import type { TypeErrors } from "../types/TodoResponse.typs";
 
 export function errorHandler(
   err: TypeErrors,
