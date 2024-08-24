@@ -1,8 +1,7 @@
 import { StatusCodes } from "http-status-codes";
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
 import type { TodoInput } from "../../types/TodoRequest.type";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
-import { InvalidError } from "../../errors/InvalidError";
 
 export class CreateTodoController {
   private repository: ITodoRepository;
@@ -11,20 +10,18 @@ export class CreateTodoController {
     this.repository = repository;
   }
 
-  async create(req: Request<any, any, TodoInput>, res: Response) {
+  async create(
+    req: Request<any, any, TodoInput>,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       const { title, body } = req.body;
       const createdTodo = await this.repository.save({ title, body });
 
       res.status(StatusCodes.OK).json(createdTodo);
     } catch (error) {
-      if (error instanceof InvalidError) {
-        res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
-      } else {
-        res
-          .status(StatusCodes.INTERNAL_SERVER_ERROR)
-          .json({ message: "Internal Server Error" });
-      }
+      next(error);
     }
   }
 }

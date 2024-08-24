@@ -5,14 +5,14 @@ import { TodoRepository } from "../../../../repositories/TodoRepository";
 
 const prisma = new PrismaClient();
 
-describe("[APIテスト] Todo1件の取得", () => {
-  describe("成功パターン", () => {
+describe("【APIテスト】 Todo1件の取得", () => {
+  describe("【成功パターン】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 2; i++) {
         await prisma.todo.create({
           data: {
-            title: "ダミータイトル" + i,
-            body: "ダミーボディ" + i,
+            title: `ダミータイトル${i}`,
+            body: `ダミーボディ${i}`,
           },
         });
       }
@@ -45,7 +45,7 @@ describe("[APIテスト] Todo1件の取得", () => {
     });
   });
 });
-describe("異常パターン", () => {
+describe("【異常パターン】", () => {
   it("存在しないIDへのリクエストはエラーになる", async () => {
     const response = await requestAPI({
       method: "get",
@@ -54,6 +54,7 @@ describe("異常パターン", () => {
     });
 
     expect(response.body).toEqual({ message: "存在しないIDを指定しました。" });
+    expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
   });
   it("指定したIDが不正(整数の1以上でない値)の場合、エラーになる", async () => {
     const response = await requestAPI({
@@ -63,6 +64,7 @@ describe("異常パターン", () => {
     });
 
     expect(response.body).toEqual({ message: "IDは1以上の整数のみ。" });
+    expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
   });
   it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
     jest.spyOn(TodoRepository.prototype, "find").mockImplementation(() => {
@@ -76,5 +78,6 @@ describe("異常パターン", () => {
     });
 
     expect(response.body).toEqual({ message: "Internal Server Error" });
+    expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
   });
 });

@@ -86,7 +86,7 @@ export class TodoRepository implements ITodoRepository {
     });
 
     if (!updateItem) {
-      throw new Error("存在しないIDを指定しました。");
+      throw new NotFoundError("存在しないIDを指定しました。");
     }
 
     const updatedItem = await prisma.todo.update({

@@ -1,4 +1,5 @@
-import type { Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
+import type { Request, Response, NextFunction } from "express";
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
 export class UpdateTodoController {
@@ -8,7 +9,7 @@ export class UpdateTodoController {
     this.repository = repository;
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     const parsedId = parseInt(id, 10);
     const { title, body } = req.body;
@@ -20,15 +21,9 @@ export class UpdateTodoController {
         body: body,
       });
 
-      res.status(200).json(responseData);
-    } catch (_) {
-      const errorObj = {
-        code: 404,
-        message: "Not found",
-        stat: "fail",
-      };
-
-      res.status(404).json(errorObj);
+      res.status(StatusCodes.OK).json(responseData);
+    } catch (error) {
+      next(error);
     }
   }
 }
