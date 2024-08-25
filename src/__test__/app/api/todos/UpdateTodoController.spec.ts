@@ -71,12 +71,40 @@ describe("【APIテスト】Todo一件の更新", () => {
     });
   });
   describe("【異常パターン】", () => {
+    it("タイトルに不適切な値(文字列ではない値)が入力された場合、リクエストはエラーになる", async () => {
+      const badInputCharacter = 123;
+
+      const response = await requestAPI({
+        method: "put",
+        endPoint: "/api/todos/1",
+        statusCode: StatusCodes.BAD_REQUEST,
+      }).send({ title: badInputCharacter });
+
+      expect(response.body).toEqual({
+        message: "入力内容が不適切(文字列のみ)です。",
+      });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+    it("ボディに不適切な値(文字列ではない値)が入力された場合、リクエストはエラーになる", async () => {
+      const badInputCharacter = 123;
+
+      const response = await requestAPI({
+        method: "put",
+        endPoint: "/api/todos/1",
+        statusCode: StatusCodes.BAD_REQUEST,
+      }).send({ body: badInputCharacter });
+
+      expect(response.body).toEqual({
+        message: "入力内容が不適切(文字列のみ)です。",
+      });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
     it("存在しないIDへのリクエストはエラーになる", async () => {
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/999",
         statusCode: StatusCodes.NOT_FOUND,
-      });
+      }).send({ title: "ダミータイトル", body: "ダミーボディ" });
 
       expect(response.body).toEqual({
         message: "存在しないIDを指定しました。",

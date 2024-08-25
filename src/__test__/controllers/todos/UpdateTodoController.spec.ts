@@ -4,6 +4,7 @@ import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 import { StatusCodes } from "http-status-codes";
 import { NotFoundError } from "../../../errors/NotFoundError";
+import { InvalidError } from "../../../errors/InvalidError";
 
 describe("【ユニットテスト】 Todo一件の更新", () => {
   let controller: UpdateTodoController;
@@ -13,7 +14,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
     controller = new UpdateTodoController(repository);
   });
   describe("【成功パターン】", () => {
-    it("id:1のデータ更新(タイトルのみ)", async () => {
+    it("updateメソッドのパラメーターが【id:1、title:変更後のタイトル】で呼び出され、更新後のデータが返る。", async () => {
       const req = createMockRequest({
         params: { id: "1" },
         body: { title: "変更後のタイトル" },
@@ -39,8 +40,13 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
+
+      expect(repository.update).toHaveBeenCalledWith({
+        id: 1,
+        title: "変更後のタイトル",
+      });
     });
-    it("id:1のデータ更新(ボディのみ)", async () => {
+    it("updateメソッドのパラメーターが【id:1、body:変更後のボディ】で呼び出され、更新後のデータが返る。", async () => {
       const req = createMockRequest({
         params: { id: "1" },
         body: { title: "変更後のボディ" },
@@ -66,8 +72,13 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
+
+      expect(repository.update).toHaveBeenCalledWith({
+        id: 1,
+        title: "変更後のボディ",
+      });
     });
-    it("id:2のデータ更新(タイトルとボディ)", async () => {
+    it("updateメソッドのパラメーターが【id:2、title:変更後のタイトル、body:変更後のボディ】で呼び出され、更新後のデータが返る。", async () => {
       const req = createMockRequest({
         params: { id: "2" },
         body: { title: "変更後のタイトル", body: "変更後のボディ" },
@@ -93,8 +104,46 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
+
+      expect(repository.update).toHaveBeenCalledWith({
+        id: 2,
+        title: "変更後のタイトル",
+        body: "変更後のボディ",
+      });
     });
     describe("【異常パターン】", () => {
+      it("タイトルに不適切な値(文字列ではない値)が入力された場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+        const req = createMockRequest({
+          params: { id: "1" },
+          body: { title: 111, body: "変更後のボディ" },
+        });
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        repository.update.mockRejectedValue(
+          new InvalidError("入力内容が不適切(文字列のみ)です。")
+        );
+
+        await controller.update(req, res, next);
+
+        expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
+      });
+      it("ボディに不適切な値(文字列ではない値)が入力された場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+        const req = createMockRequest({
+          params: { id: "1" },
+          body: { title: "変更後のタイトル", body: 222 },
+        });
+        const res = createMockResponse();
+        const next = jest.fn();
+
+        repository.update.mockRejectedValue(
+          new InvalidError("入力内容が不適切(文字列のみ)です。")
+        );
+
+        await controller.update(req, res, next);
+
+        expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
+      });
       it("存在しないIDへのリクエストは、next関数(パラメーターがNotFoundError)を実行する。", async () => {
         const req = createMockRequest({
           params: { id: "999" },
