@@ -4,6 +4,11 @@ import type {
   TodoUpdatedInput,
 } from "../../../types/TodoRequest.type";
 
+export type TodoUpdatedBadInput = Record<
+  "id" | "title" | "body",
+  string | number
+>;
+
 export type KeyOfMethods = "save" | "list" | "find" | "update" | "delete";
 
 export type CallDataMapType = {

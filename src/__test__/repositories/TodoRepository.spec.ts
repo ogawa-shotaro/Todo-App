@@ -1,20 +1,22 @@
 import { TodoRepository } from "../../repositories/TodoRepository";
-import type { Todo } from "@prisma/client";
 import { PrismaClient } from "@prisma/client";
+import { TodoUpdatedInput } from "../../types/TodoRequest.type";
+import type { Todo } from "@prisma/client";
+import type { TodoUpdatedBadInput } from "../helper/types/testTypes";
 
 const prisma = new PrismaClient();
 
-describe("TodoRepository", () => {
-  describe("成功パターン", () => {
-    describe("インスタンスのテスト", () => {
-      it("TodoRepositoryのインスタンスが生成される", () => {
+describe("【TodoRepositoryのテスト】", () => {
+  describe("【成功パターン】", () => {
+    describe("【インスタンスのテスト】", () => {
+      it("TodoRepositoryのインスタンスが生成される。", () => {
         const repository = new TodoRepository();
 
         expect(repository).toBeInstanceOf(TodoRepository);
       });
     });
-    describe("saveメソッドのテスト", () => {
-      it("saveメソッドを実行すると、DBに値を保持し、その値に重複しないIDが付与される", async () => {
+    describe("【saveメソッドのテスト】", () => {
+      it("【saveメソッドを実行時】DBに値を保持し、その値に重複しないIDが付与される。", async () => {
         const repository = new TodoRepository();
 
         const initialTodo: Todo = await repository.save({
@@ -40,7 +42,7 @@ describe("TodoRepository", () => {
         expect(secondTodo.updatedAt).toBeInstanceOf(Date);
       });
     });
-    describe("list・update・deleteメソッドのテスト", () => {
+    describe("【list・update・deleteメソッドのテスト】", () => {
       beforeEach(async () => {
         for (let i = 1; i <= 21; i++) {
           await prisma.todo.create({
@@ -51,7 +53,7 @@ describe("TodoRepository", () => {
           });
         }
       });
-      it("listメソッドを実行時、パラメーターの指定がない場合は、先頭から10件のデータを取得する", async () => {
+      it("【listメソッドを実行時】パラメーターの指定がない場合は、先頭から10件のデータを取得する。", async () => {
         const repository = new TodoRepository();
         const todoList = await repository.list();
 
@@ -60,7 +62,7 @@ describe("TodoRepository", () => {
         expect(todoList[2].title).toEqual("ダミータイトル3");
         expect(todoList[2].body).toEqual("ダミーボディ3");
       });
-      it("listメソッドを実行時、パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する", async () => {
+      it("【listメソッドを実行時】パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する。", async () => {
         const repository = new TodoRepository();
         const todoList = await repository.list({ page: 2 });
 
@@ -69,7 +71,7 @@ describe("TodoRepository", () => {
         expect(todoList[0].title).toEqual("ダミータイトル11");
         expect(todoList[0].body).toEqual("ダミーボディ11");
       });
-      it("listメソッドを実行時、パラメーターの指定(count=5)をした場合、先頭から5件のデータを取得する", async () => {
+      it("【listメソッドを実行時】パラメーターの指定(count=5)をした場合、先頭から5件のデータを取得する。", async () => {
         const repository = new TodoRepository();
         const todoList = await repository.list({ count: 5 });
 
@@ -78,7 +80,7 @@ describe("TodoRepository", () => {
         expect(todoList[4].title).toEqual("ダミータイトル5");
         expect(todoList[4].body).toEqual("ダミーボディ5");
       });
-      it("listメソッドを実行時、パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータを取得する", async () => {
+      it("【listメソッドを実行時】パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータを取得する。", async () => {
         const repository = new TodoRepository();
         const todoList = await repository.list({ page: 2, count: 3 });
 
@@ -87,7 +89,7 @@ describe("TodoRepository", () => {
         expect(todoList[0].title).toEqual("ダミータイトル4");
         expect(todoList[0].body).toEqual("ダミーボディ4");
       });
-      it("findメソッドを実行すると、DBに保持されているデータから、一件の値を取得する事ができる", async () => {
+      it("【findメソッドを実行時】DBに保持されているデータから、一件のTodoを取得する事ができる。", async () => {
         const repository = new TodoRepository();
 
         const initialTodo = await repository.find(1);
@@ -105,7 +107,7 @@ describe("TodoRepository", () => {
         expect(secondTodo?.createdAt).toBeInstanceOf(Date);
         expect(secondTodo?.updatedAt).toBeInstanceOf(Date);
       });
-      it("updateメソッドを実行すると、DB内のデータを更新する事ができる。", async () => {
+      it("【updateメソッドを実行時】DB内のTodoを更新する事ができる。", async () => {
         const repository = new TodoRepository();
 
         const updatedTodo: Todo = await repository.update({
@@ -122,7 +124,7 @@ describe("TodoRepository", () => {
           updatedAt: updatedTodo.updatedAt,
         });
       });
-      it("updateメソッドを実行した後は、updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
+      it("【updateメソッドを実行時】updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
         const repository = new TodoRepository();
 
         const updatedTodo = await repository.update({
@@ -133,7 +135,7 @@ describe("TodoRepository", () => {
 
         expect(updatedTodo.createdAt < updatedTodo.updatedAt).toBeTruthy();
       });
-      it("deleteメソッドを実行すると、DB内の指定した(ID)データを削除する事ができる。", async () => {
+      it("【deleteメソッドを実行時】DB内の指定したTodoを削除する事ができる。", async () => {
         const repository = new TodoRepository();
 
         const oldTodos = await repository.list();
@@ -149,8 +151,8 @@ describe("TodoRepository", () => {
       });
     });
   });
-  describe("異常パターン", () => {
-    it("タイトル or ボディに値がない場合、エラーオブジェクトが返る", () => {
+  describe("【異常パターン】", () => {
+    it("【saveメソッドを実行時】タイトル or ボディに値がない場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
@@ -161,7 +163,7 @@ describe("TodoRepository", () => {
         await repository.save({ title: "ダミータイトル", body: "" });
       }).rejects.toThrow("bodyの内容は必須です");
     });
-    it("不正なIDを指定した場合(listメソッド実行時)、エラーオブジェクトが返る", () => {
+    it("【listメソッド実行時】クエリーパラメーターが不正な場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
@@ -172,14 +174,33 @@ describe("TodoRepository", () => {
         await repository.list({ count: 0 });
       }).rejects.toThrow("countは1以上の整数のみ");
     });
-    it("不正なIDを指定した場合(findメソッド実行時)、エラーオブジェクトが返る", () => {
+    it("【findメソッド実行時】指定したIDが不正な場合、エラーオブジェクトが返る。", () => {
+      const repository = new TodoRepository();
+
+      expect(async () => {
+        await repository.find(0);
+      }).rejects.toThrow("IDは1以上の整数のみ。");
+    });
+    it("【findメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
         await repository.find(999);
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
-    it("不正なIDを指定した場合(updateメソッド実行時)、エラーオブジェクトが返る", () => {
+    it("【updateメソッド実行時】不正なパラメーターでリクエストした場合、エラーオブジェクトが返る。", () => {
+      const repository = new TodoRepository();
+      const badInputCharacters: TodoUpdatedBadInput = {
+        id: 1,
+        title: 123,
+        body: 456,
+      };
+
+      expect(async () => {
+        await repository.update(badInputCharacters as TodoUpdatedInput);
+      }).rejects.toThrow("入力内容が不適切(文字列のみ)です。");
+    });
+    it("【updateメソッド実行時】不正なIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
@@ -190,7 +211,7 @@ describe("TodoRepository", () => {
         });
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
-    it("不正なIDを指定した場合(deleteメソッド実行時)、エラーオブジェクトが返る", () => {
+    it("【deleteメソッド実行時】不正なIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
