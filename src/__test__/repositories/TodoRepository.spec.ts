@@ -1,6 +1,6 @@
 import { TodoRepository } from "../../repositories/TodoRepository";
 import { PrismaClient } from "@prisma/client";
-import { TodoUpdatedInput } from "../../types/TodoRequest.type";
+import type { TodoUpdatedInput } from "../../types/TodoRequest.type";
 import type { Todo } from "@prisma/client";
 import type { TodoUpdatedBadInput } from "../helper/types/testTypes";
 

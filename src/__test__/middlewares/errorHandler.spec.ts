@@ -3,18 +3,17 @@ import { errorHandler } from "../../middlewares/errorHandler";
 import { InvalidError } from "../../errors/InvalidError";
 import { NotFoundError } from "../../errors/NotFoundError";
 import { StatusCodes } from "http-status-codes";
+import { createMockRequest } from "../helper/mocks/request";
+import { createMockResponse } from "../helper/mocks/response";
 
 describe("【ユニットテスト】ミドルウェアのエラーに対する共通化処理", () => {
-  let req: Partial<Request>;
-  let res: Partial<Response>;
+  let req: Request;
+  let res: Response;
   let next: NextFunction;
 
   beforeEach(() => {
-    req = {};
-    res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+    req = createMockRequest({});
+    res = createMockResponse();
     next = jest.fn();
   });
   it("【InvalidErrorでthrowした場合】errorHandler(パラメーターがInvalidError)を呼び出す。", () => {
