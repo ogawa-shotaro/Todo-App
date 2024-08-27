@@ -1,12 +1,13 @@
 import express from "express";
-const router = express.Router();
 
-import { TodoRepository } from "../repositories/TodoRepository";
 import { CreateTodoController } from "../controllers/todos/CreateTodoController";
-import { GetTodosController } from "../controllers/todos/GetTodosController";
-import { GetTodoController } from "../controllers/todos/GetTodoController";
-import { UpdateTodoController } from "../controllers/todos/UpdateTodoController";
 import { DeleteTodoController } from "../controllers/todos/DeleteTodoController";
+import { GetTodoController } from "../controllers/todos/GetTodoController";
+import { GetTodosController } from "../controllers/todos/GetTodosController";
+import { UpdateTodoController } from "../controllers/todos/UpdateTodoController";
+import { TodoRepository } from "../repositories/TodoRepository";
+
+const router = express.Router();
 
 const todoRepository = new TodoRepository();
 const todoCreateController = new CreateTodoController(todoRepository);

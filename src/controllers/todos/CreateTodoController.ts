@@ -1,7 +1,8 @@
-import { StatusCodes } from "http-status-codes";
 import type { NextFunction, Request, Response } from "express";
-import type { TodoInput } from "../../types/TodoRequest.type";
+import { StatusCodes } from "http-status-codes";
+
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
+import type { TodoInput } from "../../types/TodoRequest.type";
 
 export class CreateTodoController {
   private repository: ITodoRepository;
@@ -13,7 +14,7 @@ export class CreateTodoController {
   async create(
     req: Request<any, any, TodoInput>,
     res: Response,
-    next: NextFunction
+    next: NextFunction,
   ) {
     try {
       const { title, body } = req.body;

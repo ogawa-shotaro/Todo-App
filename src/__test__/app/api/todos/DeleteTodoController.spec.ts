@@ -1,5 +1,6 @@
-import { requestAPI } from "../../../helper/requestHelper";
 import { PrismaClient } from "@prisma/client";
+
+import { requestAPI } from "../../../helper/requestHelper";
 
 const prisma = new PrismaClient();
 

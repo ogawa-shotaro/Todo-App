@@ -1,6 +1,7 @@
 import express from "express";
-import router from "./routers/todos";
+
 import { errorHandler } from "./middlewares/errorHandler";
+import router from "./routers/todos";
 
 const app = express();
 

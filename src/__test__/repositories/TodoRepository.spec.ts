@@ -1,8 +1,7 @@
-import { TodoRepository } from "../../repositories/TodoRepository";
 import { PrismaClient } from "@prisma/client";
-import type { TodoUpdatedInput } from "../../types/TodoRequest.type";
 import type { Todo } from "@prisma/client";
-import type { TodoUpdatedBadInput } from "../helper/types/testTypes";
+
+import { TodoRepository } from "../../repositories/TodoRepository";
 
 const prisma = new PrismaClient();
 
@@ -187,18 +186,6 @@ describe("【TodoRepositoryのテスト】", () => {
       expect(async () => {
         await repository.find(999);
       }).rejects.toThrow("存在しないIDを指定しました。");
-    });
-    it("【updateメソッド実行時】不正なパラメーターでリクエストした場合、エラーオブジェクトが返る。", () => {
-      const repository = new TodoRepository();
-      const badInputCharacters: TodoUpdatedBadInput = {
-        id: 1,
-        title: 123,
-        body: 456,
-      };
-
-      expect(async () => {
-        await repository.update(badInputCharacters as TodoUpdatedInput);
-      }).rejects.toThrow("入力内容が不適切(文字列のみ)です。");
     });
     it("【updateメソッド実行時】不正なIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();

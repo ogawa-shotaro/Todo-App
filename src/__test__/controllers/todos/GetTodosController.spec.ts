@@ -1,9 +1,10 @@
+import { StatusCodes } from "http-status-codes";
+
 import { GetTodosController } from "../../../controllers/todos/GetTodosController";
+import { InvalidError } from "../../../errors/InvalidError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
-import { InvalidError } from "../../../errors/InvalidError";
-import { StatusCodes } from "http-status-codes";
 
 describe("【ユニットテスト】 Todo一覧取得", () => {
   let controller: GetTodosController;
@@ -135,7 +136,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const next = jest.fn();
 
       repository.list.mockRejectedValue(
-        new InvalidError("pageは1以上の整数のみ")
+        new InvalidError("pageは1以上の整数のみ"),
       );
 
       await controller.list(req, res, next);
@@ -148,7 +149,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const next = jest.fn();
 
       repository.list.mockRejectedValue(
-        new InvalidError("countは1以上の整数のみ")
+        new InvalidError("countは1以上の整数のみ"),
       );
 
       await controller.list(req, res, next);

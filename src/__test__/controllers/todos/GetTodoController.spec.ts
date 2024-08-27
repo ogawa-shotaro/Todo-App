@@ -1,10 +1,11 @@
+import { StatusCodes } from "http-status-codes";
+
 import { GetTodoController } from "../../../controllers/todos/GetTodoController";
+import { InvalidError } from "../../../errors/InvalidError";
+import { NotFoundError } from "../../../errors/NotFoundError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
-import { InvalidError } from "../../../errors/InvalidError";
-import { NotFoundError } from "../../../errors/NotFoundError";
-import { StatusCodes } from "http-status-codes";
 
 describe("【ユニットテスト】Todo1件の取得", () => {
   let controller: GetTodoController;
@@ -74,7 +75,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
       const next = jest.fn();
 
       repository.find.mockRejectedValue(
-        new NotFoundError("存在しないIDを指定しました。")
+        new NotFoundError("存在しないIDを指定しました。"),
       );
 
       await controller.find(req, res, next);
@@ -87,7 +88,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
       const next = jest.fn();
 
       repository.find.mockRejectedValue(
-        new InvalidError("IDは1以上の整数のみ。")
+        new InvalidError("IDは1以上の整数のみ。"),
       );
 
       await controller.find(req, res, next);

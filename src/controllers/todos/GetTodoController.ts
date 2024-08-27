@@ -1,5 +1,6 @@
+import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
-import type { Request, Response, NextFunction } from "express";
+
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
 export class GetTodoController {

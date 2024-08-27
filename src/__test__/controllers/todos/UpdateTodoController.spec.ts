@@ -1,10 +1,11 @@
+import { StatusCodes } from "http-status-codes";
+
 import { UpdateTodoController } from "../../../controllers/todos/UpdateTodoController";
+import { InvalidError } from "../../../errors/InvalidError";
+import { NotFoundError } from "../../../errors/NotFoundError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
-import { StatusCodes } from "http-status-codes";
-import { NotFoundError } from "../../../errors/NotFoundError";
-import { InvalidError } from "../../../errors/InvalidError";
 
 describe("【ユニットテスト】 Todo一件の更新", () => {
   let controller: UpdateTodoController;
@@ -121,7 +122,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         const next = jest.fn();
 
         repository.update.mockRejectedValue(
-          new InvalidError("入力内容が不適切(文字列のみ)です。")
+          new InvalidError("入力内容が不適切(文字列のみ)です。"),
         );
 
         await controller.update(req, res, next);
@@ -137,7 +138,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         const next = jest.fn();
 
         repository.update.mockRejectedValue(
-          new InvalidError("入力内容が不適切(文字列のみ)です。")
+          new InvalidError("入力内容が不適切(文字列のみ)です。"),
         );
 
         await controller.update(req, res, next);
@@ -153,7 +154,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
         const next = jest.fn();
 
         repository.update.mockRejectedValue(
-          new NotFoundError("存在しないIDを指定しました。")
+          new NotFoundError("存在しないIDを指定しました。"),
         );
 
         await controller.update(req, res, next);

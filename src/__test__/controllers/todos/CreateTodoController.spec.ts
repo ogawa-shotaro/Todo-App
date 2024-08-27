@@ -1,9 +1,10 @@
+import { StatusCodes } from "http-status-codes";
+
 import { CreateTodoController } from "../../../controllers/todos/CreateTodoController";
 import { InvalidError } from "../../../errors/InvalidError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
-import { StatusCodes } from "http-status-codes";
 
 describe("【ユニットテスト】Todo1件の新規作成", () => {
   let controller: CreateTodoController;
@@ -60,7 +61,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       const next = jest.fn();
 
       repository.save.mockRejectedValue(
-        new InvalidError("titleの内容は必須です")
+        new InvalidError("titleの内容は必須です"),
       );
 
       await controller.create(req, res, next);
@@ -78,7 +79,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       const next = jest.fn();
 
       repository.save.mockRejectedValue(
-        new InvalidError("bodyの内容は必須です")
+        new InvalidError("bodyの内容は必須です"),
       );
 
       await controller.create(req, res, next);

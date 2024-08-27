@@ -1,4 +1,5 @@
 import type { Todo } from "@prisma/client";
+
 import type { TodoInput } from "../types/TodoRequest.type";
 import type { TodoUpdatedInput } from "../types/TodoRequest.type";
 

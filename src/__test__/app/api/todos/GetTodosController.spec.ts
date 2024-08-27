@@ -1,7 +1,9 @@
-import { requestAPI } from "../../../helper/requestHelper";
-import { PrismaClient } from "@prisma/client";
 import { StatusCodes } from "http-status-codes";
+
+import { PrismaClient } from "@prisma/client";
+
 import { TodoRepository } from "../../../../repositories/TodoRepository";
+import { requestAPI } from "../../../helper/requestHelper";
 import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();

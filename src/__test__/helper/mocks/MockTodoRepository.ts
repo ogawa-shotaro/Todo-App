@@ -1,5 +1,6 @@
-import type { ITodoRepository } from "../../../repositories/ITodoRepository";
 import type { Todo } from "@prisma/client";
+
+import type { ITodoRepository } from "../../../repositories/ITodoRepository";
 import type {
   TodoInput,
   TodoListParams,
