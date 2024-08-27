@@ -1,10 +1,12 @@
 import { PrismaClient } from "@prisma/client";
+import type { Todo } from "@prisma/client";
+
+import type { ITodoRepository } from "./ITodoRepository";
+
 import { InvalidError } from "../errors/InvalidError";
 import { NotFoundError } from "../errors/NotFoundError";
 import type { TodoInput } from "../types/TodoRequest.type";
 import type { TodoUpdatedInput } from "../types/TodoRequest.type";
-import type { Todo } from "@prisma/client";
-import type { ITodoRepository } from "./ITodoRepository";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
@@ -44,7 +46,7 @@ export class TodoRepository implements ITodoRepository {
     { page = DEFAULT_PAGE, count = DEFAULT_COUNT } = {
       page: DEFAULT_PAGE,
       count: DEFAULT_COUNT,
-    }
+    },
   ) {
     if (page < 1 || !Number.isInteger(page)) {
       throw new InvalidError("pageは1以上の整数のみ。");
@@ -81,12 +83,19 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async update({ id, title, body }: TodoUpdatedInput) {
+    if (
+      (title && typeof title !== "string") ||
+      (body && typeof body !== "string")
+    ) {
+      throw new InvalidError("入力内容が不適切(文字列のみ)です。");
+    }
+
     const updateItem = await prisma.todo.findUnique({
       where: { id: id },
     });
 
     if (!updateItem) {
-      throw new Error("存在しないIDを指定しました。");
+      throw new NotFoundError("存在しないIDを指定しました。");
     }
 
     const updatedItem = await prisma.todo.update({

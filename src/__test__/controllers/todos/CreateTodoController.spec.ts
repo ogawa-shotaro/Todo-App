@@ -1,9 +1,10 @@
+import { StatusCodes } from "http-status-codes";
+
 import { CreateTodoController } from "../../../controllers/todos/CreateTodoController";
 import { InvalidError } from "../../../errors/InvalidError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
-import { StatusCodes } from "http-status-codes";
 
 describe("【ユニットテスト】Todo1件の新規作成", () => {
   let controller: CreateTodoController;
@@ -21,6 +22,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         },
       });
       const res = createMockResponse();
+      const next = jest.fn();
 
       repository.save.mockResolvedValue({
         id: 1,
@@ -30,7 +32,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         updatedAt: expect.any(Date),
       });
 
-      await controller.create(req, res);
+      await controller.create(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
@@ -47,8 +49,8 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       });
     });
   });
-  describe("異常パターン", () => {
-    it("タイトルなしでは、エラーメッセージとstatus(BAD_REQUEST=400)が返る", async () => {
+  describe("【異常パターン】", () => {
+    it("タイトルが未入力の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
       const req = createMockRequest({
         body: {
           title: "",
@@ -56,19 +58,17 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         },
       });
       const res = createMockResponse();
+      const next = jest.fn();
 
       repository.save.mockRejectedValue(
-        new InvalidError("titleの内容は必須です")
+        new InvalidError("titleの内容は必須です"),
       );
 
-      await controller.create(req, res);
+      await controller.create(req, res, next);
 
-      expect(res.json).toHaveBeenCalledWith({
-        message: "titleの内容は必須です",
-      });
-      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
+      expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
-    it("ボディなしでは、エラーメッセージとstatus(BAD_REQUEST=400)が返る", async () => {
+    it("ボディが未入力の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
       const req = createMockRequest({
         body: {
           title: "ダミータイトル",
@@ -76,32 +76,15 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         },
       });
       const res = createMockResponse();
+      const next = jest.fn();
 
       repository.save.mockRejectedValue(
-        new InvalidError("bodyの内容は必須です")
+        new InvalidError("bodyの内容は必須です"),
       );
 
-      await controller.create(req, res);
+      await controller.create(req, res, next);
 
-      expect(res.json).toHaveBeenCalledWith({
-        message: "bodyの内容は必須です",
-      });
-      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
-    });
-    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
-      const req = createMockRequest({});
-      const res = createMockResponse();
-
-      repository.save.mockRejectedValue(new Error("Internal Server Error"));
-
-      await controller.create(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Internal Server Error",
-      });
-      expect(res.status).toHaveBeenCalledWith(
-        StatusCodes.INTERNAL_SERVER_ERROR
-      );
+      expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
   });
 });

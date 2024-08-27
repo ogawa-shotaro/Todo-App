@@ -3,5 +3,8 @@
 export default {
   preset: "ts-jest",
   testEnvironment: "node",
-  testMatch: ["<rootDir>/src/__test__/controllers/**"],
+  testMatch: [
+    "<rootDir>/src/__test__/controllers/**",
+    "<rootDir>/src/__test__/middlewares/**",
+  ],
 };

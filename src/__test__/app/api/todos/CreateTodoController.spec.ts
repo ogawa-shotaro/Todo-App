@@ -1,9 +1,10 @@
-import { requestAPI } from "../../../helper/requestHelper";
 import { StatusCodes } from "http-status-codes";
-import { TodoRepository } from "../../../../repositories/TodoRepository";
 
-describe("[APIテスト] Todo1件新規作成", () => {
-  describe("成功パターン", () => {
+import { TodoRepository } from "../../../../repositories/TodoRepository";
+import { requestAPI } from "../../../helper/requestHelper";
+
+describe("【APIテスト】 Todo1件新規作成", () => {
+  describe("【成功パターン】", () => {
     it("title.bodyを送ったら成功する", async () => {
       const requestData = {
         title: "ダミータイトル",
@@ -35,7 +36,7 @@ describe("[APIテスト] Todo1件新規作成", () => {
       expect(!isNaN(responseUpdatedAtDateObj.getTime())).toEqual(true);
     });
   });
-  describe("異常パターン", () => {
+  describe("【異常パターン】", () => {
     it("titleなしではエラー（BAD_REQUEST=400）が返る。", async () => {
       const requestNotTitleData = { body: "ダミーボディ" };
 
@@ -46,6 +47,7 @@ describe("[APIテスト] Todo1件新規作成", () => {
       }).send(requestNotTitleData);
 
       expect(response.body).toEqual({ message: "titleの内容は必須です。" });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("bodyなしではエラー（BAD_REQUEST=400）が返る。", async () => {
       const requestNotBodyData = { title: "ダミータイトル" };
@@ -57,6 +59,7 @@ describe("[APIテスト] Todo1件新規作成", () => {
       }).send(requestNotBodyData);
 
       expect(response.body).toEqual({ message: "bodyの内容は必須です。" });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
       jest.spyOn(TodoRepository.prototype, "save").mockImplementation(() => {
@@ -72,6 +75,7 @@ describe("[APIテスト] Todo1件新規作成", () => {
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });
+      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });

@@ -1,10 +1,11 @@
+import { StatusCodes } from "http-status-codes";
+
 import { GetTodoController } from "../../../controllers/todos/GetTodoController";
+import { InvalidError } from "../../../errors/InvalidError";
+import { NotFoundError } from "../../../errors/NotFoundError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
-import { InvalidError } from "../../../errors/InvalidError";
-import { NotFoundError } from "../../../errors/NotFoundError";
-import { StatusCodes } from "http-status-codes";
 
 describe("【ユニットテスト】Todo1件の取得", () => {
   let controller: GetTodoController;
@@ -13,10 +14,11 @@ describe("【ユニットテスト】Todo1件の取得", () => {
     repository = new MockRepository();
     controller = new GetTodoController(repository);
   });
-  describe("成功パターン", () => {
+  describe("【成功パターン】", () => {
     it("findメソッドのパラメーターが【id:1】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
       const req = createMockRequest({ params: { id: "1" } });
       const res = createMockResponse();
+      const next = jest.fn();
 
       repository.find.mockResolvedValue({
         id: 1,
@@ -26,7 +28,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         updatedAt: expect.any(Date),
       });
 
-      await controller.find(req, res);
+      await controller.find(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
@@ -42,6 +44,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
     it("findメソッドのパラメーターが【id:2】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
       const req = createMockRequest({ params: { id: "2" } });
       const res = createMockResponse();
+      const next = jest.fn();
 
       repository.find.mockResolvedValue({
         id: 2,
@@ -51,7 +54,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         updatedAt: expect.any(Date),
       });
 
-      await controller.find(req, res);
+      await controller.find(req, res, next);
 
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
@@ -65,51 +68,31 @@ describe("【ユニットテスト】Todo1件の取得", () => {
       expect(repository.find).toHaveBeenCalledWith(2);
     });
   });
-  describe("異常パターン", () => {
-    it("存在しないIDへのリクエストは、エラーメッセージとstatus(NOT_FOUND=404)が返る", async () => {
+  describe("【異常パターン】", () => {
+    it("存在しないIDへのリクエスト時には、next関数(パラメーターがNotFoundError)を実行する。", async () => {
       const req = createMockRequest({ params: { id: "999" } });
       const res = createMockResponse();
+      const next = jest.fn();
 
       repository.find.mockRejectedValue(
-        new NotFoundError("存在しないIDを指定しました。")
+        new NotFoundError("存在しないIDを指定しました。"),
       );
 
-      await controller.find(req, res);
+      await controller.find(req, res, next);
 
-      expect(res.json).toHaveBeenCalledWith({
-        message: "存在しないIDを指定しました。",
-      });
-      expect(res.status).toHaveBeenCalledWith(StatusCodes.NOT_FOUND);
+      expect(next).toHaveBeenCalledWith(expect.any(NotFoundError));
     });
-    it("パラメーターに指定した値が不正(整数の1以上でない値)の場合、エラーになる", async () => {
+    it("パラメーターに指定した値が不正(整数の1以上でない値)時には、next関数(パラメーターがInvalidError)を実行する。", async () => {
       const req = createMockRequest({ params: { id: "0" } });
       const res = createMockResponse();
+      const next = jest.fn();
 
       repository.find.mockRejectedValue(
-        new InvalidError("IDは1以上の整数のみ。")
+        new InvalidError("IDは1以上の整数のみ。"),
       );
 
-      await controller.find(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({
-        message: "IDは1以上の整数のみ。",
-      });
-      expect(res.status).toHaveBeenCalledWith(StatusCodes.BAD_REQUEST);
-    });
-    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
-      const req = createMockRequest({});
-      const res = createMockResponse();
-
-      repository.find.mockRejectedValue(new Error("Internal Server Error"));
-
-      await controller.find(req, res);
-
-      expect(res.json).toHaveBeenCalledWith({
-        message: "Internal Server Error",
-      });
-      expect(res.status).toHaveBeenCalledWith(
-        StatusCodes.INTERNAL_SERVER_ERROR
-      );
+      await controller.find(req, res, next);
+      expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
   });
 });

@@ -1,12 +1,14 @@
-import { requestAPI } from "../../../helper/requestHelper";
-import { PrismaClient } from "@prisma/client";
 import { StatusCodes } from "http-status-codes";
+
+import { PrismaClient } from "@prisma/client";
+
 import { TodoRepository } from "../../../../repositories/TodoRepository";
+import { requestAPI } from "../../../helper/requestHelper";
 import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
 
-describe("[APIテスト] Todo一覧取得", () => {
+describe("【APIテスト】 Todo一覧取得", () => {
   describe("DBにデータあり", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 20; i++) {
@@ -156,7 +158,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       expect(todoItems).toEqual([]);
     });
   });
-  describe("異常パターン", () => {
+  describe("【異常パターン】", () => {
     it("パラメーターに指定した値が不正(page=整数の1以上でない値)の場合、エラーになる", async () => {
       const response = await requestAPI({
         method: "get",
@@ -165,6 +167,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       });
 
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("パラメーターに指定した値が不正(count=整数の1以上でない値)の場合、エラーになる", async () => {
       const response = await requestAPI({
@@ -174,6 +177,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       });
 
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
       jest.spyOn(TodoRepository.prototype, "list").mockImplementation(() => {
@@ -187,6 +191,7 @@ describe("[APIテスト] Todo一覧取得", () => {
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });
+      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });

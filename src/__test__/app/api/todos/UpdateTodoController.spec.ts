@@ -1,16 +1,20 @@
-import { requestAPI } from "../../../helper/requestHelper";
+import { StatusCodes } from "http-status-codes";
+
 import { PrismaClient } from "@prisma/client";
+
+import { TodoRepository } from "../../../../repositories/TodoRepository";
+import { requestAPI } from "../../../helper/requestHelper";
 
 const prisma = new PrismaClient();
 
-describe("[APIテスト] Todo一件の更新", () => {
-  describe("成功パターン", () => {
+describe("【APIテスト】Todo一件の更新", () => {
+  describe("【成功パターン】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 2; i++) {
         await prisma.todo.create({
           data: {
-            title: "ダミータイトル" + i,
-            body: "ダミーボディ" + i,
+            title: `ダミータイトル${i}`,
+            body: `ダミーボディ${i}`,
           },
         });
       }
@@ -23,7 +27,7 @@ describe("[APIテスト] Todo一件の更新", () => {
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/1",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       }).send(requestTitleData);
 
       const { id, title, body } = response.body;
@@ -40,7 +44,7 @@ describe("[APIテスト] Todo一件の更新", () => {
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/1",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       }).send(requestBodyData);
 
       const { id, title, body } = response.body;
@@ -58,7 +62,7 @@ describe("[APIテスト] Todo一件の更新", () => {
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/2",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       }).send(requestBothData);
 
       const { id, title, body } = response.body;
@@ -68,19 +72,60 @@ describe("[APIテスト] Todo一件の更新", () => {
       expect(body).toEqual("変更後のボディ");
     });
   });
-  describe("異常パターン", () => {
+  describe("【異常パターン】", () => {
+    it("タイトルに不適切な値(文字列ではない値)が入力された場合、リクエストはエラーになる", async () => {
+      const badInputCharacter = 123;
+
+      const response = await requestAPI({
+        method: "put",
+        endPoint: "/api/todos/1",
+        statusCode: StatusCodes.BAD_REQUEST,
+      }).send({ title: badInputCharacter });
+
+      expect(response.body).toEqual({
+        message: "入力内容が不適切(文字列のみ)です。",
+      });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+    it("ボディに不適切な値(文字列ではない値)が入力された場合、リクエストはエラーになる", async () => {
+      const badInputCharacter = 123;
+
+      const response = await requestAPI({
+        method: "put",
+        endPoint: "/api/todos/1",
+        statusCode: StatusCodes.BAD_REQUEST,
+      }).send({ body: badInputCharacter });
+
+      expect(response.body).toEqual({
+        message: "入力内容が不適切(文字列のみ)です。",
+      });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
     it("存在しないIDへのリクエストはエラーになる", async () => {
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/999",
-        statusCode: 404,
-      });
-      const { code, message, stat } = response.body;
+        statusCode: StatusCodes.NOT_FOUND,
+      }).send({ title: "ダミータイトル", body: "ダミーボディ" });
 
-      expect(response.statusCode).toEqual(404);
-      expect(code).toEqual(404);
-      expect(message).toEqual("Not found");
-      expect(stat).toEqual("fail");
+      expect(response.body).toEqual({
+        message: "存在しないIDを指定しました。",
+      });
+      expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+      jest.spyOn(TodoRepository.prototype, "update").mockImplementation(() => {
+        throw new Error("Unexpected Error");
+      });
+
+      const response = await requestAPI({
+        method: "put",
+        endPoint: "/api/todos/1",
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      });
+
+      expect(response.body).toEqual({ message: "Internal Server Error" });
+      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });
