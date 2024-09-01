@@ -37,29 +37,61 @@ describe("【APIテスト】 Todo1件新規作成", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("titleなしではエラー（messageとBAD_REQUEST=400）が返る。", async () => {
+    it("titleに入力がない場合と文字列(1文字以上)の入力がない場合、createTodoSchemaに基づくInvalidErrorが返る。", async () => {
       const requestNotTitleData = { body: "ダミーボディ" };
+      const requestNotTitleCharacterData = { title: "", body: "ダミーボディ" };
 
-      const response = await requestAPI({
+      const responseNotTitle = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.BAD_REQUEST,
       }).send(requestNotTitleData);
 
-      expect(response.body).toEqual({ message: "titleの内容は必須です。" });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-    });
-    it("bodyなしではエラー（messageとBAD_REQUEST=400）が返る。", async () => {
-      const requestNotBodyData = { title: "ダミータイトル" };
+      expect(responseNotTitle.body).toEqual({
+        message: "titleの内容は必須です。",
+      });
+      expect(responseNotTitle.statusCode).toEqual(StatusCodes.BAD_REQUEST);
 
-      const response = await requestAPI({
+      const responseNotTitleCharacter = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: StatusCodes.BAD_REQUEST,
+      }).send(requestNotTitleCharacterData);
+
+      expect(responseNotTitleCharacter.body).toEqual({
+        message: "titleは1文字以上である必要があります。",
+      });
+      expect(responseNotTitleCharacter.statusCode).toEqual(
+        StatusCodes.BAD_REQUEST,
+      );
+    });
+    it("bodyに入力がない場合と文字列(1文字以上)の入力がない場合、createTodoSchemaに基づくInvalidErrorが返る。", async () => {
+      const requestNotBodyData = { title: "ダミータイトル" };
+      const requestNotBodyCharacterData = { title: "ダミータイトル", body: "" };
+
+      const responseNotBody = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.BAD_REQUEST,
       }).send(requestNotBodyData);
 
-      expect(response.body).toEqual({ message: "bodyの内容は必須です。" });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(responseNotBody.body).toEqual({
+        message: "bodyの内容は必須です。",
+      });
+      expect(responseNotBody.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+
+      const responseNotBodyCharacter = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: StatusCodes.BAD_REQUEST,
+      }).send(requestNotBodyCharacterData);
+
+      expect(responseNotBodyCharacter.body).toEqual({
+        message: "bodyは1文字以上である必要があります。",
+      });
+      expect(responseNotBodyCharacter.statusCode).toEqual(
+        StatusCodes.BAD_REQUEST,
+      );
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
       jest.spyOn(TodoRepository.prototype, "save").mockImplementation(() => {
