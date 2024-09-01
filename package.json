@@ -15,7 +15,6 @@
   "dependencies": {
     "@prisma/client": "^5.15.0",
     "dotenv-cli": "^7.4.2",
-    "eslint-plugin-only-warn": "^1.1.0",
     "express": "^4.19.2",
     "http-status-codes": "^2.3.0",
     "zod": "^3.23.8"
