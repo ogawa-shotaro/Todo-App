@@ -37,7 +37,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("titleなしではエラー（BAD_REQUEST=400）が返る。", async () => {
+    it("titleなしではエラー（messageとBAD_REQUEST=400）が返る。", async () => {
       const requestNotTitleData = { body: "ダミーボディ" };
 
       const response = await requestAPI({
@@ -46,9 +46,10 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         statusCode: StatusCodes.BAD_REQUEST,
       }).send(requestNotTitleData);
 
+      expect(response.body).toEqual({ message: "titleの内容は必須です。" });
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
-    it("bodyなしではエラー（BAD_REQUEST=400）が返る。", async () => {
+    it("bodyなしではエラー（messageとBAD_REQUEST=400）が返る。", async () => {
       const requestNotBodyData = { title: "ダミータイトル" };
 
       const response = await requestAPI({
@@ -57,6 +58,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         statusCode: StatusCodes.BAD_REQUEST,
       }).send(requestNotBodyData);
 
+      expect(response.body).toEqual({ message: "bodyの内容は必須です。" });
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {

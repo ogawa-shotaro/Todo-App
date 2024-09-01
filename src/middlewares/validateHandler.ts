@@ -13,7 +13,7 @@ export function validator(schema: z.AnyZodObject) {
         const errorMessages = error.errors
           .map((issue) => `${issue.message}`)
           .join(", ");
-        console.log("errorMessages", errorMessages);
+
         const validatedError = new InvalidError(errorMessages);
         next(validatedError);
       } else {
