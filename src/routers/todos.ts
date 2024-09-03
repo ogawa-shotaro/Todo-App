@@ -5,7 +5,9 @@ import { DeleteTodoController } from "../controllers/todos/DeleteTodoController"
 import { GetTodoController } from "../controllers/todos/GetTodoController";
 import { GetTodosController } from "../controllers/todos/GetTodosController";
 import { UpdateTodoController } from "../controllers/todos/UpdateTodoController";
+import { validator } from "../middlewares/validateHandler";
 import { TodoRepository } from "../repositories/TodoRepository";
+import { createTodoSchema } from "../schemas/createTodoSchema";
 
 const router = express.Router();
 
@@ -18,7 +20,7 @@ const todoDeleteController = new DeleteTodoController(todoRepository);
 
 router
   .route("/")
-  .post((req, res, next) => {
+  .post(validator(createTodoSchema), (req, res, next) => {
     todoCreateController.create(req, res, next);
   })
   .get((req, res, next) => {

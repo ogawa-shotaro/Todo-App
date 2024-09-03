@@ -6,7 +6,7 @@ import { requestAPI } from "../../../helper/requestHelper";
 describe("【APIテスト】 Todo1件新規作成", () => {
   describe("【成功パターン】", () => {
     it("title.bodyを送ったら成功する", async () => {
-      const requestData = {
+      const request = {
         title: "ダミータイトル",
         body: "ダミーボディ",
       };
@@ -15,7 +15,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
-      }).send(requestData);
+      }).send(request);
 
       const responseDataResult = response.body;
 
@@ -37,28 +37,60 @@ describe("【APIテスト】 Todo1件新規作成", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("titleなしではエラー（BAD_REQUEST=400）が返る。", async () => {
-      const requestNotTitleData = { body: "ダミーボディ" };
+    it("【titleプロパティの入力値がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
+      const request = { body: "ダミーボディ" };
 
       const response = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.BAD_REQUEST,
-      }).send(requestNotTitleData);
+      }).send(request);
 
-      expect(response.body).toEqual({ message: "titleの内容は必須です。" });
+      expect(response.body).toEqual({
+        message: "titleの内容は必須です。",
+      });
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
-    it("bodyなしではエラー（BAD_REQUEST=400）が返る。", async () => {
-      const requestNotBodyData = { title: "ダミータイトル" };
+    it("【titleプロパティ有り・入力値(1文字以上)がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
+      const request = { title: "", body: "ダミーボディ" };
 
       const response = await requestAPI({
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.BAD_REQUEST,
-      }).send(requestNotBodyData);
+      }).send(request);
 
-      expect(response.body).toEqual({ message: "bodyの内容は必須です。" });
+      expect(response.body).toEqual({
+        message: "titleは1文字以上である必要があります。",
+      });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+    it("【bodyプロパティの入力値がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
+      const request = { title: "ダミータイトル" };
+
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: StatusCodes.BAD_REQUEST,
+      }).send(request);
+
+      expect(response.body).toEqual({
+        message: "bodyの内容は必須です。",
+      });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+    it("【bodyプロパティ有り・入力値(1文字以上)がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
+      const request = { title: "ダミータイトル", body: "" };
+
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: StatusCodes.BAD_REQUEST,
+      }).send(request);
+
+      expect(response.body).toEqual({
+        message: "bodyは1文字以上である必要があります。",
+      });
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
