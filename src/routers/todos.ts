@@ -35,8 +35,8 @@ router
   .put((req, res, next) => {
     todoUpdateController.update(req, res, next);
   })
-  .delete((req, res) => {
-    todoDeleteController.delete(req, res);
+  .delete((req, res, next) => {
+    todoDeleteController.delete(req, res, next);
   });
 
 export default router;

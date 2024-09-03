@@ -24,14 +24,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async save(inputData: TodoInput) {
-    if (!inputData.title) {
-      throw new InvalidError("titleの内容は必須です。");
-    }
-
-    if (!inputData.body) {
-      throw new InvalidError("bodyの内容は必須です。");
-    }
-
     const todoData: Todo = await prisma.todo.create({
       data: {
         title: inputData.title,
@@ -110,12 +102,16 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async delete(id: number) {
+    if (id < 1 || !Number.isInteger(id)) {
+      throw new InvalidError("IDは1以上の整数のみ。");
+    }
+
     const deleteItem = await prisma.todo.findUnique({
       where: { id: id },
     });
 
     if (!deleteItem) {
-      throw new Error("存在しないIDを指定しました。");
+      throw new NotFoundError("存在しないIDを指定しました。");
     }
 
     const responseDeleteItem = prisma.todo.delete({

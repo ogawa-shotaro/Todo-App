@@ -1,4 +1,8 @@
+import { StatusCodes } from "http-status-codes";
+
 import { DeleteTodoController } from "../../../controllers/todos/DeleteTodoController";
+import { InvalidError } from "../../../errors/InvalidError";
+import { NotFoundError } from "../../../errors/NotFoundError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
@@ -6,27 +10,27 @@ import { createMockResponse } from "../../helper/mocks/response";
 describe("【ユニットテスト】Todo1件の削除", () => {
   let controller: DeleteTodoController;
   let repository: MockRepository;
-  describe("成功パターン", () => {
+  describe("【成功パターン】", () => {
     beforeEach(async () => {
       repository = new MockRepository();
       controller = new DeleteTodoController(repository);
-
-      for (let i = 1; i <= 2; i++) {
-        await repository.save({
-          title: `ダミータイトル${i}`,
-          body: `ダミーボディ${i}`,
-        });
-      }
     });
-    it("仮DB(todos)から一件のTodoが削除され、削除したTodoデータ(id:1)が返る", async () => {
-      const req = createMockRequest({}, { id: "1" });
+    it("deleteメソッドのパラメーターが【id:1】で呼び出され、削除したTodoデータ(jsonとstatus(ok=200))が返る。", async () => {
+      const req = createMockRequest({ params: { id: "1" } });
       const res = createMockResponse();
+      const next = jest.fn();
 
-      const dbOldData = repository.list();
-      await controller.delete(req, res);
-      const dbCurrentData = repository.list();
+      repository.delete.mockResolvedValue({
+        id: 1,
+        title: "ダミータイトル1",
+        body: "ダミーボディ1",
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
 
-      expect(res.status).toHaveBeenCalledWith(200);
+      await controller.delete(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
         id: 1,
         title: "ダミータイトル1",
@@ -34,18 +38,23 @@ describe("【ユニットテスト】Todo1件の削除", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
-      expect((await dbOldData).length).toEqual(2);
-      expect((await dbCurrentData).length).toEqual(1);
     });
-    it("仮DB(todos)から一件のTodoが削除され、削除したTodoデータ(id:2)が返る", async () => {
-      const req = createMockRequest({}, { id: "2" });
+    it("deleteメソッドのパラメーターが【id:2】で呼び出され、削除したTodoデータ(jsonとstatus(ok=200))が返る。", async () => {
+      const req = createMockRequest({ params: { id: "2" } });
       const res = createMockResponse();
+      const next = jest.fn();
 
-      const dbOldData = repository.list();
-      await controller.delete(req, res);
-      const dbCurrentData = repository.list();
+      repository.delete.mockResolvedValue({
+        id: 2,
+        title: "ダミータイトル2",
+        body: "ダミーボディ2",
+        createdAt: expect.any(Date),
+        updatedAt: expect.any(Date),
+      });
 
-      expect(res.status).toHaveBeenCalledWith(200);
+      await controller.delete(req, res, next);
+
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
         id: 2,
         title: "ダミータイトル2",
@@ -53,23 +62,33 @@ describe("【ユニットテスト】Todo1件の削除", () => {
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
       });
-      expect((await dbOldData).length).toEqual(2);
-      expect((await dbCurrentData).length).toEqual(1);
     });
   });
-  describe("異常パターン", () => {
-    it("存在しないIDへのリクエストは、エラーメッセージとstatus404が返る", async () => {
-      const req = createMockRequest({}, { id: "999" });
+  describe("【異常パターン】", () => {
+    it("存在しないIDへのリクエスト時には、next関数(パラメーターがNotFoundError)を実行する。", async () => {
+      const req = createMockRequest({ params: { id: "999" } });
       const res = createMockResponse();
+      const next = jest.fn();
 
-      await controller.delete(req, res);
+      repository.delete.mockRejectedValue(
+        new NotFoundError("存在しないIDを指定しました。"),
+      );
 
-      expect(res.json).toHaveBeenCalledWith({
-        code: 404,
-        message: "Not found",
-        stat: "fail",
-      });
-      expect(res.status).toHaveBeenCalledWith(404);
+      await controller.delete(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(NotFoundError));
+    });
+    it("パラメーターに指定した値が不正(整数の1以上でない値)時には、next関数(パラメーターがInvalidError)を実行する。", async () => {
+      const req = createMockRequest({ params: { id: "0" } });
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      repository.delete.mockRejectedValue(
+        new InvalidError("IDは1以上の整数のみ。"),
+      );
+
+      await controller.delete(req, res, next);
+      expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
   });
 });

@@ -1,17 +1,20 @@
+import { StatusCodes } from "http-status-codes";
+
 import { PrismaClient } from "@prisma/client";
 
+import { TodoRepository } from "../../../../repositories/TodoRepository";
 import { requestAPI } from "../../../helper/requestHelper";
 
 const prisma = new PrismaClient();
 
-describe("[APIテスト] Todo一件の削除", () => {
-  describe("成功パターン", () => {
+describe("【APIテスト】 Todo一件の削除", () => {
+  describe("【成功パターン】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 3; i++) {
         await prisma.todo.create({
           data: {
-            title: "ダミータイトル" + i,
-            body: "ダミーボディ" + i,
+            title: `ダミータイトル${i}`,
+            body: `ダミーボディ${i}`,
           },
         });
       }
@@ -25,7 +28,7 @@ describe("[APIテスト] Todo一件の削除", () => {
       const response = await requestAPI({
         method: "delete",
         endPoint: "/api/todos/1",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
       const { id, title, body } = response.body;
 
@@ -37,7 +40,7 @@ describe("[APIテスト] Todo一件の削除", () => {
       await requestAPI({
         method: "delete",
         endPoint: "/api/todos/1",
-        statusCode: 200,
+        statusCode: StatusCodes.OK,
       });
 
       const dbCurrentData = await prisma.todo.findMany({});
@@ -45,19 +48,42 @@ describe("[APIテスト] Todo一件の削除", () => {
       expect(dbCurrentData.length).toEqual(2);
     });
   });
-  describe("異常パターン", () => {
-    it("存在しないIDへのリクエストはエラーになる", async () => {
+  describe("【異常パターン】", () => {
+    it("存在しないIDへのリクエストはエラーになる。", async () => {
       const response = await requestAPI({
         method: "delete",
         endPoint: "/api/todos/999",
-        statusCode: 404,
+        statusCode: StatusCodes.NOT_FOUND,
       });
-      const { code, message, stat } = response.body;
 
-      expect(response.statusCode).toEqual(404);
-      expect(code).toEqual(404);
-      expect(message).toEqual("Not found");
-      expect(stat).toEqual("fail");
+      expect(response.body).toEqual({
+        message: "存在しないIDを指定しました。",
+      });
+      expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
+    });
+    it("指定したIDが不正(整数の1以上でない値)の場合、エラーになる。", async () => {
+      const response = await requestAPI({
+        method: "delete",
+        endPoint: "/api/todos/0",
+        statusCode: StatusCodes.BAD_REQUEST,
+      });
+
+      expect(response.body).toEqual({ message: "IDは1以上の整数のみ。" });
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る。", async () => {
+      jest.spyOn(TodoRepository.prototype, "delete").mockImplementation(() => {
+        throw new Error("Unexpected Error");
+      });
+
+      const response = await requestAPI({
+        method: "delete",
+        endPoint: "/api/todos/1",
+        statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+      });
+
+      expect(response.body).toEqual({ message: "Internal Server Error" });
+      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });
