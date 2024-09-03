@@ -24,14 +24,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async save(inputData: TodoInput) {
-    if (!inputData.title) {
-      throw new InvalidError("titleの内容は必須です。");
-    }
-
-    if (!inputData.body) {
-      throw new InvalidError("bodyの内容は必須です。");
-    }
-
     const todoData: Todo = await prisma.todo.create({
       data: {
         title: inputData.title,
