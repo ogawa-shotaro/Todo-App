@@ -110,12 +110,16 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async delete(id: number) {
+    if (id < 1 || !Number.isInteger(id)) {
+      throw new InvalidError("IDは1以上の整数のみ。");
+    }
+
     const deleteItem = await prisma.todo.findUnique({
       where: { id: id },
     });
 
     if (!deleteItem) {
-      throw new Error("存在しないIDを指定しました。");
+      throw new NotFoundError("存在しないIDを指定しました。");
     }
 
     const responseDeleteItem = prisma.todo.delete({

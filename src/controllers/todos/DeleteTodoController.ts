@@ -1,4 +1,5 @@
-import type { Request, Response } from "express";
+import type { NextFunction, Request, Response } from "express";
+import { StatusCodes } from "http-status-codes";
 
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
 
@@ -9,22 +10,16 @@ export class DeleteTodoController {
     this.repository = repository;
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
     const parsedId = parseInt(id, 10);
 
     try {
       const responseData = await this.repository.delete(parsedId);
 
-      res.status(200).json(responseData);
-    } catch (_) {
-      const errorObj = {
-        code: 404,
-        message: "Not found",
-        stat: "fail",
-      };
-
-      res.status(404).json(errorObj);
+      res.status(StatusCodes.OK).json(responseData);
+    } catch (error) {
+      next(error);
     }
   }
 }
