@@ -13,8 +13,8 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
     repository = new MockRepository();
     controller = new GetTodosController(repository);
   });
-  describe("DBにデータなし", () => {
-    it("空配列が返る(jsonとstatus(ok=200)が返る)", async () => {
+  describe("【DBにデータなし】", () => {
+    it("空配列(jsonとstatus(ok=200))が返る)", async () => {
       const req = createMockRequest({ query: {} });
       const res = createMockResponse();
       const next = jest.fn();
@@ -27,8 +27,8 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       expect(res.json).toHaveBeenCalledWith([]);
     });
   });
-  describe("DBにデータあり", () => {
-    it("Todo一覧の取得(jsonとstatus(ok=200)が返る)", async () => {
+  describe("【DBにデータあり】", () => {
+    it("Todo一覧(jsonとstatus(ok=200)が返る)", async () => {
       const req = createMockRequest({ query: {} });
       const res = createMockResponse();
       const next = jest.fn();
@@ -85,7 +85,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       ]);
     });
   });
-  describe("パラメーターの指定有り・無しの場合", () => {
+  describe("【パラメーターの指定有り・無しの場合】", () => {
     it("listメソッドのパラメーターが【page=undefined,count=undefined】で呼び出される", async () => {
       const req = createMockRequest({ query: {} });
       const res = createMockResponse();
@@ -130,7 +130,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("パラメーターに指定した値が不正(page=整数の1以上でない値)の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+    it("【パラメーターに指定した値が不正(page=整数の1以上でない値)の場合】next関数(パラメーターがInvalidError)を実行する。", async () => {
       const req = createMockRequest({ query: { page: 0 } });
       const res = createMockResponse();
       const next = jest.fn();
@@ -143,7 +143,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
 
       expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
-    it("パラメーターに指定した値が不正(count=整数の1以上でない値)の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+    it("【パラメーターに指定した値が不正(count=整数の1以上でない値)の場合】next関数(パラメーターがInvalidError)を実行する。", async () => {
       const req = createMockRequest({ query: { count: 0 } });
       const res = createMockResponse();
       const next = jest.fn();

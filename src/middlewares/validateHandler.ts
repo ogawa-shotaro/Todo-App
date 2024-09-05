@@ -3,10 +3,13 @@ import { ZodError, type z } from "zod";
 
 import { InvalidError } from "../errors/InvalidError";
 
-export function validator(schema: z.AnyZodObject) {
+export function validator(
+  schema: z.AnyZodObject,
+  target: "body" | "params" | "query",
+) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.body);
+      schema.parse(req[target]);
       next();
     } catch (error) {
       if (error instanceof ZodError) {

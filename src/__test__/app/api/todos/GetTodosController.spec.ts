@@ -9,7 +9,7 @@ import type { TodoResponseType } from "../../../helper/types/testTypes";
 const prisma = new PrismaClient();
 
 describe("【APIテスト】 Todo一覧取得", () => {
-  describe("DBにデータあり", () => {
+  describe("【DBにデータあり】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 20; i++) {
         await prisma.todo.create({
@@ -145,7 +145,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
       ]);
     });
   });
-  describe("DBにデータなし", () => {
+  describe("【DBにデータなし】", () => {
     it("データがない状態でTodo一覧を取得する(空配列が返る)", async () => {
       const response = await requestAPI({
         method: "get",

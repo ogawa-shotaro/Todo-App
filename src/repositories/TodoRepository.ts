@@ -3,7 +3,6 @@ import type { Todo } from "@prisma/client";
 
 import type { ITodoRepository } from "./ITodoRepository";
 
-import { InvalidError } from "../errors/InvalidError";
 import { NotFoundError } from "../errors/NotFoundError";
 import type { TodoInput } from "../types/TodoRequest.type";
 import type { TodoUpdatedInput } from "../types/TodoRequest.type";
@@ -40,13 +39,6 @@ export class TodoRepository implements ITodoRepository {
       count: DEFAULT_COUNT,
     },
   ) {
-    if (page < 1 || !Number.isInteger(page)) {
-      throw new InvalidError("pageは1以上の整数のみ。");
-    }
-    if (count < 1 || !Number.isInteger(count)) {
-      throw new InvalidError("countは1以上の整数のみ。");
-    }
-
     const offset = (page - 1) * count;
     const todos = await prisma.todo.findMany({
       skip: offset,
@@ -57,10 +49,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async find(id: number) {
-    if (id < 1 || !Number.isInteger(id)) {
-      throw new InvalidError("IDは1以上の整数のみ。");
-    }
-
     const todoItem = await prisma.todo.findUnique({
       where: {
         id: id,
@@ -75,13 +63,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async update({ id, title, body }: TodoUpdatedInput) {
-    if (
-      (title && typeof title !== "string") ||
-      (body && typeof body !== "string")
-    ) {
-      throw new InvalidError("入力内容が不適切(文字列のみ)です。");
-    }
-
     const updateItem = await prisma.todo.findUnique({
       where: { id: id },
     });
@@ -102,10 +83,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async delete(id: number) {
-    if (id < 1 || !Number.isInteger(id)) {
-      throw new InvalidError("IDは1以上の整数のみ。");
-    }
-
     const deleteItem = await prisma.todo.findUnique({
       where: { id: id },
     });

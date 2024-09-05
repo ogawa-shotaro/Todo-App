@@ -50,7 +50,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("タイトルが未入力の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+    it("【タイトルが未入力の場合】next関数(パラメーターがInvalidError)を実行する。", async () => {
       const req = createMockRequest({
         body: {
           title: "",
@@ -68,7 +68,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
 
       expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
-    it("ボディが未入力の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+    it("【ボディが未入力の場合】next関数(パラメーターがInvalidError)を実行する。", async () => {
       const req = createMockRequest({
         body: {
           title: "ダミータイトル",

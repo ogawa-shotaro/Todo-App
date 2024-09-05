@@ -19,7 +19,7 @@ describe("【APIテスト】 Todo1件の取得", () => {
         });
       }
     });
-    it("id:1のデータ取得", async () => {
+    it("【id:1のデータ取得】", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/1",
@@ -32,7 +32,7 @@ describe("【APIテスト】 Todo1件の取得", () => {
       expect(title).toEqual("ダミータイトル1");
       expect(body).toEqual("ダミーボディ1");
     });
-    it("id:2のデータ取得", async () => {
+    it("【id:2のデータ取得】", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/2",

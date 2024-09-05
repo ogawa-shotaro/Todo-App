@@ -19,8 +19,8 @@ describe("【APIテスト】Todo一件の更新", () => {
         });
       }
     });
-    it("id:1のデータ更新(タイトルのみ)", async () => {
-      const requestTitleData = {
+    it("【id:1のデータ更新】タイトルのみ", async () => {
+      const request = {
         title: "変更後のタイトル",
       };
 
@@ -28,7 +28,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
-      }).send(requestTitleData);
+      }).send(request);
 
       const { id, title, body } = response.body;
 
@@ -36,8 +36,8 @@ describe("【APIテスト】Todo一件の更新", () => {
       expect(title).toEqual("変更後のタイトル");
       expect(body).toEqual("ダミーボディ1");
     });
-    it("id:1のデータ更新(ボディのみ)", async () => {
-      const requestBodyData = {
+    it("【id:1のデータ更新】ボディのみ", async () => {
+      const request = {
         body: "変更後のボディ",
       };
 
@@ -45,7 +45,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
-      }).send(requestBodyData);
+      }).send(request);
 
       const { id, title, body } = response.body;
 
@@ -53,8 +53,8 @@ describe("【APIテスト】Todo一件の更新", () => {
       expect(title).toEqual("ダミータイトル1");
       expect(body).toEqual("変更後のボディ");
     });
-    it("id:2のデータ更新(タイトルとボディ)", async () => {
-      const requestBothData = {
+    it("【id:2のデータ更新】タイトルとボディ", async () => {
+      const request = {
         title: "変更後のタイトル",
         body: "変更後のボディ",
       };
@@ -63,7 +63,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/2",
         statusCode: StatusCodes.OK,
-      }).send(requestBothData);
+      }).send(request);
 
       const { id, title, body } = response.body;
 
@@ -74,13 +74,11 @@ describe("【APIテスト】Todo一件の更新", () => {
   });
   describe("【異常パターン】", () => {
     it("タイトルに不適切な値(文字列ではない値)が入力された場合、リクエストはエラーになる", async () => {
-      const badInputCharacter = 123;
-
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.BAD_REQUEST,
-      }).send({ title: badInputCharacter });
+      }).send({ title: 123 });
 
       expect(response.body).toEqual({
         message: "入力内容が不適切(文字列のみ)です。",
@@ -88,13 +86,11 @@ describe("【APIテスト】Todo一件の更新", () => {
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("ボディに不適切な値(文字列ではない値)が入力された場合、リクエストはエラーになる", async () => {
-      const badInputCharacter = 123;
-
       const response = await requestAPI({
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.BAD_REQUEST,
-      }).send({ body: badInputCharacter });
+      }).send({ body: 123 });
 
       expect(response.body).toEqual({
         message: "入力内容が不適切(文字列のみ)です。",

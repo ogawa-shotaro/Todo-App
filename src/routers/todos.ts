@@ -8,6 +8,9 @@ import { UpdateTodoController } from "../controllers/todos/UpdateTodoController"
 import { validator } from "../middlewares/validateHandler";
 import { TodoRepository } from "../repositories/TodoRepository";
 import { createTodoSchema } from "../schemas/createTodoSchema";
+import { getTodosSchema } from "../schemas/getTodosSchema ";
+import { requestIdSchema } from "../schemas/requestIdSchema";
+import { updateTodoSchema } from "../schemas/updateTodoSchema";
 
 const router = express.Router();
 
@@ -20,22 +23,26 @@ const todoDeleteController = new DeleteTodoController(todoRepository);
 
 router
   .route("/")
-  .post(validator(createTodoSchema), (req, res, next) => {
+  .post(validator(createTodoSchema, "body"), (req, res, next) => {
     todoCreateController.create(req, res, next);
   })
-  .get((req, res, next) => {
+  .get(validator(getTodosSchema, "query"), (req, res, next) => {
     todosGetController.list(req, res, next);
   });
 
 router
   .route("/:id")
-  .get((req, res, next) => {
+  .get(validator(requestIdSchema, "params"), (req, res, next) => {
     todoGetController.find(req, res, next);
   })
-  .put((req, res, next) => {
-    todoUpdateController.update(req, res, next);
-  })
-  .delete((req, res, next) => {
+  .put(
+    validator(requestIdSchema, "params"),
+    validator(updateTodoSchema, "body"),
+    (req, res, next) => {
+      todoUpdateController.update(req, res, next);
+    },
+  )
+  .delete(validator(requestIdSchema, "params"), (req, res, next) => {
     todoDeleteController.delete(req, res, next);
   });
 
