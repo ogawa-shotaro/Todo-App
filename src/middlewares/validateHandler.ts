@@ -6,7 +6,7 @@ import { InvalidError } from "../errors/InvalidError";
 export function validator(schema: z.AnyZodObject) {
   return (req: Request, res: Response, next: NextFunction) => {
     try {
-      schema.parse(req.body);
+      schema.parse(req);
       next();
     } catch (error) {
       if (error instanceof ZodError) {

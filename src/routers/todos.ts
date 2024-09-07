@@ -7,7 +7,7 @@ import { GetTodosController } from "../controllers/todos/GetTodosController";
 import { UpdateTodoController } from "../controllers/todos/UpdateTodoController";
 import { validator } from "../middlewares/validateHandler";
 import { TodoRepository } from "../repositories/TodoRepository";
-import { createTodoSchema } from "../schemas/createTodoSchema";
+import { createTodoSchema } from "../schemas/todos/createTodoSchema";
 
 const router = express.Router();
 
