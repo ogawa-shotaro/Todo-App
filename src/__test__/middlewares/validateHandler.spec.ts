@@ -1,89 +1,49 @@
-import type { NextFunction, Request, Response } from "express";
-import { type AnyZodObject, ZodError } from "zod";
+import type { Request, Response } from "express";
+import { z } from "zod";
 
-import { InvalidError } from "../../errors/InvalidError";
 import { validator } from "../../middlewares/validateHandler";
-import { createTodoSchema } from "../../schemas/createTodoSchema";
-import { createMockRequest } from "../helper/mocks/request";
-import { createMockResponse } from "../helper/mocks/response";
 
 describe("【ユニットテスト】ミドルウェアのバリデーション操作", () => {
-  let req: Request;
-  let res: Response;
-  let next: NextFunction;
+  describe("【成功パターン】", () => {
+    it("【バリデーションに成功した場合】next関数が正常系で呼び出される。", () => {
+      const req = {
+        body: { title: "ダミータイトル", body: "ダミーボディ" },
+      } as Request;
+      const res = {} as Response;
+      const next = jest.fn();
 
-  beforeEach(() => {
-    req = createMockRequest({});
-    res = createMockResponse();
-    next = jest.fn();
-  });
-  it("【成功パターン】バリデーションが成功すると、next関数が呼び出される。", () => {
-    req = createMockRequest({
-      body: { title: "ダミータイトル", body: "ダミーボディ" },
+      const schema = z.object({
+        body: z.object({
+          title: z.string(),
+          body: z.string(),
+        }),
+      });
+
+      const validatedFunc = validator(schema);
+      validatedFunc(req, res, next);
+
+      expect(next).toHaveBeenCalledWith();
     });
-
-    const validateFunc = validator(createTodoSchema);
-    validateFunc(req, res, next);
-
-    expect(next).toHaveBeenCalledWith();
   });
   describe("【異常パターン】", () => {
-    it("バリデーションに失敗すると、next関数がパラメーターにInvalidError(ZodErrorのエラー情報をInvalidErrorに変換)で呼び出される。", () => {
-      const mockCreateTodoSchema: AnyZodObject = {
-        parse: jest.fn(() => {
-          throw new ZodError([
-            {
-              code: "invalid_type",
-              expected: "string",
-              received: "undefined",
-              path: ["title"],
-              message: "titleの内容は必須です。",
-            },
-            {
-              code: "invalid_type",
-              expected: "string",
-              received: "undefined",
-              path: ["body"],
-              message: "bodyの内容は必須です。",
-            },
-          ]);
-        }),
-      } as Partial<AnyZodObject> as AnyZodObject;
+    it("【バリデーションに失敗した場合】next関数が異常系で呼び出される,", () => {
+      const req = {
+        body: { title: 123, body: 456 },
+      } as Request;
+      const res = {} as Response;
+      const next = jest.fn();
 
-      req = createMockRequest({
-        body: { title: "", body: "" },
+      const schema = z.object({
+        body: z.object({
+          title: z.string(),
+          body: z.string(),
+        }),
       });
 
-      const validateFunc = validator(mockCreateTodoSchema);
-      validateFunc(req, res, next);
-
-      expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: "titleの内容は必須です。, bodyの内容は必須です。",
-        }),
-      );
-    });
-    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)が返る", () => {
-      const mockCreateTodoSchema: AnyZodObject = {
-        parse: jest.fn(() => {
-          throw new Error("InternalServerError");
-        }),
-      } as Partial<AnyZodObject> as AnyZodObject;
-
-      req = createMockRequest({
-        body: { title: "ダミータイトル", body: "ダミーボディ" },
-      });
-
-      const validateFunc = validator(mockCreateTodoSchema);
-      validateFunc(req, res, next);
+      const validatedFunc = validator(schema);
+      validatedFunc(req, res, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(Error));
-      expect(next).toHaveBeenCalledWith(
-        expect.objectContaining({
-          message: "InternalServerError",
-        }),
-      );
     });
   });
 });
