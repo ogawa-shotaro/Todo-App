@@ -1,15 +1,16 @@
-import type { Request, Response } from "express";
 import { z } from "zod";
 
 import { validator } from "../../middlewares/validateHandler";
+import { createMockRequest } from "../helper/mocks/request";
+import { createMockResponse } from "../helper/mocks/response";
 
 describe("【ユニットテスト】ミドルウェアのバリデーション操作", () => {
   describe("【成功パターン】", () => {
     it("【バリデーションに成功した場合】next関数が正常系で呼び出される。", () => {
-      const req = {
+      const req = createMockRequest({
         body: { title: "ダミータイトル", body: "ダミーボディ" },
-      } as Request;
-      const res = {} as Response;
+      });
+      const res = createMockResponse();
       const next = jest.fn();
 
       const schema = z.object({
@@ -27,10 +28,10 @@ describe("【ユニットテスト】ミドルウェアのバリデーション�
   });
   describe("【異常パターン】", () => {
     it("【バリデーションに失敗した場合】next関数が異常系で呼び出される,", () => {
-      const req = {
+      const req = createMockRequest({
         body: { title: 123, body: 456 },
-      } as Request;
-      const res = {} as Response;
+      });
+      const res = createMockResponse();
       const next = jest.fn();
 
       const schema = z.object({

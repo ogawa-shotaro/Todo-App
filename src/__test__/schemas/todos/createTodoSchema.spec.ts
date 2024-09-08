@@ -5,27 +5,27 @@ import { createTodoSchema } from "../../../schemas/todos/createTodoSchema";
 describe("【ユニットテスト】createTodoSchemaの挙動テスト", () => {
   describe("【成功パターン】", () => {
     it("【バリデーションに成功した場合】例外が発生しない。", () => {
-      const validateData = {
+      const data = {
         body: {
           title: "ダミータイトル",
           body: "ダミーボディ",
         },
       };
 
-      const result = createTodoSchema.parse(validateData);
+      const result = createTodoSchema.parse(data);
 
-      expect(result).toEqual(validateData);
+      expect(result).toEqual(data);
     });
   });
   describe("【異常パターン】", () => {
     it("【titleプロパティの入力値がない場合】例外(required_error)が発生する。", () => {
-      const validateData = {
+      const data = {
         body: {
           body: "ダミーボディ",
         },
       };
 
-      expect(() => createTodoSchema.parse(validateData)).toThrow(
+      expect(() => createTodoSchema.parse(data)).toThrow(
         new ZodError([
           {
             code: "invalid_type",
@@ -38,14 +38,14 @@ describe("【ユニットテスト】createTodoSchemaの挙動テスト", () => 
       );
     });
     it("【titleプロパティ有り・入力値(1文字以上)がない場合】例外(min_error)が発生する。", () => {
-      const validateData = {
+      const data = {
         body: {
           title: "",
           body: "ダミーボディ",
         },
       };
 
-      expect(() => createTodoSchema.parse(validateData)).toThrow(
+      expect(() => createTodoSchema.parse(data)).toThrow(
         new ZodError([
           {
             code: "too_small",
@@ -60,13 +60,13 @@ describe("【ユニットテスト】createTodoSchemaの挙動テスト", () => 
       );
     });
     it("【bodyプロパティの入力値がない場合】例外(required_error)が発生する。", () => {
-      const validateData = {
+      const data = {
         body: {
           title: "ダミータイトル",
         },
       };
 
-      expect(() => createTodoSchema.parse(validateData)).toThrow(
+      expect(() => createTodoSchema.parse(data)).toThrow(
         new ZodError([
           {
             code: "invalid_type",
@@ -79,13 +79,13 @@ describe("【ユニットテスト】createTodoSchemaの挙動テスト", () => 
       );
     });
     it("【bodyプロパティ有り・入力値(1文字以上)がない場合】例外(min_error)が発生する。", () => {
-      const validateData = {
+      const data = {
         body: {
           title: "ダミータイトル",
           body: "",
         },
       };
-      expect(() => createTodoSchema.parse(validateData)).toThrow(
+      expect(() => createTodoSchema.parse(data)).toThrow(
         new ZodError([
           {
             code: "too_small",
