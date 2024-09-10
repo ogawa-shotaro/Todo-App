@@ -9,18 +9,18 @@ import type { TodoResponseType } from "../../../helper/types/testTypes";
 const prisma = new PrismaClient();
 
 describe("【APIテスト】 Todo一覧取得", () => {
-  describe("DBにデータあり", () => {
+  describe("【DBにデータあり】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 20; i++) {
         await prisma.todo.create({
           data: {
-            title: "ダミータイトル" + i,
-            body: "ダミーボディ" + i,
+            title: `ダミータイトル${i}`,
+            body: `ダミーボディ${i}`,
           },
         });
       }
     });
-    it("【パラメーターの指定なし】先頭から10件のTodoを取得できる)", async () => {
+    it("【パラメーターの指定なし】先頭から10件のTodoを取得できる。", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos",
@@ -58,7 +58,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         "ダミーボディ10",
       ]);
     });
-    it("【page=2,count=5】6件目から5件のTodoを取得できる)", async () => {
+    it("【page=2,count=5】6件目から5件のTodoを取得できる。", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?page=2&count=5",
@@ -84,7 +84,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         "ダミーボディ10",
       ]);
     });
-    it("【page=2】11件目から10件のTodoを取得できる)", async () => {
+    it("【page=2】11件目から10件のTodoを取得できる。", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?page=2",
@@ -122,7 +122,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         "ダミーボディ20",
       ]);
     });
-    it("【count=3】先頭から3件のTodoを取得できる)", async () => {
+    it("【count=3】先頭から3件のTodoを取得できる。", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?count=3",
@@ -145,8 +145,8 @@ describe("【APIテスト】 Todo一覧取得", () => {
       ]);
     });
   });
-  describe("DBにデータなし", () => {
-    it("データがない状態でTodo一覧を取得する(空配列が返る)", async () => {
+  describe("【DBにデータなし】", () => {
+    it("【空配列が返る】データがない状態でのTodo一覧取得", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos",
@@ -159,7 +159,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("パラメーターに指定した値が不正(page=整数の1以上でない値)の場合、エラーになる", async () => {
+    it("【パラメーターに指定した値が不正(page=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?page=0",
@@ -169,7 +169,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
-    it("パラメーターに指定した値が不正(count=整数の1以上でない値)の場合、エラーになる", async () => {
+    it("【パラメーターに指定した値が不正(count=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos?count=0",

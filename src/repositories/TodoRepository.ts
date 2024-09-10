@@ -40,14 +40,8 @@ export class TodoRepository implements ITodoRepository {
       count: DEFAULT_COUNT,
     },
   ) {
-    if (page < 1 || !Number.isInteger(page)) {
-      throw new InvalidError("pageは1以上の整数のみ。");
-    }
-    if (count < 1 || !Number.isInteger(count)) {
-      throw new InvalidError("countは1以上の整数のみ。");
-    }
-
     const offset = (page - 1) * count;
+
     const todos = await prisma.todo.findMany({
       skip: offset,
       take: count,
