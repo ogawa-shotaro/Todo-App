@@ -8,6 +8,7 @@ import { UpdateTodoController } from "../controllers/todos/UpdateTodoController"
 import { validator } from "../middlewares/validateHandler";
 import { TodoRepository } from "../repositories/TodoRepository";
 import { createTodoSchema } from "../schemas/todos/createTodoSchema";
+import { getTodosSchema } from "../schemas/todos/getTodosSchema";
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ router
   .post(validator(createTodoSchema), (req, res, next) => {
     todoCreateController.create(req, res, next);
   })
-  .get((req, res, next) => {
+  .get(validator(getTodosSchema), (req, res, next) => {
     todosGetController.list(req, res, next);
   });
 
