@@ -19,7 +19,7 @@ describe("【APIテスト】 Todo1件の取得", () => {
         });
       }
     });
-    it("id:1のデータ取得", async () => {
+    it("【id:1】のデータ取得", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/1",
@@ -32,7 +32,7 @@ describe("【APIテスト】 Todo1件の取得", () => {
       expect(title).toEqual("ダミータイトル1");
       expect(body).toEqual("ダミーボディ1");
     });
-    it("id:2のデータ取得", async () => {
+    it("【id:2】のデータ取得", async () => {
       const response = await requestAPI({
         method: "get",
         endPoint: "/api/todos/2",
@@ -48,7 +48,7 @@ describe("【APIテスト】 Todo1件の取得", () => {
   });
 });
 describe("【異常パターン】", () => {
-  it("存在しないIDへのリクエストはエラーになる", async () => {
+  it("存在しないIDへのリクエストはエラーになる。", async () => {
     const response = await requestAPI({
       method: "get",
       endPoint: "/api/todos/999",
@@ -58,7 +58,7 @@ describe("【異常パターン】", () => {
     expect(response.body).toEqual({ message: "存在しないIDを指定しました。" });
     expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
   });
-  it("指定したIDが不正(整数の1以上でない値)の場合、エラーになる", async () => {
+  it("指定したIDが不正(整数の1以上でない値)の場合、エラーになる。", async () => {
     const response = await requestAPI({
       method: "get",
       endPoint: "/api/todos/0",
