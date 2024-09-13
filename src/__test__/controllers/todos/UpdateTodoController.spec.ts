@@ -113,7 +113,7 @@ describe("【ユニットテスト】 Todo一件の更新", () => {
       });
     });
     describe("【異常パターン】", () => {
-      it("【タイトルに不適切な値(文字列ではない値)が入力された場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+      it("【タイトルに不適切な値(文字列ではない値)が入力された場合】next関数(パラメーターがInvalidError)を実行する。", async () => {
         const req = createMockRequest({
           params: { id: "1" },
           body: { title: 111, body: "変更後のボディ" },
