@@ -65,13 +65,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async update({ id, title, body }: TodoUpdatedInput) {
-    if (
-      (title && typeof title !== "string") ||
-      (body && typeof body !== "string")
-    ) {
-      throw new InvalidError("入力内容が不適切(文字列のみ)です。");
-    }
-
     const updateItem = await prisma.todo.findUnique({
       where: { id: id },
     });

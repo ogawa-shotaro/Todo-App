@@ -10,6 +10,7 @@ import { TodoRepository } from "../repositories/TodoRepository";
 import { idParamsSchema } from "../schemas/shared/idParamsSchema";
 import { createTodoSchema } from "../schemas/todos/createTodoSchema";
 import { getTodosSchema } from "../schemas/todos/getTodosSchema";
+import { updateTodoSchema } from "../schemas/todos/updateTodoSchema";
 
 const router = express.Router();
 
@@ -34,7 +35,7 @@ router
   .get(validator(idParamsSchema), (req, res, next) => {
     todoGetController.find(req, res, next);
   })
-  .put((req, res, next) => {
+  .put(validator(updateTodoSchema), (req, res, next) => {
     todoUpdateController.update(req, res, next);
   })
   .delete((req, res, next) => {
