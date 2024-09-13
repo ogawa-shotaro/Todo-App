@@ -7,6 +7,7 @@ import { GetTodosController } from "../controllers/todos/GetTodosController";
 import { UpdateTodoController } from "../controllers/todos/UpdateTodoController";
 import { validator } from "../middlewares/validateHandler";
 import { TodoRepository } from "../repositories/TodoRepository";
+import { idParamsSchema } from "../schemas/shared/idParamsSchema";
 import { createTodoSchema } from "../schemas/todos/createTodoSchema";
 import { getTodosSchema } from "../schemas/todos/getTodosSchema";
 
@@ -30,7 +31,7 @@ router
 
 router
   .route("/:id")
-  .get((req, res, next) => {
+  .get(validator(idParamsSchema), (req, res, next) => {
     todoGetController.find(req, res, next);
   })
   .put((req, res, next) => {

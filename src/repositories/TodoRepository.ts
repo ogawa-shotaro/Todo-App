@@ -51,10 +51,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async find(id: number) {
-    if (id < 1 || !Number.isInteger(id)) {
-      throw new InvalidError("IDは1以上の整数のみ。");
-    }
-
     const todoItem = await prisma.todo.findUnique({
       where: {
         id: id,
