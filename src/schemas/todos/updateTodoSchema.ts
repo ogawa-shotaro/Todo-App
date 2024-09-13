@@ -1,16 +1,9 @@
 import { z } from "zod";
 
+import { idParamsSchema } from "../shared/idParamsSchema";
+
 export const updateTodoSchema = z.object({
-  params: z.object({
-    id: z.string().refine(
-      (id) => {
-        return Number(id) > 0;
-      },
-      {
-        message: "IDは1以上の整数のみ。",
-      },
-    ),
-  }),
+  params: idParamsSchema,
   body: z.object({
     title: z
       .string({
