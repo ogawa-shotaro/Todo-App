@@ -6,7 +6,7 @@ describe("【ユニットテスト】updateTodoSchemaの挙動テスト", () => 
   describe("【成功パターン】", () => {
     it("【バリデーションに成功した場合】例外が発生しない。", () => {
       const data = {
-        params: "1",
+        params: { id: "1" },
         body: {
           title: "変更後のタイトル",
           body: "変更後のボディ",
@@ -21,7 +21,7 @@ describe("【ユニットテスト】updateTodoSchemaの挙動テスト", () => 
   describe("【異常パターン】", () => {
     it("【IDの入力値が不正(整数の1以上でない値)な場合】例外が発生する。", () => {
       const data = {
-        params: "0",
+        params: { id: "0" },
         body: {
           title: "変更後のタイトル",
           body: "変更後のボディ",
@@ -33,14 +33,14 @@ describe("【ユニットテスト】updateTodoSchemaの挙動テスト", () => 
           {
             code: "custom",
             message: "IDは1以上の整数のみ。",
-            path: ["params"],
+            path: ["params", "id"],
           },
         ]),
       );
     });
     it("【タイトルに不適切な値(文字列ではない値)が入力された場合】例外が発生する。", () => {
       const data = {
-        params: "1",
+        params: { id: "1" },
         body: {
           title: 123,
           body: 456,
