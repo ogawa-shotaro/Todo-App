@@ -7,9 +7,9 @@ import { GetTodosController } from "../controllers/todos/GetTodosController";
 import { UpdateTodoController } from "../controllers/todos/UpdateTodoController";
 import { validator } from "../middlewares/validateHandler";
 import { TodoRepository } from "../repositories/TodoRepository";
+import { requestIdSchema } from "../schemas/shared/requestIdSchema";
 import { createTodoSchema } from "../schemas/todos/createTodoSchema";
 import { getTodosSchema } from "../schemas/todos/getTodosSchema";
-import { requestIdSchema } from "../schemas/todos/requestIdSchema";
 import { updateTodoSchema } from "../schemas/todos/updateTodoSchema";
 
 const router = express.Router();

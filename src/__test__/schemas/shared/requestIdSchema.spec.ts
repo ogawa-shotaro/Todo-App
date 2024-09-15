@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { requestIdSchema } from "../../../schemas/todos/requestIdSchema";
+import { requestIdSchema } from "../../../schemas/shared/requestIdSchema";
 
 describe("【ユニットテスト】requestIdSchemaの挙動テスト", () => {
   describe("【成功パターン】", () => {
