@@ -2,7 +2,7 @@ import { ZodError } from "zod";
 
 import { requestIdSchema } from "../../../schemas/todos/requestIdSchema";
 
-describe("【ユニットテスト】getTodoSchemaの挙動テスト", () => {
+describe("【ユニットテスト】requestIdSchemaの挙動テスト", () => {
   describe("【成功パターン】", () => {
     it("【バリデーションに成功した場合】例外が発生しない。", () => {
       const data = { params: { id: "1" } };
