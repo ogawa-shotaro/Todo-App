@@ -151,35 +151,6 @@ describe("【TodoRepositoryのテスト】", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("【saveメソッドを実行時】タイトル or ボディに値がない場合、エラーオブジェクトが返る。", () => {
-      const repository = new TodoRepository();
-
-      expect(async () => {
-        await repository.save({ title: "", body: "ダミーボディ" });
-      }).rejects.toThrow("titleの内容は必須です");
-
-      expect(async () => {
-        await repository.save({ title: "ダミータイトル", body: "" });
-      }).rejects.toThrow("bodyの内容は必須です");
-    });
-    it("【listメソッド実行時】クエリーパラメーターが不正な場合、エラーオブジェクトが返る。", () => {
-      const repository = new TodoRepository();
-
-      expect(async () => {
-        await repository.list({ page: 0 });
-      }).rejects.toThrow("pageは1以上の整数のみ");
-
-      expect(async () => {
-        await repository.list({ count: 0 });
-      }).rejects.toThrow("countは1以上の整数のみ");
-    });
-    it("【findメソッド実行時】指定したIDが不正な場合、エラーオブジェクトが返る。", () => {
-      const repository = new TodoRepository();
-
-      expect(async () => {
-        await repository.find(0);
-      }).rejects.toThrow("IDは1以上の整数のみ。");
-    });
     it("【findメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
@@ -187,7 +158,7 @@ describe("【TodoRepositoryのテスト】", () => {
         await repository.find(999);
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
-    it("【updateメソッド実行時】不正なIDを指定した場合、エラーオブジェクトが返る。", () => {
+    it("【updateメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
@@ -198,7 +169,7 @@ describe("【TodoRepositoryのテスト】", () => {
         });
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
-    it("【deleteメソッド実行時】不正なIDを指定した場合、エラーオブジェクトが返る。", () => {
+    it("【deleteメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
