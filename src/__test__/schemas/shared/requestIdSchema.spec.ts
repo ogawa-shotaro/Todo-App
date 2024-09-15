@@ -1,12 +1,12 @@
 import { ZodError } from "zod";
 
-import { getTodoSchema } from "../../../schemas/todos/getTodoSchema";
+import { requestIdSchema } from "../../../schemas/shared/requestIdSchema";
 
-describe("【ユニットテスト】getTodoSchemaの挙動テスト", () => {
+describe("【ユニットテスト】requestIdSchemaの挙動テスト", () => {
   describe("【成功パターン】", () => {
     it("【バリデーションに成功した場合】例外が発生しない。", () => {
       const data = { params: { id: "1" } };
-      const result = getTodoSchema.parse(data);
+      const result = requestIdSchema.parse(data);
 
       expect(result).toEqual(data);
     });
@@ -15,7 +15,7 @@ describe("【ユニットテスト】getTodoSchemaの挙動テスト", () => {
     it("【IDの入力値が不正(整数の1以上でない値)な場合】例外が発生する。", () => {
       const data = { params: { id: "0" } };
 
-      expect(() => getTodoSchema.parse(data)).toThrow(
+      expect(() => requestIdSchema.parse(data)).toThrow(
         new ZodError([
           {
             code: "custom",

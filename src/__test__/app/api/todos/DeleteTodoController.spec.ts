@@ -19,12 +19,12 @@ describe("【APIテスト】 Todo一件の削除", () => {
         });
       }
     });
-    it("deleteメソッド実行前、DBに格納されているTodoは3件である。", async () => {
+    it("【deleteメソッド実行前】DBに格納されているTodoは3件である。", async () => {
       const dbOldData = await prisma.todo.findMany({});
 
       expect(dbOldData.length).toEqual(3);
     });
-    it("id:1のデータ削除", async () => {
+    it("【id:1のデータ削除】", async () => {
       const response = await requestAPI({
         method: "delete",
         endPoint: "/api/todos/1",
@@ -36,7 +36,7 @@ describe("【APIテスト】 Todo一件の削除", () => {
       expect(title).toEqual("ダミータイトル1");
       expect(body).toEqual("ダミーボディ1");
     });
-    it("deleteメソッド実行後、3件のTodoから1件のデータが削除されている。", async () => {
+    it("【deleteメソッド実行後】3件のTodoから1件のデータが削除されている。", async () => {
       await requestAPI({
         method: "delete",
         endPoint: "/api/todos/1",
