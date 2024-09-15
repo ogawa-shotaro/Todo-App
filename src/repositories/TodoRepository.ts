@@ -3,7 +3,6 @@ import type { Todo } from "@prisma/client";
 
 import type { ITodoRepository } from "./ITodoRepository";
 
-import { InvalidError } from "../errors/InvalidError";
 import { NotFoundError } from "../errors/NotFoundError";
 import type { TodoInput } from "../types/TodoRequest.type";
 import type { TodoUpdatedInput } from "../types/TodoRequest.type";
@@ -85,10 +84,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async delete(id: number) {
-    if (id < 1 || !Number.isInteger(id)) {
-      throw new InvalidError("IDは1以上の整数のみ。");
-    }
-
     const deleteItem = await prisma.todo.findUnique({
       where: { id: id },
     });
