@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 import { UserRepository } from "../../repositories/UserRepository";
 
 describe("【UserRepositoryのテスト】", () => {
@@ -8,23 +10,30 @@ describe("【UserRepositoryのテスト】", () => {
       const initialUser = await repository.register({
         name: "ダミーユーザー1",
         password: "dammyPassword1",
-        email: "dammyData1.com",
+        email: "dammyData1@mail.com",
       });
+
       const secondUser = await repository.register({
         name: "ダミーユーザー2",
         password: "dammyPassword2",
-        email: "dammyData2.com",
+        email: "dammyData2@mail.com",
       });
 
-      expect(initialUser.id).toEqual(1);
-      expect(initialUser.name).toEqual("ダミーユーザー1");
-      expect(initialUser.email).toEqual("dammyData1.com");
-      expect(initialUser.password).toEqual("dammyPassword1");
+      expect(initialUser.user.id).toEqual(1);
+      expect(initialUser.user.name).toEqual("ダミーユーザー1");
+      expect(initialUser.user.email).toEqual("dammyData1@mail.com");
+      expect(
+        await bcrypt.compare("dammyPassword1", initialUser.user.password),
+      ).toEqual(true);
+      expect(typeof initialUser.token).toEqual("string");
 
-      expect(secondUser.id).toEqual(2);
-      expect(secondUser.name).toEqual("ダミーユーザー2");
-      expect(secondUser.email).toEqual("dammyData2.com");
-      expect(secondUser.password).toEqual("dammyPassword2");
+      expect(secondUser.user.id).toEqual(2);
+      expect(secondUser.user.name).toEqual("ダミーユーザー2");
+      expect(secondUser.user.email).toEqual("dammyData2@mail.com");
+      expect(
+        await bcrypt.compare("dammyPassword2", secondUser.user.password),
+      ).toEqual(true);
+      expect(typeof secondUser.token).toEqual("string");
     });
   });
   describe("【異常パターン】", () => {
@@ -34,14 +43,14 @@ describe("【UserRepositoryのテスト】", () => {
       await repository.register({
         name: "ダミーユーザー1",
         password: "dammyPassword1",
-        email: "dammyData1.com",
+        email: "dammyData1@mail.com",
       });
 
       await expect(
         repository.register({
           name: "ダミーユーザー2",
           password: "dammyPassword2",
-          email: "dammyData1.com",
+          email: "dammyData1@mail.com",
         }),
       ).rejects.toThrow("Unique constraint failed on the fields: (`email`)");
     });
