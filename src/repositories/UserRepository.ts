@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import type { User } from "@prisma/client";
 
-import { hashPassword } from "../auths/hashPassword";
+import { hashPassword } from "../auths/password_operator";
 import type { UserInput } from "../types/users/UserRequest.type";
 
 const prisma = new PrismaClient();

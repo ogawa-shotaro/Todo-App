@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 
-import { hashPassword } from "../../auths/hashPassword";
+import { hashPassword } from "../../auths/password_operator";
 
 describe("【ユニットテスト】", () => {
   it("【成功パターン】パスワードが正常にハッシュ化され、元のパスワードと比較して一致する。", async () => {
