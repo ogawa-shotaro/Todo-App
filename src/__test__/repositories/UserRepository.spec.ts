@@ -7,6 +7,7 @@ describe("【UserRepositoryのテスト】", () => {
   describe("【成功パターン】", () => {
     it("【registerメソッド実行時】DBにUserを保持する。", async () => {
       const repository = new UserRepository();
+      const secretKey = process.env.JWT_SECRET;
 
       const result1 = await repository.register({
         name: "ダミーユーザー1",
@@ -27,7 +28,7 @@ describe("【UserRepositoryのテスト】", () => {
         await bcrypt.compare("dammyPassword1", result1.user.password),
       ).toEqual(true);
 
-      const decodedToken1 = jwt.verify(result1.token, "JWT_SECRET_TEST");
+      const decodedToken1 = jwt.verify(result1.token, secretKey!);
       expect(decodedToken1).toMatchObject({ userId: result1.user.id });
 
       expect(result2.user.id).toEqual(2);
@@ -38,7 +39,7 @@ describe("【UserRepositoryのテスト】", () => {
       ).toEqual(true);
       expect(typeof result2.token).toEqual("string");
 
-      const decodedToken2 = jwt.verify(result2.token, "JWT_SECRET_TEST");
+      const decodedToken2 = jwt.verify(result2.token, secretKey!);
       expect(decodedToken2).toMatchObject({ userId: result2.user.id });
     });
   });

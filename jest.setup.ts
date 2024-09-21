@@ -5,7 +5,6 @@ import { PrismaClient } from "@prisma/client";
 dotenv.config({ path: "./.env.test" });
 
 const prisma = new PrismaClient();
-export const secretKey = process.env.JWT_SECRET;
 
 beforeAll(async () => {
   await prisma.$connect();
