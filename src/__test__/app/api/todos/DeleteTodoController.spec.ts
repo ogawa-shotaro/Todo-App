@@ -11,10 +11,23 @@ describe("【APIテスト】 Todo一件の削除", () => {
   describe("【成功パターン】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 3; i++) {
+        await prisma.user.create({
+          data: {
+            name: `ダミーユーザー${i}`,
+            password: `dammyPassword${i}`,
+            email: `dammyData${i}@mail.com`,
+          },
+        });
+      }
+
+      for (let i = 1; i <= 3; i++) {
         await prisma.todo.create({
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
+            user: {
+              connect: { id: i },
+            },
           },
         });
       }

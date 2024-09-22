@@ -14,12 +14,14 @@ export class UpdateTodoController {
     const id = req.params.id;
     const parsedId = parseInt(id, 10);
     const { title, body } = req.body;
+    const user_id = req.body.user_id;
 
     try {
       const responseData = await this.repository.update({
         id: parsedId,
         title: title,
         body: body,
+        user_id: user_id,
       });
 
       res.status(StatusCodes.OK).json(responseData);

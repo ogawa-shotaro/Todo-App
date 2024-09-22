@@ -17,8 +17,8 @@ export class CreateTodoController {
     next: NextFunction,
   ) {
     try {
-      const { title, body } = req.body;
-      const createdTodo = await this.repository.save({ title, body });
+      const { title, body, user_id } = req.body;
+      const createdTodo = await this.repository.save({ title, body, user_id });
 
       res.status(StatusCodes.OK).json(createdTodo);
     } catch (error) {

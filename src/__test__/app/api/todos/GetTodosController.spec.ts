@@ -12,10 +12,21 @@ describe("【APIテスト】 Todo一覧取得", () => {
   describe("【DBにデータあり】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 20; i++) {
+        await prisma.user.create({
+          data: {
+            name: `ダミーユーザー${i}`,
+            password: `dammyPassword${i}`,
+            email: `dammyData${i}@mail.com`,
+          },
+        });
+      }
+
+      for (let i = 1; i <= 20; i++) {
         await prisma.todo.create({
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
+            user_id: i,
           },
         });
       }

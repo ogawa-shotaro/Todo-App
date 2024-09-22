@@ -1,14 +1,30 @@
 import { StatusCodes } from "http-status-codes";
 
+import { PrismaClient } from "@prisma/client";
+
 import { TodoRepository } from "../../../../repositories/TodoRepository";
 import { requestAPI } from "../../../helper/requestHelper";
 
+const prisma = new PrismaClient();
+
 describe("【APIテスト】 Todo1件新規作成", () => {
   describe("【成功パターン】", () => {
+    beforeEach(async () => {
+      for (let i = 1; i <= 2; i++) {
+        await prisma.user.create({
+          data: {
+            name: `ダミーユーザー${i}`,
+            password: `dammyPassword${i}`,
+            email: `dammyData${i}@mail.com`,
+          },
+        });
+      }
+    });
     it("title.bodyを送ったら成功する", async () => {
       const request = {
         title: "ダミータイトル",
         body: "ダミーボディ",
+        user_id: 1,
       };
 
       const response = await requestAPI({
@@ -25,6 +41,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         body: "ダミーボディ",
         createdAt: responseDataResult.createdAt,
         updatedAt: responseDataResult.updatedAt,
+        user_id: responseDataResult.user_id,
       });
 
       expect(typeof Number(responseDataResult.id)).toEqual("number");
@@ -38,7 +55,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
   });
   describe("【異常パターン】", () => {
     it("【titleプロパティの入力値がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
-      const request = { body: "ダミーボディ" };
+      const request = { body: "ダミーボディ", user_id: 1 };
 
       const response = await requestAPI({
         method: "post",
@@ -52,7 +69,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【titleプロパティ有り・入力値(1文字以上)がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
-      const request = { title: "", body: "ダミーボディ" };
+      const request = { title: "", body: "ダミーボディ", user_id: 1 };
 
       const response = await requestAPI({
         method: "post",
@@ -66,7 +83,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【bodyプロパティの入力値がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
-      const request = { title: "ダミータイトル" };
+      const request = { title: "ダミータイトル", user_id: 1 };
 
       const response = await requestAPI({
         method: "post",
@@ -80,7 +97,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【bodyプロパティ有り・入力値(1文字以上)がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
-      const request = { title: "ダミータイトル", body: "" };
+      const request = { title: "ダミータイトル", body: "", user_id: 1 };
 
       const response = await requestAPI({
         method: "post",
@@ -104,6 +121,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       }).send({
         title: "ダミータイトル",
         body: "ダミーボディ",
+        user_id: 1,
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });

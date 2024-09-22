@@ -11,10 +11,23 @@ describe("【APIテスト】Todo一件の更新", () => {
   describe("【成功パターン】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 2; i++) {
+        await prisma.user.create({
+          data: {
+            name: `ダミーユーザー${i}`,
+            password: `dammyPassword${i}`,
+            email: `dammyData${i}@mail.com`,
+          },
+        });
+      }
+
+      for (let i = 1; i <= 2; i++) {
         await prisma.todo.create({
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
+            user: {
+              connect: { id: i },
+            },
           },
         });
       }
@@ -22,6 +35,7 @@ describe("【APIテスト】Todo一件の更新", () => {
     it("【id:1のデータ更新】タイトルのみ", async () => {
       const data = {
         title: "変更後のタイトル",
+        user_id: 1,
       };
 
       const response = await requestAPI({
@@ -39,6 +53,7 @@ describe("【APIテスト】Todo一件の更新", () => {
     it("【id:1のデータ更新】ボディのみ", async () => {
       const data = {
         body: "変更後のボディ",
+        user_id: 1,
       };
 
       const response = await requestAPI({
@@ -57,6 +72,7 @@ describe("【APIテスト】Todo一件の更新", () => {
       const data = {
         title: "変更後のタイトル",
         body: "変更後のボディ",
+        user_id: 2,
       };
 
       const response = await requestAPI({
@@ -80,7 +96,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.BAD_REQUEST,
-      }).send({ title: data });
+      }).send({ title: data, user_id: 1 });
 
       expect(response.body).toEqual({
         message: "入力内容が不適切(文字列のみ)です。",
@@ -94,7 +110,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.BAD_REQUEST,
-      }).send({ body: data });
+      }).send({ body: data, user_id: 1 });
 
       expect(response.body).toEqual({
         message: "入力内容が不適切(文字列のみ)です。",
@@ -106,7 +122,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/999",
         statusCode: StatusCodes.NOT_FOUND,
-      }).send({ title: "ダミータイトル", body: "ダミーボディ" });
+      }).send({ title: "ダミータイトル", body: "ダミーボディ", user_id: 999 });
 
       expect(response.body).toEqual({
         message: "存在しないIDを指定しました。",

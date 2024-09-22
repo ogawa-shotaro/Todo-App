@@ -2,30 +2,37 @@ import { PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
 
 import { TodoRepository } from "../../repositories/TodoRepository";
+import { UserRepository } from "../../repositories/UserRepository";
 
 const prisma = new PrismaClient();
 
 describe("【TodoRepositoryのテスト】", () => {
   describe("【成功パターン】", () => {
-    describe("【インスタンスのテスト】", () => {
-      it("TodoRepositoryのインスタンスが生成される。", () => {
-        const repository = new TodoRepository();
+    beforeEach(async () => {
+      const userRepository = new UserRepository();
 
-        expect(repository).toBeInstanceOf(TodoRepository);
-      });
+      for (let i = 1; i <= 21; i++) {
+        await userRepository.register({
+          name: `ダミーユーザー${i}`,
+          password: `dammyPassword${i}`,
+          email: `dammyData${i}@mail.com`,
+        });
+      }
     });
     describe("【saveメソッドのテスト】", () => {
       it("【saveメソッドを実行時】DBに値を保持し、その値に重複しないIDが付与される。", async () => {
-        const repository = new TodoRepository();
+        const todoRepository = new TodoRepository();
 
-        const initialTodo: Todo = await repository.save({
+        const initialTodo: Todo = await todoRepository.save({
           title: "ダミータイトル1",
           body: "ダミーボディ1",
+          user_id: 1,
         });
 
-        const secondTodo: Todo = await repository.save({
+        const secondTodo: Todo = await todoRepository.save({
           title: "ダミータイトル2",
           body: "ダミーボディ2",
+          user_id: 2,
         });
 
         expect(initialTodo.id).toEqual(1);
@@ -33,12 +40,14 @@ describe("【TodoRepositoryのテスト】", () => {
         expect(initialTodo.body).toEqual("ダミーボディ1");
         expect(initialTodo.createdAt).toBeInstanceOf(Date);
         expect(initialTodo.updatedAt).toBeInstanceOf(Date);
+        expect(initialTodo.user_id).toEqual(1);
 
         expect(secondTodo.id).toEqual(2);
         expect(secondTodo.title).toEqual("ダミータイトル2");
         expect(secondTodo.body).toEqual("ダミーボディ2");
         expect(secondTodo.createdAt).toBeInstanceOf(Date);
         expect(secondTodo.updatedAt).toBeInstanceOf(Date);
+        expect(secondTodo.user_id).toEqual(2);
       });
     });
     describe("【list・update・deleteメソッドのテスト】", () => {
@@ -48,6 +57,9 @@ describe("【TodoRepositoryのテスト】", () => {
             data: {
               title: "ダミータイトル" + i,
               body: "ダミーボディ" + i,
+              user: {
+                connect: { id: i },
+              },
             },
           });
         }
@@ -113,6 +125,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
+          user_id: 1,
         });
 
         expect(updatedTodo).toEqual({
@@ -121,6 +134,7 @@ describe("【TodoRepositoryのテスト】", () => {
           body: "変更後のボディ",
           createdAt: updatedTodo.createdAt,
           updatedAt: updatedTodo.updatedAt,
+          user_id: 1,
         });
       });
       it("【updateメソッドを実行時】updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
@@ -130,6 +144,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
+          user_id: 1,
         });
 
         expect(updatedTodo.createdAt < updatedTodo.updatedAt).toBeTruthy();
@@ -166,6 +181,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 999,
           title: "変更後のタイトル",
           body: "変更後のボディ",
+          user_id: 999,
         });
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
