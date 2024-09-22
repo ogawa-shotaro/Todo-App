@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 
 describe("【APIテスト】 Todo1件の取得", () => {
   describe("【成功パターン】", () => {
-    beforeEach(async () => {
+    beforeAll(async () => {
       for (let i = 1; i <= 2; i++) {
         await prisma.user.create({
           data: {
@@ -19,7 +19,8 @@ describe("【APIテスト】 Todo1件の取得", () => {
           },
         });
       }
-
+    });
+    beforeEach(async () => {
       for (let i = 1; i <= 2; i++) {
         await prisma.todo.create({
           data: {

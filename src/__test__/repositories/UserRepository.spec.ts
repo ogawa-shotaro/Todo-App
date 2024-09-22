@@ -1,8 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+import { PrismaClient } from "@prisma/client";
+
 import { UserRepository } from "../../repositories/UserRepository";
 
+const prisma = new PrismaClient();
 describe("【UserRepositoryのテスト】", () => {
   describe("【成功パターン】", () => {
     it("【registerメソッド実行時】DBにUserを保持する。", async () => {
@@ -44,6 +47,7 @@ describe("【UserRepositoryのテスト】", () => {
   });
   describe("【異常パターン】", () => {
     it("【registerメソッドを実行時】重複したemailはエラーとなる。", async () => {
+      await prisma.user.deleteMany();
       const repository = new UserRepository();
 
       await repository.register({

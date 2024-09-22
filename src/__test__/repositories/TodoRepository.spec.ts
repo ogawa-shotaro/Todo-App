@@ -8,7 +8,7 @@ const prisma = new PrismaClient();
 
 describe("【TodoRepositoryのテスト】", () => {
   describe("【成功パターン】", () => {
-    beforeEach(async () => {
+    beforeAll(async () => {
       const userRepository = new UserRepository();
 
       for (let i = 1; i <= 21; i++) {
