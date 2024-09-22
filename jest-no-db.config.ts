@@ -7,5 +7,6 @@ export default {
     "<rootDir>/src/__test__/controllers/**",
     "<rootDir>/src/__test__/middlewares/**",
     "<rootDir>/src/__test__/schemas/**",
+    "<rootDir>/src/__test__/auths/**",
   ],
 };
