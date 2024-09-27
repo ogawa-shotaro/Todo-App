@@ -2,11 +2,11 @@ import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
-import type { TodoInput } from "../../types/TodoRequest.type";
 
-export interface AuthenticatedRequest extends Request {
-  user?: string; // userIdをオプションとして追加
+interface AuthenticatedRequest extends Request {
+  user?: string;
 }
+
 export class CreateTodoController {
   private repository: ITodoRepository;
 
