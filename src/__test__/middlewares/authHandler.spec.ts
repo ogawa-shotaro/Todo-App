@@ -31,13 +31,15 @@ describe("【ユニットテスト】ミドルウェアでの認証機能のテ�
       authHandler(req, res, next);
 
       expect(next).toHaveBeenCalled();
-      expect(jwt.verify).toHaveBeenCalled();
+      expect(jwt.verify).toHaveBeenLastCalledWith(
+        "tokenedValue",
+        "JWT_SECRET_TEST",
+      );
     });
   });
   describe("【異常パターン】", () => {
     it("【トークンがない場合】next関数(エラーオブジェクトを含む)が呼ばれる。", () => {
       req = createMockRequest({ cookies: {} });
-      // req = createMockRequest({ cookies: {} });
       res = createMockResponse();
       next = jest.fn();
       authHandler(req, res, next);
