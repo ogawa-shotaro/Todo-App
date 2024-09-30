@@ -1,4 +1,4 @@
-import type { Request } from "express";
+import { AuthenticatedRequest } from "../../../types/users/UserAuthRequest.type";
 
 type RequestBody = Record<string, string | number>;
 type RequestParams = Record<string, string>;
@@ -8,16 +8,27 @@ type MockRequestArgMap = {
   body?: RequestBody;
   params?: RequestParams;
   query?: RequestQuery;
+  cookies?: Record<string, string>;
+};
+
+type MockAuthenticatedRequestArgMap = MockRequestArgMap & {
+  user?: {
+    id: number;
+  };
 };
 
 export const createMockRequest = ({
   body,
   params,
   query,
-}: MockRequestArgMap): Request => {
+  cookies,
+  user,
+}: MockAuthenticatedRequestArgMap): AuthenticatedRequest => {
   return {
     body: body ?? {},
     params: params ?? {},
     query: query ?? {},
-  } as Request;
+    cookies: cookies ?? {},
+    user: user ?? {},
+  } as AuthenticatedRequest;
 };

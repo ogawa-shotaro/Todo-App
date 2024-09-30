@@ -3,6 +3,7 @@ import { StatusCodes } from "http-status-codes";
 
 import { InvalidError } from "../errors/InvalidError";
 import { NotFoundError } from "../errors/NotFoundError";
+import { UnauthorizedError } from "../errors/UnauthorizedError";
 import type { ResponseErrorType } from "../types/TodoResponse.typs";
 
 export function errorHandler(
@@ -11,7 +12,11 @@ export function errorHandler(
   res: Response,
   next: NextFunction,
 ) {
-  if (err instanceof InvalidError || err instanceof NotFoundError) {
+  if (
+    err instanceof InvalidError ||
+    err instanceof NotFoundError ||
+    err instanceof UnauthorizedError
+  ) {
     res.status(err.statusCode).json({ message: err.message });
   } else {
     res
