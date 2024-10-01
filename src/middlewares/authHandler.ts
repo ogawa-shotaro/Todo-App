@@ -19,14 +19,17 @@ export function authHandler(
       token,
       process.env.JWT_SECRET!,
     ) as jwt.JwtPayload;
-    if (!decodedToken) {
-      throw new UnauthorizedError("認証に失敗しました。");
-    }
 
-    req.user = decodedToken.user_id;
+    req.user = { id: decodedToken.userId };
 
     next();
   } catch (error) {
+    if (
+      error instanceof jwt.JsonWebTokenError ||
+      error instanceof jwt.TokenExpiredError
+    ) {
+      next(new UnauthorizedError("認証に失敗しました。"));
+    }
     next(error);
   }
 }
