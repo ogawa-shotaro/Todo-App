@@ -10,22 +10,24 @@ type MockRequestArgMap = {
   body?: RequestBody;
   params?: RequestParams;
   query?: RequestQuery;
+  cookies?: Record<string, string>;
 };
 
 export const createMockRequest = ({
   body,
   params,
   query,
+  cookies,
 }: MockRequestArgMap): Request => {
   return {
     body: body ?? {},
     params: params ?? {},
     query: query ?? {},
+    cookies: cookies ?? {},
   } as Request;
 };
 
-type MockAuthenticatedRequestArgMap = {
-  cookies?: Record<string, string>;
+type MockAuthenticatedRequestArgMap = MockRequestArgMap & {
   user?: {
     id: number;
   };
@@ -37,8 +39,7 @@ export const createMockAuthenticatedRequest = ({
   query,
   cookies,
   user,
-}: MockAuthenticatedRequestArgMap &
-  MockRequestArgMap): AuthenticatedRequest => {
+}: MockAuthenticatedRequestArgMap): AuthenticatedRequest => {
   return {
     body: body ?? {},
     params: params ?? {},
