@@ -1,9 +1,8 @@
-import type { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { UnauthorizedError } from "../../errors/UnauthorizedError";
 import { authHandler } from "../../middlewares/authHandler";
-import { createMockAuthenticatedRequest } from "../helper/mocks/authRequest";
+import { createMockAuthenticatedRequest } from "../helper/mocks/request";
 import { createMockResponse } from "../helper/mocks/response";
 
 describe("【ユニットテスト】ミドルウェアでの認証機能のテスト", () => {
@@ -13,13 +12,13 @@ describe("【ユニットテスト】ミドルウェアでの認証機能のテ�
         expiresIn: "1h",
       });
 
-      const req: Request = createMockAuthenticatedRequest({
+      const req = createMockAuthenticatedRequest({
         cookies: {
           token: token,
         },
       });
-      const res: Response = createMockResponse();
-      const next: NextFunction = jest.fn();
+      const res = createMockResponse();
+      const next = jest.fn();
 
       authHandler(req, res, next);
 
@@ -29,9 +28,9 @@ describe("【ユニットテスト】ミドルウェアでの認証機能のテ�
   });
   describe("【異常パターン】", () => {
     it("【トークンがない場合】next関数(エラーオブジェクトを含む)が呼ばれる。", () => {
-      const req: Request = createMockAuthenticatedRequest({});
-      const res: Response = createMockResponse();
-      const next: NextFunction = jest.fn();
+      const req = createMockAuthenticatedRequest({});
+      const res = createMockResponse();
+      const next = jest.fn();
 
       authHandler(req, res, next);
 
@@ -42,13 +41,13 @@ describe("【ユニットテスト】ミドルウェアでの認証機能のテ�
         expiresIn: "1h",
       });
 
-      const req: Request = createMockAuthenticatedRequest({
+      const req = createMockAuthenticatedRequest({
         cookies: {
           token: token,
         },
       });
-      const res: Response = createMockResponse();
-      const next: NextFunction = jest.fn();
+      const res = createMockResponse();
+      const next = jest.fn();
 
       authHandler(req, res, next);
 
@@ -59,13 +58,13 @@ describe("【ユニットテスト】ミドルウェアでの認証機能のテ�
         expiresIn: "-1h",
       });
 
-      const req: Request = createMockAuthenticatedRequest({
+      const req = createMockAuthenticatedRequest({
         cookies: {
           token: token,
         },
       });
-      const res: Response = createMockResponse();
-      const next: NextFunction = jest.fn();
+      const res = createMockResponse();
+      const next = jest.fn();
 
       authHandler(req, res, next);
 
