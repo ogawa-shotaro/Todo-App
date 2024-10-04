@@ -27,6 +27,9 @@ export class TodoRepository implements ITodoRepository {
       data: {
         title: inputData.title,
         body: inputData.body,
+        user: {
+          connect: { id: inputData.user.id },
+        },
       },
     });
 

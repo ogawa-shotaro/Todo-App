@@ -1,6 +1,7 @@
 export interface TodoInput {
   title: string;
   body: string;
+  user: { id: number };
 }
 
 export interface TodoUpdatedInput extends TodoInput {
