@@ -9,10 +9,10 @@ const prisma = new PrismaClient();
 describe("【TodoRepositoryのテスト】", () => {
   describe("【成功パターン】", () => {
     beforeAll(async () => {
-      const userRepository = new UserRepository();
+      const repository = new UserRepository();
 
       for (let i = 1; i <= 21; i++) {
-        await userRepository.register({
+        await repository.register({
           name: `ダミーユーザー${i}`,
           password: `dammyPassword${i}`,
           email: `dammyData${i}@mail.com`,
@@ -21,15 +21,15 @@ describe("【TodoRepositoryのテスト】", () => {
     });
     describe("【saveメソッドのテスト】", () => {
       it("【saveメソッドを実行時】DBに値を保持し、その値に重複しないIDが付与される。", async () => {
-        const todoRepository = new TodoRepository();
+        const repository = new TodoRepository();
 
-        const initialTodo: Todo = await todoRepository.save({
+        const initialTodo: Todo = await repository.save({
           title: "ダミータイトル1",
           body: "ダミーボディ1",
           user: { id: 1 },
         });
 
-        const secondTodo: Todo = await todoRepository.save({
+        const secondTodo: Todo = await repository.save({
           title: "ダミータイトル2",
           body: "ダミーボディ2",
           user: { id: 2 },
