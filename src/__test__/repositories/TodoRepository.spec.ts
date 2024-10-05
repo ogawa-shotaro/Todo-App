@@ -7,18 +7,18 @@ import { UserRepository } from "../../repositories/UserRepository";
 const prisma = new PrismaClient();
 
 describe("【TodoRepositoryのテスト】", () => {
-  describe("【成功パターン】", () => {
-    beforeAll(async () => {
-      const repository = new UserRepository();
+  beforeAll(async () => {
+    const repository = new UserRepository();
 
-      for (let i = 1; i <= 21; i++) {
-        await repository.register({
-          name: `ダミーユーザー${i}`,
-          password: `dammyPassword${i}`,
-          email: `dammyData${i}@mail.com`,
-        });
-      }
-    });
+    for (let i = 1; i <= 21; i++) {
+      await repository.register({
+        name: `ダミーユーザー${i}`,
+        password: `dammyPassword${i}`,
+        email: `dammyData${i}@mail.com`,
+      });
+    }
+  });
+  describe("【成功パターン】", () => {
     describe("【saveメソッドのテスト】", () => {
       it("【saveメソッドを実行時】DBに値を保持し、その値に重複しないIDが付与される。", async () => {
         const repository = new TodoRepository();
@@ -50,7 +50,7 @@ describe("【TodoRepositoryのテスト】", () => {
         expect(secondTodo.user_id).toEqual(2);
       });
     });
-    describe("【list・update・deleteメソッドのテスト】", () => {
+    describe("【list・find・update・deleteメソッドのテスト】", () => {
       beforeEach(async () => {
         for (let i = 1; i <= 21; i++) {
           await prisma.todo.create({
@@ -58,7 +58,7 @@ describe("【TodoRepositoryのテスト】", () => {
               title: "ダミータイトル" + i,
               body: "ダミーボディ" + i,
               user: {
-                connect: { id: i },
+                connect: { id: 1 },
               },
             },
           });
@@ -66,7 +66,7 @@ describe("【TodoRepositoryのテスト】", () => {
       });
       it("【listメソッドを実行時】パラメーターの指定がない場合は、先頭から10件のデータを取得する。", async () => {
         const repository = new TodoRepository();
-        const todoList = await repository.list();
+        const todoList = await repository.list({ userId: 1 });
 
         expect(todoList.length).toEqual(10);
         expect(todoList[2].id).toEqual(3);
@@ -75,7 +75,7 @@ describe("【TodoRepositoryのテスト】", () => {
       });
       it("【listメソッドを実行時】パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する。", async () => {
         const repository = new TodoRepository();
-        const todoList = await repository.list({ page: 2 });
+        const todoList = await repository.list({ userId: 1 }, { page: 2 });
 
         expect(todoList.length).toEqual(10);
         expect(todoList[0].id).toEqual(11);
@@ -84,7 +84,7 @@ describe("【TodoRepositoryのテスト】", () => {
       });
       it("【listメソッドを実行時】パラメーターの指定(count=5)をした場合、先頭から5件のデータを取得する。", async () => {
         const repository = new TodoRepository();
-        const todoList = await repository.list({ count: 5 });
+        const todoList = await repository.list({ userId: 1 }, { count: 5 });
 
         expect(todoList.length).toEqual(5);
         expect(todoList[4].id).toEqual(5);
@@ -93,7 +93,10 @@ describe("【TodoRepositoryのテスト】", () => {
       });
       it("【listメソッドを実行時】パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータを取得する。", async () => {
         const repository = new TodoRepository();
-        const todoList = await repository.list({ page: 2, count: 3 });
+        const todoList = await repository.list(
+          { userId: 1 },
+          { page: 2, count: 3 },
+        );
 
         expect(todoList.length).toEqual(3);
         expect(todoList[0].id).toEqual(4);
@@ -103,8 +106,8 @@ describe("【TodoRepositoryのテスト】", () => {
       it("【findメソッドを実行時】DBに保持されているデータから、一件のTodoを取得する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        const initialTodo = await repository.find(1);
-        const secondTodo = await repository.find(2);
+        const initialTodo = await repository.find({ userId: 1, todoId: 1 });
+        const secondTodo = await repository.find({ userId: 1, todoId: 2 });
 
         expect(initialTodo?.id).toEqual(1);
         expect(initialTodo?.title).toEqual("ダミータイトル1");
@@ -152,9 +155,9 @@ describe("【TodoRepositoryのテスト】", () => {
       it("【deleteメソッドを実行時】DB内の指定したTodoを削除する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        const oldTodos = await repository.list();
-        const deletedTodo = await repository.delete(1);
-        const newTodos = await repository.list();
+        const oldTodos = await repository.list({ userId: 1 });
+        const deletedTodo = await repository.delete({ userId: 1, todoId: 1 });
+        const newTodos = await repository.list({ userId: 1 });
 
         const oldTodoIds = oldTodos.map((todo) => todo.id);
         const newTodoIds = newTodos.map((todo) => todo.id);
@@ -166,30 +169,65 @@ describe("【TodoRepositoryのテスト】", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("【findメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
+    it("【saveメソッド実行時】認証に失敗(ユーザーIDがない)した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
-        await repository.find(999);
+        await repository.save({
+          title: "ダミータイトル1",
+          body: "ダミーボディ1",
+          user: { id: 999 },
+        });
+      }).rejects.toThrow("Todoの作成は、認証ユーザーのみ可能です。");
+    });
+    it("【listメソッド実行時】認証に失敗(ユーザーIDがない)した場合、エラーオブジェクトが返る。", () => {
+      const repository = new TodoRepository();
+
+      expect(async () => {
+        await repository.list({ userId: 999 });
+      }).rejects.toThrow("Todoの閲覧は、認証ユーザーのみ可能です。");
+    });
+    it("【findメソッド実行時】認証に失敗(ユーザーIDがない) or 存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
+      const repository = new TodoRepository();
+
+      expect(async () => {
+        await repository.find({ userId: 999, todoId: 1 });
+      }).rejects.toThrow("Todoの閲覧は、認証ユーザーのみ可能です。");
+
+      expect(async () => {
+        await repository.find({ userId: 1, todoId: 999 });
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
-    it("【updateメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
+    it("【updateメソッド実行時】認証に失敗(ユーザーIDがない) or 存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
+
+      expect(async () => {
+        await repository.update({
+          id: 1,
+          title: "変更後のタイトル",
+          body: "変更後のボディ",
+          user: { id: 999 },
+        });
+      }).rejects.toThrow("Todoの更新は、認証ユーザーのみ可能です。");
 
       expect(async () => {
         await repository.update({
           id: 999,
           title: "変更後のタイトル",
           body: "変更後のボディ",
-          user: { id: 999 },
+          user: { id: 1 },
         });
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
-    it("【deleteメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
+    it("【deleteメソッド実行時】認証に失敗(ユーザーIDがない) or 存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
-        await repository.delete(999);
+        await repository.delete({ userId: 999, todoId: 1 });
+      }).rejects.toThrow("Todoの削除は、認証ユーザーのみ可能です。");
+
+      expect(async () => {
+        await repository.delete({ userId: 1, todoId: 999 });
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
   });

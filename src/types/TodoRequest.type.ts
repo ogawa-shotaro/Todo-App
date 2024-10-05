@@ -4,11 +4,19 @@ export interface TodoInput {
   user: { id: number };
 }
 
+export interface TodoFindParams {
+  userId: number;
+  todoId: number;
+}
+
 export interface TodoUpdatedInput extends TodoInput {
   id: number;
 }
 
 export interface TodoListParams {
-  page: number;
-  count: number;
+  userId: number;
+  todoListRange?: {
+    page?: number;
+    count?: number;
+  };
 }
