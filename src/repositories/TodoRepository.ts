@@ -4,9 +4,13 @@ import type { Todo } from "@prisma/client";
 import type { ITodoRepository } from "./ITodoRepository";
 
 import { NotFoundError } from "../errors/NotFoundError";
-import { UnauthorizedError } from "../errors/UnauthorizedError";
-import type { TodoFindParams, TodoInput } from "../types/TodoRequest.type";
-import type { TodoUpdatedInput } from "../types/TodoRequest.type";
+import type {
+  TodoDeletionParams,
+  TodoFindParams,
+  TodoInput,
+  TodoListParams,
+} from "../types/TodoRequest.type";
+import type { TodoModificationParams } from "../types/TodoRequest.type";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
@@ -24,16 +28,12 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async save(inputData: TodoInput) {
-    if (!inputData.user.id) {
-      throw new UnauthorizedError("Todoの作成は、認証ユーザーのみ可能です。");
-    }
-
     const todoData: Todo = await prisma.todo.create({
       data: {
         title: inputData.title,
         body: inputData.body,
         user: {
-          connect: { id: inputData.user.id },
+          connect: { id: inputData.userId },
         },
       },
     });
@@ -41,21 +41,10 @@ export class TodoRepository implements ITodoRepository {
     return todoData;
   }
 
-  async list(
-    { userId }: { userId: number },
-    { page = DEFAULT_PAGE, count = DEFAULT_COUNT } = {
-      page: DEFAULT_PAGE,
-      count: DEFAULT_COUNT,
-    },
-  ) {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!user) {
-      throw new UnauthorizedError("Todoの閲覧は、認証ユーザーのみ可能です。");
-    }
-
+  async list({
+    page = DEFAULT_PAGE,
+    count = DEFAULT_COUNT,
+  }: TodoListParams = {}) {
     const offset = (page - 1) * count;
 
     const todos = await prisma.todo.findMany({
@@ -67,14 +56,6 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async find(inputData: TodoFindParams) {
-    const user = await prisma.user.findUnique({
-      where: { id: inputData.userId },
-    });
-
-    if (!user) {
-      throw new UnauthorizedError("Todoの閲覧は、認証ユーザーのみ可能です。");
-    }
-
     const todoItem = await prisma.todo.findUnique({
       where: {
         id: inputData.todoId,
@@ -88,25 +69,17 @@ export class TodoRepository implements ITodoRepository {
     return todoItem;
   }
 
-  async update(inputData: TodoUpdatedInput) {
-    const user = await prisma.user.findUnique({
-      where: { id: inputData.user.id },
-    });
-
-    if (!user) {
-      throw new UnauthorizedError("Todoの更新は、認証ユーザーのみ可能です。");
-    }
-
+  async update(inputData: TodoModificationParams) {
     const updateItem = await prisma.todo.findUnique({
-      where: { id: inputData.id },
+      where: { id: inputData.id, user_id: inputData.userId },
     });
 
     if (!updateItem) {
-      throw new NotFoundError("存在しないIDを指定しました。");
+      throw new NotFoundError("Todoの更新に失敗しました。");
     }
 
     const updatedItem = await prisma.todo.update({
-      where: { id: inputData.id, user_id: inputData.user.id },
+      where: { id: updateItem.id },
       data: {
         title: inputData.title,
         body: inputData.body,
@@ -116,23 +89,16 @@ export class TodoRepository implements ITodoRepository {
     return updatedItem;
   }
 
-  async delete(inputData: TodoFindParams) {
-    const user = await prisma.user.findUnique({
-      where: { id: inputData.userId },
-    });
-
-    if (!user) {
-      throw new UnauthorizedError("Todoの削除は、認証ユーザーのみ可能です。");
-    }
-
+  async delete(inputData: TodoDeletionParams) {
     const deleteItem = await prisma.todo.findUnique({
       where: {
         id: inputData.todoId,
+        user_id: inputData.userId,
       },
     });
 
     if (!deleteItem) {
-      throw new NotFoundError("存在しないIDを指定しました。");
+      throw new NotFoundError("Todoの削除に失敗しました。");
     }
 
     const deletedItem = prisma.todo.delete({
