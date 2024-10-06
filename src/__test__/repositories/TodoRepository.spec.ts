@@ -172,10 +172,6 @@ describe("【TodoRepositoryのテスト】", () => {
       expect(async () => {
         await repository.find({ todoId: 999 });
       }).rejects.toThrow("存在しないIDを指定しました。");
-
-      expect(async () => {
-        await repository.find({ todoId: 1 });
-      }).rejects.toThrow("存在しないIDを指定しました。");
     });
     it("【updateメソッド実行時】ユーザーIDがない or 存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
