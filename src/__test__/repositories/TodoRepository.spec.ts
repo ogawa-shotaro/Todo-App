@@ -1,19 +1,25 @@
 import { PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
 
+import { InternalServerError } from "../../errors/InternalServerError";
 import { TodoRepository } from "../../repositories/TodoRepository";
+import { UserRepository } from "../../repositories/UserRepository";
 
 const prisma = new PrismaClient();
 
 describe("【TodoRepositoryのテスト】", () => {
-  describe("【成功パターン】", () => {
-    describe("【インスタンスのテスト】", () => {
-      it("TodoRepositoryのインスタンスが生成される。", () => {
-        const repository = new TodoRepository();
+  beforeAll(async () => {
+    const repository = new UserRepository();
 
-        expect(repository).toBeInstanceOf(TodoRepository);
+    for (let i = 1; i <= 2; i++) {
+      await repository.register({
+        name: `ダミーユーザー${i}`,
+        password: `dammyPassword${i}`,
+        email: `dammyData${i}@mail.com`,
       });
-    });
+    }
+  });
+  describe("【成功パターン】", () => {
     describe("【saveメソッドのテスト】", () => {
       it("【saveメソッドを実行時】DBに値を保持し、その値に重複しないIDが付与される。", async () => {
         const repository = new TodoRepository();
@@ -21,11 +27,13 @@ describe("【TodoRepositoryのテスト】", () => {
         const initialTodo: Todo = await repository.save({
           title: "ダミータイトル1",
           body: "ダミーボディ1",
+          userId: 1,
         });
 
         const secondTodo: Todo = await repository.save({
           title: "ダミータイトル2",
           body: "ダミーボディ2",
+          userId: 2,
         });
 
         expect(initialTodo.id).toEqual(1);
@@ -33,21 +41,26 @@ describe("【TodoRepositoryのテスト】", () => {
         expect(initialTodo.body).toEqual("ダミーボディ1");
         expect(initialTodo.createdAt).toBeInstanceOf(Date);
         expect(initialTodo.updatedAt).toBeInstanceOf(Date);
+        expect(initialTodo.userId).toEqual(1);
 
         expect(secondTodo.id).toEqual(2);
         expect(secondTodo.title).toEqual("ダミータイトル2");
         expect(secondTodo.body).toEqual("ダミーボディ2");
         expect(secondTodo.createdAt).toBeInstanceOf(Date);
         expect(secondTodo.updatedAt).toBeInstanceOf(Date);
+        expect(secondTodo.userId).toEqual(2);
       });
     });
-    describe("【list・update・deleteメソッドのテスト】", () => {
+    describe("【list・find・update・deleteメソッドのテスト】", () => {
       beforeEach(async () => {
         for (let i = 1; i <= 21; i++) {
           await prisma.todo.create({
             data: {
               title: "ダミータイトル" + i,
               body: "ダミーボディ" + i,
+              user: {
+                connect: { id: 1 },
+              },
             },
           });
         }
@@ -91,8 +104,8 @@ describe("【TodoRepositoryのテスト】", () => {
       it("【findメソッドを実行時】DBに保持されているデータから、一件のTodoを取得する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        const initialTodo = await repository.find(1);
-        const secondTodo = await repository.find(2);
+        const initialTodo = await repository.find({ todoId: 1 });
+        const secondTodo = await repository.find({ todoId: 2 });
 
         expect(initialTodo?.id).toEqual(1);
         expect(initialTodo?.title).toEqual("ダミータイトル1");
@@ -113,6 +126,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
+          userId: 1,
         });
 
         expect(updatedTodo).toEqual({
@@ -121,6 +135,7 @@ describe("【TodoRepositoryのテスト】", () => {
           body: "変更後のボディ",
           createdAt: updatedTodo.createdAt,
           updatedAt: updatedTodo.updatedAt,
+          userId: 1,
         });
       });
       it("【updateメソッドを実行時】updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
@@ -130,6 +145,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
+          userId: 1,
         });
 
         expect(updatedTodo.createdAt < updatedTodo.updatedAt).toBeTruthy();
@@ -138,7 +154,7 @@ describe("【TodoRepositoryのテスト】", () => {
         const repository = new TodoRepository();
 
         const oldTodos = await repository.list();
-        const deletedTodo = await repository.delete(1);
+        const deletedTodo = await repository.delete({ userId: 1, todoId: 1 });
         const newTodos = await repository.list();
 
         const oldTodoIds = oldTodos.map((todo) => todo.id);
@@ -151,14 +167,14 @@ describe("【TodoRepositoryのテスト】", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("【findメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
+    it("【findメソッド実行時】存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
-        await repository.find(999);
+        await repository.find({ todoId: 999 });
       }).rejects.toThrow("存在しないIDを指定しました。");
     });
-    it("【updateメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
+    it("【updateメソッド実行時】ユーザーIDがない or 存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
@@ -166,15 +182,56 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 999,
           title: "変更後のタイトル",
           body: "変更後のボディ",
+          userId: 1,
         });
-      }).rejects.toThrow("存在しないIDを指定しました。");
+      }).rejects.toThrow("Todoの更新に失敗しました。");
+
+      expect(async () => {
+        await repository.update({
+          id: 1,
+          title: "変更後のタイトル",
+          body: "変更後のボディ",
+          userId: 999,
+        });
+      }).rejects.toThrow("Todoの更新に失敗しました。");
     });
-    it("【deleteメソッド実行時】指定したIDのデータがない場合、エラーオブジェクトが返る。", () => {
+    it("【updateメソッド実行時】プログラムの意図しないエラー(DB側の問題等)は、InternalServerErrorが返る。", async () => {
+      const repository = new TodoRepository();
+
+      jest.spyOn(repository, "update").mockImplementationOnce(async () => {
+        throw new InternalServerError("データベースにエラーが発生しました。");
+      });
+
+      await expect(
+        repository.update({
+          id: 1,
+          title: "変更後のタイトル",
+          body: "変更後のボディ",
+          userId: 1,
+        }),
+      ).rejects.toThrow("データベースにエラーが発生しました。");
+    });
+    it("【deleteメソッド実行時】ユーザーIDがない or 存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
-        await repository.delete(999);
-      }).rejects.toThrow("存在しないIDを指定しました。");
+        await repository.delete({ userId: 1, todoId: 999 });
+      }).rejects.toThrow("Todoの削除に失敗しました。");
+
+      expect(async () => {
+        await repository.delete({ userId: 999, todoId: 1 });
+      }).rejects.toThrow("Todoの削除に失敗しました。");
+    });
+    it("【deleteメソッド実行時】プログラムの意図しないエラー(DB側の問題等)は、InternalServerErrorが返る。", async () => {
+      const repository = new TodoRepository();
+
+      jest.spyOn(repository, "delete").mockImplementationOnce(async () => {
+        throw new InternalServerError("データベースにエラーが発生しました。");
+      });
+
+      await expect(repository.delete({ userId: 1, todoId: 1 })).rejects.toThrow(
+        "データベースにエラーが発生しました。",
+      );
     });
   });
 });

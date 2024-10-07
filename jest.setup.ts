@@ -18,10 +18,10 @@ beforeEach(async () => {
 
 afterAll(async () => {
   await resetDatabase();
+  await prisma.user.deleteMany();
   await prisma.$disconnect();
 });
 
 async function resetDatabase() {
   await prisma.todo.deleteMany();
-  await prisma.user.deleteMany();
 }

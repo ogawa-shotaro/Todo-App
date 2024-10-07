@@ -1,11 +1,17 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
 
 import type { ITodoRepository } from "./ITodoRepository";
 
+import { InternalServerError } from "../errors/InternalServerError";
 import { NotFoundError } from "../errors/NotFoundError";
-import type { TodoInput } from "../types/TodoRequest.type";
-import type { TodoUpdatedInput } from "../types/TodoRequest.type";
+import type {
+  TodoDeletionParams,
+  TodoFindParams,
+  TodoInput,
+  TodoListParams,
+  TodoModificationParams,
+} from "../types/TodoRequest.type";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
@@ -27,18 +33,19 @@ export class TodoRepository implements ITodoRepository {
       data: {
         title: inputData.title,
         body: inputData.body,
+        user: {
+          connect: { id: inputData.userId },
+        },
       },
     });
 
     return todoData;
   }
 
-  async list(
-    { page = DEFAULT_PAGE, count = DEFAULT_COUNT } = {
-      page: DEFAULT_PAGE,
-      count: DEFAULT_COUNT,
-    },
-  ) {
+  async list({
+    page = DEFAULT_PAGE,
+    count = DEFAULT_COUNT,
+  }: TodoListParams = {}) {
     const offset = (page - 1) * count;
 
     const todos = await prisma.todo.findMany({
@@ -49,10 +56,10 @@ export class TodoRepository implements ITodoRepository {
     return todos;
   }
 
-  async find(id: number) {
+  async find(inputData: TodoFindParams) {
     const todoItem = await prisma.todo.findUnique({
       where: {
-        id: id,
+        id: inputData.todoId,
       },
     });
 
@@ -63,39 +70,45 @@ export class TodoRepository implements ITodoRepository {
     return todoItem;
   }
 
-  async update({ id, title, body }: TodoUpdatedInput) {
-    const updateItem = await prisma.todo.findUnique({
-      where: { id: id },
-    });
+  async update(inputData: TodoModificationParams) {
+    try {
+      const updatedItem = await prisma.todo.update({
+        where: { id: inputData.id, userId: inputData.userId },
+        data: {
+          title: inputData.title,
+          body: inputData.body,
+        },
+      });
 
-    if (!updateItem) {
-      throw new NotFoundError("存在しないIDを指定しました。");
+      return updatedItem;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new NotFoundError("Todoの更新に失敗しました。");
+      } else {
+        throw new InternalServerError("データベースにエラーが発生しました。");
+      }
     }
-
-    const updatedItem = await prisma.todo.update({
-      where: { id: id },
-      data: {
-        title: title,
-        body: body,
-      },
-    });
-
-    return updatedItem;
   }
 
-  async delete(id: number) {
-    const deleteItem = await prisma.todo.findUnique({
-      where: { id: id },
-    });
+  async delete(inputData: TodoDeletionParams) {
+    try {
+      const deletedItem = await prisma.todo.delete({
+        where: { id: inputData.todoId, userId: inputData.userId },
+      });
 
-    if (!deleteItem) {
-      throw new NotFoundError("存在しないIDを指定しました。");
+      return deletedItem;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new NotFoundError("Todoの削除に失敗しました。");
+      } else {
+        throw new InternalServerError("データベースにエラーが発生しました。");
+      }
     }
-
-    const responseDeleteItem = prisma.todo.delete({
-      where: { id: id },
-    });
-
-    return responseDeleteItem;
   }
 }
