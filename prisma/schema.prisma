@@ -13,8 +13,8 @@ model Todo {
   body String
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-  user_id   Int
-  user User    @relation(fields: [user_id], references: [id])
+  userId    Int      @map("user_id") 
+  user User    @relation(fields: [userId], references: [id])
 }
 
 model User {

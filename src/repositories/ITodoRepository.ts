@@ -2,11 +2,11 @@ import type { Todo } from "@prisma/client";
 
 import type {
   TodoDeletionParams,
+  TodoFindParams,
   TodoInput,
   TodoListParams,
+  TodoModificationParams,
 } from "../types/TodoRequest.type";
-import type { TodoModificationParams } from "../types/TodoRequest.type";
-import type { TodoFindParams } from "../types/TodoRequest.type";
 
 export interface ITodoRepository {
   save(inputData: TodoInput): Promise<Todo>;

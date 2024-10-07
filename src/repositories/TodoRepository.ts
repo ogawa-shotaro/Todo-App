@@ -1,16 +1,17 @@
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
 
 import type { ITodoRepository } from "./ITodoRepository";
 
+import { DatabaseError } from "../errors/DatabaseError";
 import { NotFoundError } from "../errors/NotFoundError";
 import type {
   TodoDeletionParams,
   TodoFindParams,
   TodoInput,
   TodoListParams,
+  TodoModificationParams,
 } from "../types/TodoRequest.type";
-import type { TodoModificationParams } from "../types/TodoRequest.type";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
@@ -70,41 +71,61 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async update(inputData: TodoModificationParams) {
-    const updateItem = await prisma.todo.findUnique({
-      where: { id: inputData.id, user_id: inputData.userId },
-    });
+    try {
+      const updatedItem = await prisma.todo.update({
+        where: { id: inputData.id, userId: inputData.userId },
+        data: {
+          title: inputData.title,
+          body: inputData.body,
+        },
+      });
 
-    if (!updateItem) {
-      throw new NotFoundError("Todoの更新に失敗しました。");
+      return updatedItem;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new NotFoundError("Todoの更新に失敗しました。");
+      } else {
+        throw new DatabaseError("データベースにエラーが発生しました。");
+      }
     }
-
-    const updatedItem = await prisma.todo.update({
-      where: { id: updateItem.id },
-      data: {
-        title: inputData.title,
-        body: inputData.body,
-      },
-    });
-
-    return updatedItem;
   }
 
   async delete(inputData: TodoDeletionParams) {
-    const deleteItem = await prisma.todo.findUnique({
-      where: {
-        id: inputData.todoId,
-        user_id: inputData.userId,
-      },
-    });
+    try {
+      const deletedItem = await prisma.todo.delete({
+        where: { id: inputData.todoId, userId: inputData.userId },
+      });
 
-    if (!deleteItem) {
-      throw new NotFoundError("Todoの削除に失敗しました。");
+      return deletedItem;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new NotFoundError("Todoの削除に失敗しました。");
+      } else {
+        throw new DatabaseError("データベースにエラーが発生しました。");
+      }
     }
-
-    const deletedItem = prisma.todo.delete({
-      where: { id: deleteItem.id },
-    });
-
-    return deletedItem;
   }
 }
+// const updateItem = await prisma.todo.findUnique({
+//   where: { id: inputData.id, userId: inputData.userId },
+// });
+
+// if (!updateItem) {
+//   throw new NotFoundError("Todoの更新に失敗しました。");
+// }
+
+// const updatedItem = await prisma.todo.update({
+//   where: { id: updateItem.id },
+//   data: {
+//     title: inputData.title,
+//     body: inputData.body,
+//   },
+// });
+
+// return updatedItem;

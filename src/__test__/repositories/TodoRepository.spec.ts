@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
 
+import { DatabaseError } from "../../errors/DatabaseError";
 import { TodoRepository } from "../../repositories/TodoRepository";
 import { UserRepository } from "../../repositories/UserRepository";
 
@@ -40,14 +41,14 @@ describe("【TodoRepositoryのテスト】", () => {
         expect(initialTodo.body).toEqual("ダミーボディ1");
         expect(initialTodo.createdAt).toBeInstanceOf(Date);
         expect(initialTodo.updatedAt).toBeInstanceOf(Date);
-        expect(initialTodo.user_id).toEqual(1);
+        expect(initialTodo.userId).toEqual(1);
 
         expect(secondTodo.id).toEqual(2);
         expect(secondTodo.title).toEqual("ダミータイトル2");
         expect(secondTodo.body).toEqual("ダミーボディ2");
         expect(secondTodo.createdAt).toBeInstanceOf(Date);
         expect(secondTodo.updatedAt).toBeInstanceOf(Date);
-        expect(secondTodo.user_id).toEqual(2);
+        expect(secondTodo.userId).toEqual(2);
       });
     });
     describe("【list・find・update・deleteメソッドのテスト】", () => {
@@ -134,7 +135,7 @@ describe("【TodoRepositoryのテスト】", () => {
           body: "変更後のボディ",
           createdAt: updatedTodo.createdAt,
           updatedAt: updatedTodo.updatedAt,
-          user_id: 1,
+          userId: 1,
         });
       });
       it("【updateメソッドを実行時】updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
@@ -194,6 +195,22 @@ describe("【TodoRepositoryのテスト】", () => {
         });
       }).rejects.toThrow("Todoの更新に失敗しました。");
     });
+    it("【updateメソッド実行時】プログラムの意図しないエラー(DB側の問題等)は、DatabaseError(InternalServerError)が返る。", async () => {
+      const repository = new TodoRepository();
+
+      jest.spyOn(repository, "update").mockImplementationOnce(async () => {
+        throw new DatabaseError("データベースにエラーが発生しました。");
+      });
+
+      await expect(
+        repository.update({
+          id: 1,
+          title: "変更後のタイトル",
+          body: "変更後のボディ",
+          userId: 1,
+        }),
+      ).rejects.toThrow("データベースにエラーが発生しました。");
+    });
     it("【deleteメソッド実行時】ユーザーIDがない or 存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
@@ -204,6 +221,17 @@ describe("【TodoRepositoryのテスト】", () => {
       expect(async () => {
         await repository.delete({ userId: 999, todoId: 1 });
       }).rejects.toThrow("Todoの削除に失敗しました。");
+    });
+    it("【deleteメソッド実行時】プログラムの意図しないエラー(DB側の問題等)は、DatabaseError(InternalServerError)が返る。", async () => {
+      const repository = new TodoRepository();
+
+      jest.spyOn(repository, "delete").mockImplementationOnce(async () => {
+        throw new DatabaseError("データベースにエラーが発生しました。");
+      });
+
+      await expect(repository.delete({ userId: 1, todoId: 1 })).rejects.toThrow(
+        "データベースにエラーが発生しました。",
+      );
     });
   });
 });
