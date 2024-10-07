@@ -112,20 +112,3 @@ export class TodoRepository implements ITodoRepository {
     }
   }
 }
-// const updateItem = await prisma.todo.findUnique({
-//   where: { id: inputData.id, userId: inputData.userId },
-// });
-
-// if (!updateItem) {
-//   throw new NotFoundError("Todoの更新に失敗しました。");
-// }
-
-// const updatedItem = await prisma.todo.update({
-//   where: { id: updateItem.id },
-//   data: {
-//     title: inputData.title,
-//     body: inputData.body,
-//   },
-// });
-
-// return updatedItem;
