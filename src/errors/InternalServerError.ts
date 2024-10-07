@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-export class DatabaseError extends Error {
+export class InternalServerError extends Error {
   statusCode: StatusCodes.INTERNAL_SERVER_ERROR;
 
   constructor(message: string) {

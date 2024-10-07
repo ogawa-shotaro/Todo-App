@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import type { Todo } from "@prisma/client";
 
-import { DatabaseError } from "../../errors/DatabaseError";
+import { InternalServerError } from "../../errors/InternalServerError";
 import { TodoRepository } from "../../repositories/TodoRepository";
 import { UserRepository } from "../../repositories/UserRepository";
 
@@ -195,11 +195,11 @@ describe("【TodoRepositoryのテスト】", () => {
         });
       }).rejects.toThrow("Todoの更新に失敗しました。");
     });
-    it("【updateメソッド実行時】プログラムの意図しないエラー(DB側の問題等)は、DatabaseError(InternalServerError)が返る。", async () => {
+    it("【updateメソッド実行時】プログラムの意図しないエラー(DB側の問題等)は、InternalServerErrorが返る。", async () => {
       const repository = new TodoRepository();
 
       jest.spyOn(repository, "update").mockImplementationOnce(async () => {
-        throw new DatabaseError("データベースにエラーが発生しました。");
+        throw new InternalServerError("データベースにエラーが発生しました。");
       });
 
       await expect(
@@ -222,11 +222,11 @@ describe("【TodoRepositoryのテスト】", () => {
         await repository.delete({ userId: 999, todoId: 1 });
       }).rejects.toThrow("Todoの削除に失敗しました。");
     });
-    it("【deleteメソッド実行時】プログラムの意図しないエラー(DB側の問題等)は、DatabaseError(InternalServerError)が返る。", async () => {
+    it("【deleteメソッド実行時】プログラムの意図しないエラー(DB側の問題等)は、InternalServerErrorが返る。", async () => {
       const repository = new TodoRepository();
 
       jest.spyOn(repository, "delete").mockImplementationOnce(async () => {
-        throw new DatabaseError("データベースにエラーが発生しました。");
+        throw new InternalServerError("データベースにエラーが発生しました。");
       });
 
       await expect(repository.delete({ userId: 1, todoId: 1 })).rejects.toThrow(

@@ -3,7 +3,7 @@ import type { Todo } from "@prisma/client";
 
 import type { ITodoRepository } from "./ITodoRepository";
 
-import { DatabaseError } from "../errors/DatabaseError";
+import { InternalServerError } from "../errors/InternalServerError";
 import { NotFoundError } from "../errors/NotFoundError";
 import type {
   TodoDeletionParams,
@@ -88,7 +88,7 @@ export class TodoRepository implements ITodoRepository {
       ) {
         throw new NotFoundError("Todoの更新に失敗しました。");
       } else {
-        throw new DatabaseError("データベースにエラーが発生しました。");
+        throw new InternalServerError("データベースにエラーが発生しました。");
       }
     }
   }
@@ -107,7 +107,7 @@ export class TodoRepository implements ITodoRepository {
       ) {
         throw new NotFoundError("Todoの削除に失敗しました。");
       } else {
-        throw new DatabaseError("データベースにエラーが発生しました。");
+        throw new InternalServerError("データベースにエラーが発生しました。");
       }
     }
   }
