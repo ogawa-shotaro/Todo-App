@@ -4,7 +4,7 @@ import { GetTodoController } from "../../../controllers/todos/GetTodoController"
 import { InvalidError } from "../../../errors/InvalidError";
 import { NotFoundError } from "../../../errors/NotFoundError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
-import { createMockRequest } from "../../helper/mocks/request";
+import { createMockAuthenticatedRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】Todo1件の取得", () => {
@@ -16,7 +16,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
   });
   describe("【成功パターン】", () => {
     it("findメソッドのパラメーターが【id:1】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
-      const req = createMockRequest({ params: { id: "1" } });
+      const req = createMockAuthenticatedRequest({ params: { id: "1" } });
       const res = createMockResponse();
       const next = jest.fn();
 
@@ -44,7 +44,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
       expect(repository.find).toHaveBeenCalledWith({ todoId: 1 });
     });
     it("findメソッドのパラメーターが【id:2】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
-      const req = createMockRequest({ params: { id: "2" } });
+      const req = createMockAuthenticatedRequest({ params: { id: "2" } });
       const res = createMockResponse();
       const next = jest.fn();
 
@@ -74,7 +74,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
   });
   describe("【異常パターン】", () => {
     it("存在しないIDへのリクエスト時には、next関数(パラメーターがNotFoundError)を実行する。", async () => {
-      const req = createMockRequest({ params: { id: "999" } });
+      const req = createMockAuthenticatedRequest({ params: { id: "999" } });
       const res = createMockResponse();
       const next = jest.fn();
 
@@ -87,7 +87,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
       expect(next).toHaveBeenCalledWith(expect.any(NotFoundError));
     });
     it("パラメーターに指定した値が不正(整数の1以上でない値)時には、next関数(パラメーターがInvalidError)を実行する。", async () => {
-      const req = createMockRequest({ params: { id: "0" } });
+      const req = createMockAuthenticatedRequest({ params: { id: "0" } });
       const res = createMockResponse();
       const next = jest.fn();
 
