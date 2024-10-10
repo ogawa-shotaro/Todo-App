@@ -11,6 +11,7 @@ export function authHandler(
 ) {
   try {
     const token = req.cookies?.token;
+
     if (!token) {
       throw new UnauthorizedError("認証に失敗しました。");
     }

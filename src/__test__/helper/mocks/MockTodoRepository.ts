@@ -2,15 +2,17 @@ import type { Todo } from "@prisma/client";
 
 import type { ITodoRepository } from "../../../repositories/ITodoRepository";
 import type {
+  TodoDeletionParams,
+  TodoFindParams,
   TodoInput,
   TodoListParams,
-  TodoUpdatedInput,
+  TodoModificationParams,
 } from "../../../types/TodoRequest.type";
 
 export class MockRepository implements ITodoRepository {
   save = jest.fn<Promise<Todo>, [TodoInput]>();
   list = jest.fn<Promise<Todo[]>, [TodoListParams]>();
-  find = jest.fn<Promise<Todo>, [number]>();
-  update = jest.fn<Promise<Todo>, [TodoUpdatedInput]>();
-  delete = jest.fn<Promise<Todo>, [number]>();
+  find = jest.fn<Promise<Todo>, [TodoFindParams]>();
+  update = jest.fn<Promise<Todo>, [TodoModificationParams]>();
+  delete = jest.fn<Promise<Todo>, [TodoDeletionParams]>();
 }

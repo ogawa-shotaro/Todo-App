@@ -26,6 +26,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         body: "ダミーボディ1",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        userId: 1,
       });
 
       await controller.find(req, res, next);
@@ -37,9 +38,10 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         body: "ダミーボディ1",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        userId: 1,
       });
 
-      expect(repository.find).toHaveBeenCalledWith(1);
+      expect(repository.find).toHaveBeenCalledWith({ todoId: 1 });
     });
     it("findメソッドのパラメーターが【id:2】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
       const req = createMockRequest({ params: { id: "2" } });
@@ -52,6 +54,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         body: "ダミーボディ2",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        userId: 2,
       });
 
       await controller.find(req, res, next);
@@ -63,9 +66,10 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         body: "ダミーボディ2",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        userId: 2,
       });
 
-      expect(repository.find).toHaveBeenCalledWith(2);
+      expect(repository.find).toHaveBeenCalledWith({ todoId: 2 });
     });
   });
   describe("【異常パターン】", () => {

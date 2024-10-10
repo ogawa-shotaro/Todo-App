@@ -1,7 +1,8 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
+import type { AuthenticatedRequest } from "../../types/users/UserAuthRequest.type";
 
 export class UpdateTodoController {
   private repository: ITodoRepository;
@@ -10,16 +11,18 @@ export class UpdateTodoController {
     this.repository = repository;
   }
 
-  async update(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id;
-    const parsedId = parseInt(id, 10);
+  async update(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    const paramsId = req.params.id;
+    const todoId = Number(paramsId);
+    const userId = req.user?.id;
     const { title, body } = req.body;
 
     try {
       const responseData = await this.repository.update({
-        id: parsedId,
+        id: todoId,
         title: title,
         body: body,
+        userId: userId as number,
       });
 
       res.status(StatusCodes.OK).json(responseData);

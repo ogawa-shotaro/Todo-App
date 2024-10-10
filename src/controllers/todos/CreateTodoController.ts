@@ -1,8 +1,8 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
-import type { TodoInput } from "../../types/TodoRequest.type";
+import { AuthenticatedRequest } from "../../types/users/UserAuthRequest.type";
 
 export class CreateTodoController {
   private repository: ITodoRepository;
@@ -11,14 +11,11 @@ export class CreateTodoController {
     this.repository = repository;
   }
 
-  async create(
-    req: Request<any, any, TodoInput>,
-    res: Response,
-    next: NextFunction,
-  ) {
+  async create(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { title, body } = req.body;
-      const createdTodo = await this.repository.save({ title, body });
+      const userId = req.user?.id as number;
+      const createdTodo = await this.repository.save({ title, body, userId });
 
       res.status(StatusCodes.OK).json(createdTodo);
     } catch (error) {
