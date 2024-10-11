@@ -1,7 +1,8 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
+import type { AuthenticatedRequest } from "../../types/users/UserAuthRequest.type";
 
 export class GetTodoController {
   private repository: ITodoRepository;
@@ -10,12 +11,12 @@ export class GetTodoController {
     this.repository = repository;
   }
 
-  async find(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id;
-    const parsedId = parseInt(id, 10);
+  async find(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    const paramsId = req.params.id;
+    const todoId = Number(paramsId);
 
     try {
-      const todoItem = await this.repository.find(parsedId);
+      const todoItem = await this.repository.find({ todoId });
 
       res.status(StatusCodes.OK).json(todoItem);
     } catch (error) {

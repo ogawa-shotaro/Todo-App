@@ -40,6 +40,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
           body: "ダミーボディ1",
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
+          userId: 1,
         },
         {
           id: 2,
@@ -47,6 +48,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
           body: "ダミーボディ2",
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
+          userId: 2,
         },
         {
           id: 3,
@@ -54,6 +56,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
           body: "ダミーボディ3",
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
+          userId: 3,
         },
       ]);
 
@@ -67,6 +70,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
           body: "ダミーボディ1",
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
+          userId: 1,
         },
         {
           id: 2,
@@ -74,6 +78,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
           body: "ダミーボディ2",
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
+          userId: 2,
         },
         {
           id: 3,
@@ -81,6 +86,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
           body: "ダミーボディ3",
           createdAt: expect.any(Date),
           updatedAt: expect.any(Date),
+          userId: 3,
         },
       ]);
     });

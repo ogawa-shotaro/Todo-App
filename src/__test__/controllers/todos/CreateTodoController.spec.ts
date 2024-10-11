@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 import { CreateTodoController } from "../../../controllers/todos/CreateTodoController";
 import { InvalidError } from "../../../errors/InvalidError";
 import { MockRepository } from "../../helper/mocks/MockTodoRepository";
-import { createMockRequest } from "../../helper/mocks/request";
+import { createMockAuthenticatedRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】Todo1件の新規作成", () => {
@@ -14,8 +14,11 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
     controller = new CreateTodoController(repository);
   });
   describe("【成功パターン】", () => {
-    it("saveメソッドのパラメータが正しい【titleとbodyの値を含む】と、Todo(jsonとstatus(ok=200))が返る", async () => {
-      const req = createMockRequest({
+    it("saveメソッドのパラメータが正しい【userId・title・body】と、Todo(jsonとstatus(ok=200))が返る", async () => {
+      const req = createMockAuthenticatedRequest({
+        user: {
+          id: 1,
+        },
         body: {
           title: "ダミータイトル",
           body: "ダミーボディ",
@@ -30,6 +33,7 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         body: "ダミーボディ",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        userId: 1,
       });
 
       await controller.create(req, res, next);
@@ -41,17 +45,22 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
         body: "ダミーボディ",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
+        userId: 1,
       });
 
       expect(repository.save).toHaveBeenCalledWith({
         title: "ダミータイトル",
         body: "ダミーボディ",
+        userId: 1,
       });
     });
   });
   describe("【異常パターン】", () => {
     it("タイトルが未入力の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
-      const req = createMockRequest({
+      const req = createMockAuthenticatedRequest({
+        user: {
+          id: 1,
+        },
         body: {
           title: "",
           body: "ダミーボディ",
@@ -69,7 +78,10 @@ describe("【ユニットテスト】Todo1件の新規作成", () => {
       expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
     it("ボディが未入力の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
-      const req = createMockRequest({
+      const req = createMockAuthenticatedRequest({
+        user: {
+          id: 1,
+        },
         body: {
           title: "ダミータイトル",
           body: "",

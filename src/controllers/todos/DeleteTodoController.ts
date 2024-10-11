@@ -1,7 +1,8 @@
-import type { NextFunction, Request, Response } from "express";
+import type { NextFunction, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import type { ITodoRepository } from "../../repositories/ITodoRepository";
+import type { AuthenticatedRequest } from "../../types/users/UserAuthRequest.type";
 
 export class DeleteTodoController {
   private repository: ITodoRepository;
@@ -10,12 +11,13 @@ export class DeleteTodoController {
     this.repository = repository;
   }
 
-  async delete(req: Request, res: Response, next: NextFunction) {
-    const id = req.params.id;
-    const parsedId = parseInt(id, 10);
+  async delete(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    const paramsId = req.params.id;
+    const todoId = Number(paramsId);
+    const userId = req.user.id;
 
     try {
-      const responseData = await this.repository.delete(parsedId);
+      const responseData = await this.repository.delete({ todoId, userId });
 
       res.status(StatusCodes.OK).json(responseData);
     } catch (error) {
