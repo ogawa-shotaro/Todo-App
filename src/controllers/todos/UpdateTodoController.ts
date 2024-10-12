@@ -14,7 +14,7 @@ export class UpdateTodoController {
   async update(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     const paramsId = req.params.id;
     const todoId = Number(paramsId);
-    const userId = req.user.id;
+    const userId = req.user?.id as number;
     const { title, body } = req.body;
 
     try {

@@ -1,14 +1,32 @@
 import { StatusCodes } from "http-status-codes";
+import jwt from "jsonwebtoken";
 
 import { PrismaClient } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { requestAPI } from "../../../helper/requestHelper";
+import { UserRepository } from "../../../../repositories/UserRepository";
+import { requestAPIWithAuth } from "../../../helper/requestAPIWithAuth";
 import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
 
 describe("【APIテスト】 Todo一覧取得", () => {
+  let cookie: string;
+  beforeAll(async () => {
+    const repository = new UserRepository();
+    const userData = await repository.register({
+      name: "ダミーユーザー",
+      password: "dammyPassword",
+      email: "dammyData@mail.com",
+    });
+    const userId = userData.user.id;
+
+    const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
+      expiresIn: "1h",
+    });
+
+    cookie = `token=${token}`;
+  });
   describe("【DBにデータあり】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 20; i++) {
@@ -16,15 +34,17 @@ describe("【APIテスト】 Todo一覧取得", () => {
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
+            userId: 1,
           },
         });
       }
     });
     it("【パラメーターの指定なし】先頭から10件のTodoを取得できる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
+        cookie,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -59,10 +79,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
       ]);
     });
     it("【page=2,count=5】6件目から5件のTodoを取得できる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?page=2&count=5",
         statusCode: StatusCodes.OK,
+        cookie,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -85,10 +106,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
       ]);
     });
     it("【page=2】11件目から10件のTodoを取得できる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?page=2",
         statusCode: StatusCodes.OK,
+        cookie,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -123,10 +145,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
       ]);
     });
     it("【count=3】先頭から3件のTodoを取得できる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?count=3",
         statusCode: StatusCodes.OK,
+        cookie,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -147,10 +170,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
   });
   describe("【DBにデータなし】", () => {
     it("【空配列が返る】データがない状態でのTodo一覧取得", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
+        cookie,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -160,20 +184,22 @@ describe("【APIテスト】 Todo一覧取得", () => {
   });
   describe("【異常パターン】", () => {
     it("【パラメーターに指定した値が不正(page=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?page=0",
         statusCode: StatusCodes.BAD_REQUEST,
+        cookie,
       });
 
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【パラメーターに指定した値が不正(count=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?count=0",
         statusCode: StatusCodes.BAD_REQUEST,
+        cookie,
       });
 
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
@@ -184,10 +210,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
         throw new Error("Unexpected Error");
       });
 
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+        cookie,
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });

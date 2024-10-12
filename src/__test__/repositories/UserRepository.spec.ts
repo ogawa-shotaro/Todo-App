@@ -47,16 +47,16 @@ describe("【UserRepositoryのテスト】", () => {
       const repository = new UserRepository();
 
       await repository.register({
-        name: "ダミーユーザー1",
-        password: "dammyPassword1",
-        email: "dammyData1@mail.com",
+        name: "ダミーユーザー",
+        password: "dammyPassword",
+        email: "dammyData@mail.com",
       });
 
       await expect(
         repository.register({
-          name: "ダミーユーザー2",
-          password: "dammyPassword2",
-          email: "dammyData1@mail.com",
+          name: "ダミーユーザー",
+          password: "dammyPassword",
+          email: "dammyData@mail.com",
         }),
       ).rejects.toThrow("Unique constraint failed on the fields: (`email`)");
     });
