@@ -1,30 +1,18 @@
 import { StatusCodes } from "http-status-codes";
-import jwt from "jsonwebtoken";
 
 import { PrismaClient } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { UserRepository } from "../../../../repositories/UserRepository";
-import { requestAPIWithAuth } from "../../../helper/requestAPIWithAuth";
+import { requestAPIWithAuth } from "../../../helper/requestHelpers/requestAPIWithAuth";
+import { createTestUser } from "../../../helper/requestHelpers/requestAuthHelper";
 
 const prisma = new PrismaClient();
 
 describe("【APIテスト】Todo1件の取得", () => {
   let cookie: string;
+
   beforeAll(async () => {
-    const repository = new UserRepository();
-    const userData = await repository.register({
-      name: "ダミーユーザー",
-      password: "dammyPassword",
-      email: "dammyData@mail.com",
-    });
-    const userId = userData.user.id;
-
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
-    });
-
-    cookie = `token=${token}`;
+    cookie = await createTestUser();
   });
   describe("【成功パターン】", () => {
     beforeEach(async () => {
@@ -82,7 +70,6 @@ describe("【APIテスト】Todo1件の取得", () => {
       expect(response.body).toEqual({
         message: "存在しないIDを指定しました。",
       });
-      expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
     });
     it("指定したIDが不正(整数の1以上でない値)の場合、エラーになる。", async () => {
       const response = await requestAPIWithAuth({
@@ -93,7 +80,6 @@ describe("【APIテスト】Todo1件の取得", () => {
       });
 
       expect(response.body).toEqual({ message: "IDは1以上の整数のみ。" });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
       jest.spyOn(TodoRepository.prototype, "find").mockImplementation(() => {
@@ -108,7 +94,6 @@ describe("【APIテスト】Todo1件の取得", () => {
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });
-      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });

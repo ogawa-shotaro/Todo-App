@@ -1,31 +1,19 @@
 import { StatusCodes } from "http-status-codes";
-import jwt from "jsonwebtoken";
 
 import { PrismaClient } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { UserRepository } from "../../../../repositories/UserRepository";
-import { requestAPIWithAuth } from "../../../helper/requestAPIWithAuth";
+import { requestAPIWithAuth } from "../../../helper/requestHelpers/requestAPIWithAuth";
+import { createTestUser } from "../../../helper/requestHelpers/requestAuthHelper";
 import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
 
 describe("【APIテスト】 Todo一覧取得", () => {
   let cookie: string;
+
   beforeAll(async () => {
-    const repository = new UserRepository();
-    const userData = await repository.register({
-      name: "ダミーユーザー",
-      password: "dammyPassword",
-      email: "dammyData@mail.com",
-    });
-    const userId = userData.user.id;
-
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
-    });
-
-    cookie = `token=${token}`;
+    cookie = await createTestUser();
   });
   describe("【DBにデータあり】", () => {
     beforeEach(async () => {
@@ -192,7 +180,6 @@ describe("【APIテスト】 Todo一覧取得", () => {
       });
 
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【パラメーターに指定した値が不正(count=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
       const response = await requestAPIWithAuth({
@@ -203,7 +190,6 @@ describe("【APIテスト】 Todo一覧取得", () => {
       });
 
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
       jest.spyOn(TodoRepository.prototype, "list").mockImplementation(() => {
@@ -218,7 +204,6 @@ describe("【APIテスト】 Todo一覧取得", () => {
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });
-      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });

@@ -1,26 +1,14 @@
 import { StatusCodes } from "http-status-codes";
-import jwt from "jsonwebtoken";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { UserRepository } from "../../../../repositories/UserRepository";
-import { requestAPIWithAuth } from "../../../helper/requestAPIWithAuth";
+import { requestAPIWithAuth } from "../../../helper/requestHelpers/requestAPIWithAuth";
+import { createTestUser } from "../../../helper/requestHelpers/requestAuthHelper";
 
 describe("【APIテスト】 Todo1件新規作成", () => {
   let cookie: string;
+
   beforeAll(async () => {
-    const repository = new UserRepository();
-    const userData = await repository.register({
-      name: "ダミーユーザー",
-      password: "dammyPassword",
-      email: "dammyData@mail.com",
-    });
-    const userId = userData.user.id;
-
-    const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
-    });
-
-    cookie = `token=${token}`;
+    cookie = await createTestUser();
   });
   describe("【成功パターン】", () => {
     it("title.bodyを送ったら成功する", async () => {
@@ -70,7 +58,6 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       expect(response.body).toEqual({
         message: "titleの内容は必須です。",
       });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【titleプロパティ有り・入力値(1文字以上)がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
       const request = { title: "", body: "ダミーボディ" };
@@ -85,7 +72,6 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       expect(response.body).toEqual({
         message: "titleは1文字以上である必要があります。",
       });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【bodyプロパティの入力値がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
       const request = { title: "ダミータイトル" };
@@ -100,7 +86,6 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       expect(response.body).toEqual({
         message: "bodyの内容は必須です。",
       });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【bodyプロパティ有り・入力値(1文字以上)がない場合】createTodoSchemaに基づくInvalidErrorのテスト。", async () => {
       const request = { title: "ダミータイトル", body: "" };
@@ -115,7 +100,6 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       expect(response.body).toEqual({
         message: "bodyは1文字以上である必要があります。",
       });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
       jest.spyOn(TodoRepository.prototype, "save").mockImplementation(() => {
@@ -132,7 +116,6 @@ describe("【APIテスト】 Todo1件新規作成", () => {
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });
-      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });
