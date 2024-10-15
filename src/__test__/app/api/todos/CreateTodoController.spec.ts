@@ -1,12 +1,10 @@
 import { StatusCodes } from "http-status-codes";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { requestAPIWithAuth } from "../../../helper/requestHelpers/requestAPIWithAuth";
-import { createTestUser } from "../../../helper/requestHelpers/requestAuthHelper";
+import { requestAPIWithAuth } from "../../../helper/requestHelper";
+import { createTestUser } from "../../../helper/requestHelper";
 
 describe("【APIテスト】 Todo1件新規作成", () => {
-  let cookie: string;
-
   beforeAll(async () => {
     cookie = await createTestUser();
   });
