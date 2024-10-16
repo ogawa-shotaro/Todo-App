@@ -1,12 +1,17 @@
 import { StatusCodes } from "http-status-codes";
 
+import type { User } from "@prisma/client";
+
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { requestAPIWithAuth } from "../../../helper/requestHelper";
-import { createTestUser } from "../../../helper/requestHelper";
+import {
+  createTestUser,
+  requestAPIWithAuth,
+} from "../../../helper/requestHelper";
 
 describe("【APIテスト】 Todo1件新規作成", () => {
-  beforeAll(async () => {
-    cookie = await createTestUser();
+  let newUser: User;
+  beforeEach(async () => {
+    newUser = await createTestUser();
   });
   describe("【成功パターン】", () => {
     it("title.bodyを送ったら成功する", async () => {
@@ -19,7 +24,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       }).send(request);
 
       const result = response.body;
@@ -50,7 +55,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       }).send(request);
 
       expect(response.body).toEqual({
@@ -64,7 +69,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       }).send(request);
 
       expect(response.body).toEqual({
@@ -78,7 +83,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       }).send(request);
 
       expect(response.body).toEqual({
@@ -92,7 +97,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       }).send(request);
 
       expect(response.body).toEqual({
@@ -107,7 +112,7 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         method: "post",
         endPoint: "/api/todos",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        cookie,
+        userId: newUser.id,
       }).send({
         title: "ダミータイトル",
         body: "ダミーボディ",

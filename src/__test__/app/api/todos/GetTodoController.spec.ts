@@ -1,18 +1,20 @@
 import { StatusCodes } from "http-status-codes";
 
 import { PrismaClient } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { requestAPIWithAuth } from "../../../helper/requestHelpers/requestAPIWithAuth";
-import { createTestUser } from "../../../helper/requestHelpers/requestAuthHelper";
+import {
+  createTestUser,
+  requestAPIWithAuth,
+} from "../../../helper/requestHelper";
 
 const prisma = new PrismaClient();
 
 describe("【APIテスト】Todo1件の取得", () => {
-  let cookie: string;
-
-  beforeAll(async () => {
-    cookie = await createTestUser();
+  let newUser: User;
+  beforeEach(async () => {
+    newUser = await createTestUser();
   });
   describe("【成功パターン】", () => {
     beforeEach(async () => {
@@ -21,7 +23,7 @@ describe("【APIテスト】Todo1件の取得", () => {
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
-            userId: 1,
+            userId: newUser.id,
           },
         });
       }
@@ -31,7 +33,7 @@ describe("【APIテスト】Todo1件の取得", () => {
         method: "get",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       });
 
       const { id, title, body, userId } = response.body;
@@ -39,14 +41,14 @@ describe("【APIテスト】Todo1件の取得", () => {
       expect(id).toEqual(1);
       expect(title).toEqual("ダミータイトル1");
       expect(body).toEqual("ダミーボディ1");
-      expect(userId).toEqual(1);
+      expect(userId).toEqual(newUser.id);
     });
     it("【id:2】のデータ取得", async () => {
       const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos/2",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       });
 
       const { id, title, body, userId } = response.body;
@@ -54,7 +56,7 @@ describe("【APIテスト】Todo1件の取得", () => {
       expect(id).toEqual(2);
       expect(title).toEqual("ダミータイトル2");
       expect(body).toEqual("ダミーボディ2");
-      expect(userId).toEqual(1);
+      expect(userId).toEqual(newUser.id);
     });
   });
 
@@ -64,7 +66,7 @@ describe("【APIテスト】Todo1件の取得", () => {
         method: "get",
         endPoint: "/api/todos/999",
         statusCode: StatusCodes.NOT_FOUND,
-        cookie,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({
@@ -76,7 +78,7 @@ describe("【APIテスト】Todo1件の取得", () => {
         method: "get",
         endPoint: "/api/todos/0",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "IDは1以上の整数のみ。" });
@@ -90,7 +92,7 @@ describe("【APIテスト】Todo1件の取得", () => {
         method: "get",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        cookie,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });

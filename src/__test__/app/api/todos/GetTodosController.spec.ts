@@ -1,19 +1,21 @@
 import { StatusCodes } from "http-status-codes";
 
 import { PrismaClient } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { requestAPIWithAuth } from "../../../helper/requestHelpers/requestAPIWithAuth";
-import { createTestUser } from "../../../helper/requestHelpers/requestAuthHelper";
+import {
+  createTestUser,
+  requestAPIWithAuth,
+} from "../../../helper/requestHelper";
 import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
 
 describe("【APIテスト】 Todo一覧取得", () => {
-  let cookie: string;
-
-  beforeAll(async () => {
-    cookie = await createTestUser();
+  let newUser: User;
+  beforeEach(async () => {
+    newUser = await createTestUser();
   });
   describe("【DBにデータあり】", () => {
     beforeEach(async () => {
@@ -22,7 +24,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
-            userId: 1,
+            userId: newUser.id,
           },
         });
       }
@@ -32,7 +34,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -71,7 +73,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos?page=2&count=5",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -98,7 +100,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos?page=2",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -137,7 +139,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos?count=3",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -162,7 +164,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -176,7 +178,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos?page=0",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
@@ -186,7 +188,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos?count=0",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
@@ -200,7 +202,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        cookie,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });

@@ -5,3 +5,9 @@ export type TodoResponseType = {
   createdAt: Date;
   updateAt: Date;
 };
+
+export type RequestAPIArg = {
+  method: "get" | "post" | "put" | "delete";
+  endPoint: string;
+  statusCode: number;
+};

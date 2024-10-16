@@ -1,18 +1,20 @@
 import { StatusCodes } from "http-status-codes";
 
 import { PrismaClient } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { requestAPIWithAuth } from "../../../helper/requestHelpers/requestAPIWithAuth";
-import { createTestUser } from "../../../helper/requestHelpers/requestAuthHelper";
+import {
+  createTestUser,
+  requestAPIWithAuth,
+} from "../../../helper/requestHelper";
 
 const prisma = new PrismaClient();
 
 describe("【APIテスト】Todo一件の更新", () => {
-  let cookie: string;
-
-  beforeAll(async () => {
-    cookie = await createTestUser();
+  let newUser: User;
+  beforeEach(async () => {
+    newUser = await createTestUser();
   });
   describe("【成功パターン】", () => {
     beforeEach(async () => {
@@ -21,7 +23,7 @@ describe("【APIテスト】Todo一件の更新", () => {
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
-            userId: 1,
+            userId: newUser.id,
           },
         });
       }
@@ -35,7 +37,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       }).send(data);
 
       const { id, title, body, userId } = response.body;
@@ -43,7 +45,7 @@ describe("【APIテスト】Todo一件の更新", () => {
       expect(id).toEqual(1);
       expect(title).toEqual("変更後のタイトル");
       expect(body).toEqual("ダミーボディ1");
-      expect(userId).toEqual(1);
+      expect(userId).toEqual(newUser.id);
     });
     it("【id:1のデータ更新】ボディのみ", async () => {
       const data = {
@@ -54,7 +56,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       }).send(data);
 
       const { id, title, body, userId } = response.body;
@@ -62,7 +64,7 @@ describe("【APIテスト】Todo一件の更新", () => {
       expect(id).toEqual(1);
       expect(title).toEqual("ダミータイトル1");
       expect(body).toEqual("変更後のボディ");
-      expect(userId).toEqual(1);
+      expect(userId).toEqual(newUser.id);
     });
     it("【id:2のデータ更新】タイトルとボディ", async () => {
       const data = {
@@ -74,7 +76,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/2",
         statusCode: StatusCodes.OK,
-        cookie,
+        userId: newUser.id,
       }).send(data);
 
       const { id, title, body, userId } = response.body;
@@ -82,7 +84,7 @@ describe("【APIテスト】Todo一件の更新", () => {
       expect(id).toEqual(2);
       expect(title).toEqual("変更後のタイトル");
       expect(body).toEqual("変更後のボディ");
-      expect(userId).toEqual(1);
+      expect(userId).toEqual(newUser.id);
     });
   });
   describe("【異常パターン】", () => {
@@ -93,7 +95,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       }).send({ title: data });
 
       expect(response.body).toEqual({
@@ -107,7 +109,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.BAD_REQUEST,
-        cookie,
+        userId: newUser.id,
       }).send({ body: data });
 
       expect(response.body).toEqual({
@@ -119,7 +121,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/999",
         statusCode: StatusCodes.NOT_FOUND,
-        cookie,
+        userId: newUser.id,
       }).send({ title: "ダミータイトル", body: "ダミーボディ" });
 
       expect(response.body).toEqual({
@@ -135,7 +137,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        cookie,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });

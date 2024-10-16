@@ -1,33 +1,26 @@
 import jwt from "jsonwebtoken";
 import request from "supertest";
 
-import { PrismaClient, User } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
+
+import type { RequestAPIArg } from "./types/testTypes";
 
 import app from "../../app";
 
 const prisma = new PrismaClient();
 
 export const createTestUser = async () => {
-  const user: User = await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       name: "ダミーユーザー",
       password: "dummyPassword",
-      email: `dummyData${new Date()}@mail.com`,
+      email: `dummyData${Date.now()}@mail.com`,
     },
   });
-
   return user;
 };
 
-export const requestAPI = ({
-  method,
-  endPoint,
-  statusCode,
-}: {
-  method: "get" | "post" | "put" | "delete";
-  endPoint: string;
-  statusCode: number;
-}) => {
+export const requestAPI = ({ method, endPoint, statusCode }: RequestAPIArg) => {
   return request(app)
     [method](endPoint)
     .set("Accept", "application/json")
@@ -39,14 +32,8 @@ export const requestAPIWithAuth = ({
   method,
   endPoint,
   statusCode,
-  user,
-}: {
-  method: "get" | "post" | "put" | "delete";
-  endPoint: string;
-  statusCode: number;
-  user: User;
-}) => {
-  const userId = user.id;
+  userId,
+}: RequestAPIArg & { userId: number }) => {
   const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
     expiresIn: "1h",
   });

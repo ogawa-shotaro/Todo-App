@@ -45,7 +45,7 @@ describe("【UserRepositoryのテスト】", () => {
 
       await repository.register({
         name: "ダミーユーザー",
-        password: "dmmyPassword",
+        password: "dummyPassword",
         email: "dummyData@mail.com",
       });
 
