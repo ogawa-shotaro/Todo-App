@@ -14,7 +14,7 @@ export class DeleteTodoController {
   async delete(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     const paramsId = req.params.id;
     const todoId = Number(paramsId);
-    const userId = req.user.id;
+    const userId = req.user?.id as number;
 
     try {
       const responseData = await this.repository.delete({ todoId, userId });

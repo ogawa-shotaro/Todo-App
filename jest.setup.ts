@@ -12,16 +12,16 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   await resetDatabase();
-  await prisma.$executeRaw`ALTER SEQUENCE "Todo_id_seq" RESTART WITH 1`;
-  await prisma.$executeRaw`ALTER SEQUENCE "User_id_seq" RESTART WITH 1`;
 });
 
 afterAll(async () => {
   await resetDatabase();
-  await prisma.user.deleteMany();
   await prisma.$disconnect();
 });
 
 async function resetDatabase() {
   await prisma.todo.deleteMany();
+  await prisma.user.deleteMany();
+  await prisma.$executeRaw`ALTER SEQUENCE "Todo_id_seq" RESTART WITH 1`;
+  await prisma.$executeRaw`ALTER SEQUENCE "User_id_seq" RESTART WITH 1`;
 }

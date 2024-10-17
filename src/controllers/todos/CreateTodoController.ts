@@ -14,7 +14,7 @@ export class CreateTodoController {
   async create(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const { title, body } = req.body;
-      const userId = req.user.id;
+      const userId = req.user?.id as number;
       const createdTodo = await this.repository.save({ title, body, userId });
 
       res.status(StatusCodes.OK).json(createdTodo);

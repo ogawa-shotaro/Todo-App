@@ -5,6 +5,7 @@ import { DeleteTodoController } from "../controllers/todos/DeleteTodoController"
 import { GetTodoController } from "../controllers/todos/GetTodoController";
 import { GetTodosController } from "../controllers/todos/GetTodosController";
 import { UpdateTodoController } from "../controllers/todos/UpdateTodoController";
+import { authHandler } from "../middlewares/authHandler";
 import { validator } from "../middlewares/validateHandler";
 import { TodoRepository } from "../repositories/TodoRepository";
 import { requestIdSchema } from "../schemas/shared/requestIdSchema";
@@ -23,22 +24,22 @@ const todoDeleteController = new DeleteTodoController(todoRepository);
 
 router
   .route("/")
-  .post(validator(createTodoSchema), (req, res, next) => {
+  .post(authHandler, validator(createTodoSchema), (req, res, next) => {
     todoCreateController.create(req, res, next);
   })
-  .get(validator(getTodosSchema), (req, res, next) => {
+  .get(authHandler, validator(getTodosSchema), (req, res, next) => {
     todosGetController.list(req, res, next);
   });
 
 router
   .route("/:id")
-  .get(validator(requestIdSchema), (req, res, next) => {
+  .get(authHandler, validator(requestIdSchema), (req, res, next) => {
     todoGetController.find(req, res, next);
   })
-  .put(validator(updateTodoSchema), (req, res, next) => {
+  .put(authHandler, validator(updateTodoSchema), (req, res, next) => {
     todoUpdateController.update(req, res, next);
   })
-  .delete(validator(requestIdSchema), (req, res, next) => {
+  .delete(authHandler, validator(requestIdSchema), (req, res, next) => {
     todoDeleteController.delete(req, res, next);
   });
 

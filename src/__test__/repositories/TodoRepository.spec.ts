@@ -1,23 +1,16 @@
 import { PrismaClient } from "@prisma/client";
-import type { Todo } from "@prisma/client";
+import type { Todo, User } from "@prisma/client";
 
 import { InternalServerError } from "../../errors/InternalServerError";
 import { TodoRepository } from "../../repositories/TodoRepository";
-import { UserRepository } from "../../repositories/UserRepository";
+import { createTestUser } from "../helper/requestHelper";
 
 const prisma = new PrismaClient();
 
 describe("【TodoRepositoryのテスト】", () => {
-  beforeAll(async () => {
-    const repository = new UserRepository();
-
-    for (let i = 1; i <= 2; i++) {
-      await repository.register({
-        name: `ダミーユーザー${i}`,
-        password: `dammyPassword${i}`,
-        email: `dammyData${i}@mail.com`,
-      });
-    }
+  let newUser: User;
+  beforeEach(async () => {
+    newUser = await createTestUser();
   });
   describe("【成功パターン】", () => {
     describe("【saveメソッドのテスト】", () => {
@@ -27,13 +20,13 @@ describe("【TodoRepositoryのテスト】", () => {
         const initialTodo: Todo = await repository.save({
           title: "ダミータイトル1",
           body: "ダミーボディ1",
-          userId: 1,
+          userId: newUser.id,
         });
 
         const secondTodo: Todo = await repository.save({
           title: "ダミータイトル2",
           body: "ダミーボディ2",
-          userId: 2,
+          userId: newUser.id,
         });
 
         expect(initialTodo.id).toEqual(1);
@@ -41,14 +34,14 @@ describe("【TodoRepositoryのテスト】", () => {
         expect(initialTodo.body).toEqual("ダミーボディ1");
         expect(initialTodo.createdAt).toBeInstanceOf(Date);
         expect(initialTodo.updatedAt).toBeInstanceOf(Date);
-        expect(initialTodo.userId).toEqual(1);
+        expect(initialTodo.userId).toEqual(newUser.id);
 
         expect(secondTodo.id).toEqual(2);
         expect(secondTodo.title).toEqual("ダミータイトル2");
         expect(secondTodo.body).toEqual("ダミーボディ2");
         expect(secondTodo.createdAt).toBeInstanceOf(Date);
         expect(secondTodo.updatedAt).toBeInstanceOf(Date);
-        expect(secondTodo.userId).toEqual(2);
+        expect(secondTodo.userId).toEqual(newUser.id);
       });
     });
     describe("【list・find・update・deleteメソッドのテスト】", () => {
@@ -56,10 +49,10 @@ describe("【TodoRepositoryのテスト】", () => {
         for (let i = 1; i <= 21; i++) {
           await prisma.todo.create({
             data: {
-              title: "ダミータイトル" + i,
-              body: "ダミーボディ" + i,
+              title: `ダミータイトル${i}`,
+              body: `ダミーボディ${i}`,
               user: {
-                connect: { id: 1 },
+                connect: { id: newUser.id },
               },
             },
           });
@@ -126,7 +119,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
-          userId: 1,
+          userId: newUser.id,
         });
 
         expect(updatedTodo).toEqual({
@@ -135,7 +128,7 @@ describe("【TodoRepositoryのテスト】", () => {
           body: "変更後のボディ",
           createdAt: updatedTodo.createdAt,
           updatedAt: updatedTodo.updatedAt,
-          userId: 1,
+          userId: newUser.id,
         });
       });
       it("【updateメソッドを実行時】updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
@@ -145,7 +138,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
-          userId: 1,
+          userId: newUser.id,
         });
 
         expect(updatedTodo.createdAt < updatedTodo.updatedAt).toBeTruthy();
@@ -154,7 +147,10 @@ describe("【TodoRepositoryのテスト】", () => {
         const repository = new TodoRepository();
 
         const oldTodos = await repository.list();
-        const deletedTodo = await repository.delete({ userId: 1, todoId: 1 });
+        const deletedTodo = await repository.delete({
+          userId: newUser.id,
+          todoId: 1,
+        });
         const newTodos = await repository.list();
 
         const oldTodoIds = oldTodos.map((todo) => todo.id);
@@ -182,7 +178,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 999,
           title: "変更後のタイトル",
           body: "変更後のボディ",
-          userId: 1,
+          userId: newUser.id,
         });
       }).rejects.toThrow("Todoの更新に失敗しました。");
 
@@ -207,7 +203,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
-          userId: 1,
+          userId: newUser.id,
         }),
       ).rejects.toThrow("データベースにエラーが発生しました。");
     });
@@ -229,9 +225,9 @@ describe("【TodoRepositoryのテスト】", () => {
         throw new InternalServerError("データベースにエラーが発生しました。");
       });
 
-      await expect(repository.delete({ userId: 1, todoId: 1 })).rejects.toThrow(
-        "データベースにエラーが発生しました。",
-      );
+      await expect(
+        repository.delete({ userId: newUser.id, todoId: 1 }),
+      ).rejects.toThrow("データベースにエラーが発生しました。");
     });
   });
 });

@@ -1,14 +1,23 @@
 import { StatusCodes } from "http-status-codes";
 
 import { PrismaClient } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { requestAPI } from "../../../helper/requestHelper";
+import {
+  createTestUser,
+  requestAPI,
+  requestAPIWithAuth,
+} from "../../../helper/requestHelper";
 import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
 
 describe("【APIテスト】 Todo一覧取得", () => {
+  let newUser: User;
+  beforeEach(async () => {
+    newUser = await createTestUser();
+  });
   describe("【DBにデータあり】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 20; i++) {
@@ -16,15 +25,17 @@ describe("【APIテスト】 Todo一覧取得", () => {
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
+            userId: newUser.id,
           },
         });
       }
     });
     it("【パラメーターの指定なし】先頭から10件のTodoを取得できる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -59,10 +70,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
       ]);
     });
     it("【page=2,count=5】6件目から5件のTodoを取得できる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?page=2&count=5",
         statusCode: StatusCodes.OK,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -85,10 +97,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
       ]);
     });
     it("【page=2】11件目から10件のTodoを取得できる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?page=2",
         statusCode: StatusCodes.OK,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -123,10 +136,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
       ]);
     });
     it("【count=3】先頭から3件のTodoを取得できる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?count=3",
         statusCode: StatusCodes.OK,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -147,10 +161,11 @@ describe("【APIテスト】 Todo一覧取得", () => {
   });
   describe("【DBにデータなし】", () => {
     it("【空配列が返る】データがない状態でのTodo一覧取得", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
+        userId: newUser.id,
       });
 
       const todoItems: TodoResponseType[] = response.body;
@@ -160,38 +175,49 @@ describe("【APIテスト】 Todo一覧取得", () => {
   });
   describe("【異常パターン】", () => {
     it("【パラメーターに指定した値が不正(page=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?page=0",
         statusCode: StatusCodes.BAD_REQUEST,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
     it("【パラメーターに指定した値が不正(count=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?count=0",
         statusCode: StatusCodes.BAD_REQUEST,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+    });
+    it("【認証ユーザーでない場合】エラーメッセージとstatus(UNAUTHORIZED=401)が返る。", async () => {
+      const response = await requestAPI({
+        method: "get",
+        endPoint: "/api/todos/",
+        statusCode: StatusCodes.UNAUTHORIZED,
+      });
+
+      expect(response.body).toEqual({
+        message: "認証に失敗しました。",
+      });
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
       jest.spyOn(TodoRepository.prototype, "list").mockImplementation(() => {
         throw new Error("Unexpected Error");
       });
 
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });
-      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });

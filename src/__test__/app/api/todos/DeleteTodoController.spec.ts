@@ -1,13 +1,22 @@
 import { StatusCodes } from "http-status-codes";
 
 import { PrismaClient } from "@prisma/client";
+import type { User } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/TodoRepository";
-import { requestAPI } from "../../../helper/requestHelper";
+import {
+  createTestUser,
+  requestAPI,
+  requestAPIWithAuth,
+} from "../../../helper/requestHelper";
 
 const prisma = new PrismaClient();
 
 describe("【APIテスト】 Todo一件の削除", () => {
+  let newUser: User;
+  beforeEach(async () => {
+    newUser = await createTestUser();
+  });
   describe("【成功パターン】", () => {
     beforeEach(async () => {
       for (let i = 1; i <= 3; i++) {
@@ -15,6 +24,7 @@ describe("【APIテスト】 Todo一件の削除", () => {
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
+            userId: newUser.id,
           },
         });
       }
@@ -25,22 +35,25 @@ describe("【APIテスト】 Todo一件の削除", () => {
       expect(dbOldData.length).toEqual(3);
     });
     it("【id:1のデータ削除】", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "delete",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
+        userId: newUser.id,
       });
-      const { id, title, body } = response.body;
+      const { id, title, body, userId } = response.body;
 
       expect(id).toEqual(1);
       expect(title).toEqual("ダミータイトル1");
       expect(body).toEqual("ダミーボディ1");
+      expect(userId).toEqual(newUser.id);
     });
     it("【deleteメソッド実行後】3件のTodoから1件のデータが削除されている。", async () => {
-      await requestAPI({
+      await requestAPIWithAuth({
         method: "delete",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
+        userId: newUser.id,
       });
 
       const dbCurrentData = await prisma.todo.findMany({});
@@ -50,40 +63,51 @@ describe("【APIテスト】 Todo一件の削除", () => {
   });
   describe("【異常パターン】", () => {
     it("存在しないIDへのリクエストはエラーになる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "delete",
         endPoint: "/api/todos/999",
         statusCode: StatusCodes.NOT_FOUND,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({
-        message: "存在しないIDを指定しました。",
+        message: "Todoの削除に失敗しました。",
       });
-      expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
     });
     it("指定したIDが不正(整数の1以上でない値)の場合、エラーになる。", async () => {
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "delete",
         endPoint: "/api/todos/0",
         statusCode: StatusCodes.BAD_REQUEST,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "IDは1以上の整数のみ。" });
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
     });
-    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る。", async () => {
+    it("【認証ユーザーでない場合】エラーメッセージとstatus(UNAUTHORIZED=401)が返る。", async () => {
+      const response = await requestAPI({
+        method: "delete",
+        endPoint: "/api/todos/1",
+        statusCode: StatusCodes.UNAUTHORIZED,
+      });
+
+      expect(response.body).toEqual({
+        message: "認証に失敗しました。",
+      });
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージとstatus(InternalServerError=500)が返る。", async () => {
       jest.spyOn(TodoRepository.prototype, "delete").mockImplementation(() => {
         throw new Error("Unexpected Error");
       });
 
-      const response = await requestAPI({
+      const response = await requestAPIWithAuth({
         method: "delete",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
+        userId: newUser.id,
       });
 
       expect(response.body).toEqual({ message: "Internal Server Error" });
-      expect(response.statusCode).toEqual(StatusCodes.INTERNAL_SERVER_ERROR);
     });
   });
 });
