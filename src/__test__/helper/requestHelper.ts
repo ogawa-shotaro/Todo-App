@@ -3,11 +3,15 @@ import request from "supertest";
 
 import { PrismaClient } from "@prisma/client";
 
-import type { RequestAPIArg } from "./types/testTypes";
-
 import app from "../../app";
 
 const prisma = new PrismaClient();
+
+type RequestAPIArg = {
+  method: "get" | "post" | "put" | "delete";
+  endPoint: string;
+  statusCode: number;
+};
 
 export const createTestUser = async () => {
   const user = await prisma.user.create({
