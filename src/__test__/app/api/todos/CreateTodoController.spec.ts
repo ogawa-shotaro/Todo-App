@@ -5,6 +5,7 @@ import type { User } from "@prisma/client";
 import { TodoRepository } from "../../../../repositories/TodoRepository";
 import {
   createTestUser,
+  requestAPI,
   requestAPIWithAuth,
 } from "../../../helper/requestHelper";
 
@@ -104,7 +105,20 @@ describe("【APIテスト】 Todo1件新規作成", () => {
         message: "bodyは1文字以上である必要があります。",
       });
     });
-    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
+    it("【認証ユーザーでない場合】エラーメッセージとstatus(UNAUTHORIZED=401)が返る。", async () => {
+      const request = { title: "ダミータイトル", body: "ダミーボディ" };
+
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/todos",
+        statusCode: StatusCodes.UNAUTHORIZED,
+      }).send(request);
+
+      expect(response.body).toEqual({
+        message: "認証に失敗しました。",
+      });
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージとstatus(InternalServerError=500)が返る。", async () => {
       jest.spyOn(TodoRepository.prototype, "save").mockImplementation(() => {
         throw new Error("Unexpected Error");
       });

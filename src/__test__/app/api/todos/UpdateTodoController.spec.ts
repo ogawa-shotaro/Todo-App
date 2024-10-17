@@ -6,6 +6,7 @@ import type { User } from "@prisma/client";
 import { TodoRepository } from "../../../../repositories/TodoRepository";
 import {
   createTestUser,
+  requestAPI,
   requestAPIWithAuth,
 } from "../../../helper/requestHelper";
 
@@ -29,7 +30,7 @@ describe("【APIテスト】Todo一件の更新", () => {
       }
     });
     it("【id:1のデータ更新】タイトルのみ", async () => {
-      const data = {
+      const request = {
         title: "変更後のタイトル",
       };
 
@@ -38,7 +39,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
-      }).send(data);
+      }).send(request);
 
       const { id, title, body, userId } = response.body;
 
@@ -48,7 +49,7 @@ describe("【APIテスト】Todo一件の更新", () => {
       expect(userId).toEqual(newUser.id);
     });
     it("【id:1のデータ更新】ボディのみ", async () => {
-      const data = {
+      const request = {
         body: "変更後のボディ",
       };
 
@@ -57,7 +58,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
-      }).send(data);
+      }).send(request);
 
       const { id, title, body, userId } = response.body;
 
@@ -67,7 +68,7 @@ describe("【APIテスト】Todo一件の更新", () => {
       expect(userId).toEqual(newUser.id);
     });
     it("【id:2のデータ更新】タイトルとボディ", async () => {
-      const data = {
+      const request = {
         title: "変更後のタイトル",
         body: "変更後のボディ",
       };
@@ -77,7 +78,7 @@ describe("【APIテスト】Todo一件の更新", () => {
         endPoint: "/api/todos/2",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
-      }).send(data);
+      }).send(request);
 
       const { id, title, body, userId } = response.body;
 
@@ -89,46 +90,67 @@ describe("【APIテスト】Todo一件の更新", () => {
   });
   describe("【異常パターン】", () => {
     it("タイトルに不適切な値(文字列ではない値)が入力された場合、リクエストはエラーになる。", async () => {
-      const data = 123;
+      const request = 123;
 
       const response = await requestAPIWithAuth({
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.BAD_REQUEST,
         userId: newUser.id,
-      }).send({ title: data });
+      }).send({ title: request });
 
       expect(response.body).toEqual({
         message: "入力内容が不適切(文字列のみ)です。",
       });
     });
     it("ボディに不適切な値(文字列ではない値)が入力された場合、リクエストはエラーになる。", async () => {
-      const data = 123;
+      const request = 123;
 
       const response = await requestAPIWithAuth({
         method: "put",
         endPoint: "/api/todos/1",
         statusCode: StatusCodes.BAD_REQUEST,
         userId: newUser.id,
-      }).send({ body: data });
+      }).send({ body: request });
 
       expect(response.body).toEqual({
         message: "入力内容が不適切(文字列のみ)です。",
       });
     });
     it("存在しないIDへのリクエストはエラーになる。", async () => {
+      const request = {
+        title: "変更タイトル",
+        body: "変更ボディ",
+      };
+
       const response = await requestAPIWithAuth({
         method: "put",
         endPoint: "/api/todos/999",
         statusCode: StatusCodes.NOT_FOUND,
         userId: newUser.id,
-      }).send({ title: "ダミータイトル", body: "ダミーボディ" });
+      }).send(request);
 
       expect(response.body).toEqual({
         message: "Todoの更新に失敗しました。",
       });
     });
-    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る。", async () => {
+    it("【認証ユーザーでない場合】エラーメッセージとstatus(UNAUTHORIZED=401)が返る。", async () => {
+      const request = {
+        title: "変更タイトル",
+        body: "変更ボディ",
+      };
+
+      const response = await requestAPI({
+        method: "put",
+        endPoint: "/api/todos/1",
+        statusCode: StatusCodes.UNAUTHORIZED,
+      }).send(request);
+
+      expect(response.body).toEqual({
+        message: "認証に失敗しました。",
+      });
+    });
+    it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージとstatus(InternalServerError=500)が返る。", async () => {
       jest.spyOn(TodoRepository.prototype, "update").mockImplementation(() => {
         throw new Error("Unexpected Error");
       });

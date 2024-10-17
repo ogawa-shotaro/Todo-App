@@ -6,6 +6,7 @@ import type { User } from "@prisma/client";
 import { TodoRepository } from "../../../../repositories/TodoRepository";
 import {
   createTestUser,
+  requestAPI,
   requestAPIWithAuth,
 } from "../../../helper/requestHelper";
 import type { TodoResponseType } from "../../../helper/types/testTypes";
@@ -192,6 +193,17 @@ describe("【APIテスト】 Todo一覧取得", () => {
       });
 
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
+    });
+    it("【認証ユーザーでない場合】エラーメッセージとstatus(UNAUTHORIZED=401)が返る。", async () => {
+      const response = await requestAPI({
+        method: "get",
+        endPoint: "/api/todos/",
+        statusCode: StatusCodes.UNAUTHORIZED,
+      });
+
+      expect(response.body).toEqual({
+        message: "認証に失敗しました。",
+      });
     });
     it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージ(InternalServerError)とstatus(InternalServerError=500)が返る", async () => {
       jest.spyOn(TodoRepository.prototype, "list").mockImplementation(() => {
