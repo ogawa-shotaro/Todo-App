@@ -2,7 +2,7 @@ import type { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { UnauthorizedError } from "../errors/UnauthorizedError";
-import type { AuthenticatedRequest } from "../types/users/UserAuthRequest.type";
+import type { AuthenticatedRequest } from "../types/requests/AuthenticatedRequest.type";
 
 export function authHandler(
   req: AuthenticatedRequest,
