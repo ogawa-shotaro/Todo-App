@@ -7,12 +7,23 @@ import type { User } from "@prisma/client";
 import { hashPassword } from "../auths/password_operator";
 import { NotFoundError } from "../errors/NotFoundError";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
-import type { UserAuthInput, UserInput } from "../types/users/UserRequest.type";
+import type {
+  UserLoginInput,
+  UserRegisterInput,
+} from "../types/users/UserRequest.type";
 
 const prisma = new PrismaClient();
 
+const createJWT = (userId: number) => {
+  const token = jwt.sign({ userId }, process.env.JWT_SECRET!, {
+    expiresIn: "1h",
+  });
+
+  return token;
+};
+
 export class UserRepository {
-  async register(inputData: UserInput) {
+  async register(inputData: UserRegisterInput) {
     const hashedPassword = await hashPassword(inputData.password);
     const userData: User = await prisma.user.create({
       data: {
@@ -22,13 +33,11 @@ export class UserRepository {
       },
     });
 
-    const token = jwt.sign({ userId: userData.id }, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
-    });
+    const token = createJWT(userData.id);
 
     return { user: userData, token };
   }
-  async login(inputData: UserAuthInput) {
+  async login(inputData: UserLoginInput) {
     const user = await prisma.user.findUnique({
       where: { email: inputData.email },
       select: {
@@ -38,7 +47,7 @@ export class UserRepository {
     });
 
     if (!user) {
-      throw new NotFoundError("ユーザーが見つかりません。");
+      throw new NotFoundError("認証に失敗しました。");
     }
 
     const passwordMatches = await bcrypt.compare(
@@ -50,9 +59,7 @@ export class UserRepository {
       throw new UnauthorizedError("認証に失敗しました。");
     }
 
-    const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET!, {
-      expiresIn: "1h",
-    });
+    const token = createJWT(user.id);
 
     return token;
   }

@@ -84,7 +84,7 @@ describe("【UserRepositoryのテスト】", () => {
           password: "dummyPassword",
           email: "dummyData@mail.com",
         }),
-      ).rejects.toThrow("ユーザーが見つかりません。");
+      ).rejects.toThrow("認証に失敗しました。");
     });
     it("【loginメソッド実行時】認証に失敗した場合、エラーオブジェクトが返る。", async () => {
       const user = await createTestUser();

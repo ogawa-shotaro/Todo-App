@@ -11,7 +11,7 @@ import type {
   TodoInput,
   TodoListParams,
   TodoModificationParams,
-} from "../types/TodoRequest.type";
+} from "../types/todos/TodoRequest.type";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
