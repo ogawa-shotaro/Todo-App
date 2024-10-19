@@ -45,13 +45,13 @@ describe("【UserRepositoryのテスト】", () => {
 
       const repository = new UserRepository();
 
-      const result = await repository.login({
+      const token = await repository.login({
         password: "dummyPassword",
         email: email,
       });
 
       const decodedToken = jwt.verify(
-        result,
+        token,
         process.env.JWT_SECRET!,
       ) as JwtPayload;
 
