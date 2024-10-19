@@ -4,6 +4,7 @@ import request from "supertest";
 import { PrismaClient } from "@prisma/client";
 
 import app from "../../app";
+import { hashPassword } from "../../auths/password_operator";
 
 const prisma = new PrismaClient();
 
@@ -14,10 +15,11 @@ type RequestAPIArg = {
 };
 
 export const createTestUser = async () => {
+  const hashedPassword = await hashPassword("dummyPassword");
   const user = await prisma.user.create({
     data: {
       name: "ダミーユーザー",
-      password: "dummyPassword",
+      password: hashedPassword,
       email: `dummyData${Date.now()}@mail.com`,
     },
   });

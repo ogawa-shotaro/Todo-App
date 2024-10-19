@@ -7,7 +7,7 @@ import type {
   TodoInput,
   TodoListParams,
   TodoModificationParams,
-} from "../../../types/TodoRequest.type";
+} from "../../../types/todos/TodoRequest.type";
 
 export class MockRepository implements ITodoRepository {
   save = jest.fn<Promise<Todo>, [TodoInput]>();

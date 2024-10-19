@@ -4,7 +4,7 @@ import { StatusCodes } from "http-status-codes";
 import { InvalidError } from "../errors/InvalidError";
 import { NotFoundError } from "../errors/NotFoundError";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
-import type { ResponseErrorType } from "../types/TodoResponse.typs";
+import type { ResponseErrorType } from "../types/todos/TodoResponse.typs";
 
 export function errorHandler(
   err: ResponseErrorType,
