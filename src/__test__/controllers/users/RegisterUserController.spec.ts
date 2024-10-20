@@ -14,7 +14,7 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
     controller = new RegisterUserController(repository);
   });
   describe("【成功パターン】", () => {
-    it("Registerメソッドのパラメータが正しいと、User(jsonとstatus(ok=200))が返る", async () => {
+    it("Registerメソッドのパラメータが正しいと、User(jsonとstatus(ok=200))が返る。", async () => {
       const req = createMockRequest({
         body: {
           name: "ダミーユーザー",
@@ -69,7 +69,7 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
       const next = jest.fn();
 
       repository.register.mockRejectedValue(
-        new InvalidError("registerUserSchemaに基づくInvalidError"),
+        new InvalidError("registerUserSchemaに基づくエラー内容"),
       );
 
       await controller.register(req, res, next);
