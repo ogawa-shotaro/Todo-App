@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 
-import { UserRepository } from "../../repositories/UserRepository";
+import { UserRepository } from "../../repositories/users/UserRepository";
 import { createTestUser } from "../helper/requestHelper";
 
 describe("【UserRepositoryのテスト】", () => {

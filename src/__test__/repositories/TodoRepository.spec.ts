@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import type { Todo, User } from "@prisma/client";
 
 import { InternalServerError } from "../../errors/InternalServerError";
-import { TodoRepository } from "../../repositories/TodoRepository";
+import { TodoRepository } from "../../repositories/todos/TodoRepository";
 import { createTestUser } from "../helper/requestHelper";
 
 const prisma = new PrismaClient();
