@@ -4,13 +4,13 @@ import jwt from "jsonwebtoken";
 import { PrismaClient } from "@prisma/client";
 import type { User } from "@prisma/client";
 
-import { hashPassword } from "../auths/password_operator";
-import { NotFoundError } from "../errors/NotFoundError";
-import { UnauthorizedError } from "../errors/UnauthorizedError";
+import { hashPassword } from "../../auths/password_operator";
+import { NotFoundError } from "../../errors/NotFoundError";
+import { UnauthorizedError } from "../../errors/UnauthorizedError";
 import type {
   UserLoginInput,
   UserRegisterInput,
-} from "../types/users/UserRequest.type";
+} from "../../types/users/UserRequest.type";
 
 const prisma = new PrismaClient();
 

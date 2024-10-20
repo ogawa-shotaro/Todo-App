@@ -2,7 +2,7 @@ import { StatusCodes } from "http-status-codes";
 
 import type { User } from "@prisma/client";
 
-import { TodoRepository } from "../../../../repositories/TodoRepository";
+import { TodoRepository } from "../../../../repositories/todos/TodoRepository";
 import {
   createTestUser,
   requestAPI,

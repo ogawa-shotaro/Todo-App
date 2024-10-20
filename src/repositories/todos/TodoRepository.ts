@@ -3,15 +3,15 @@ import type { Todo } from "@prisma/client";
 
 import type { ITodoRepository } from "./ITodoRepository";
 
-import { InternalServerError } from "../errors/InternalServerError";
-import { NotFoundError } from "../errors/NotFoundError";
+import { InternalServerError } from "../../errors/InternalServerError";
+import { NotFoundError } from "../../errors/NotFoundError";
 import type {
   TodoDeletionParams,
   TodoFindParams,
   TodoInput,
   TodoListParams,
   TodoModificationParams,
-} from "../types/todos/TodoRequest.type";
+} from "../../types/todos/TodoRequest.type";
 
 const prisma = new PrismaClient();
 const DEFAULT_PAGE = 1;
