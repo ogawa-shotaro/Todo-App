@@ -12,9 +12,22 @@ export class RegisterUserController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, password, email } = req.body;
-      const newUser = await this.repository.register({ name, password, email });
+      const newUser = await this.repository.register({
+        name,
+        password,
+        email,
+      });
 
-      res.status(StatusCodes.OK).json(newUser);
+      res
+        .cookie("token", newUser.token, {
+          httpOnly: true,
+        })
+        .status(StatusCodes.OK)
+        .json({
+          id: newUser.user.id,
+          name: newUser.user.name,
+          email: newUser.user.email,
+        });
     } catch (error) {
       next(error);
     }

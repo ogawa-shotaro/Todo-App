@@ -32,6 +32,7 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
         email: "dummyData@mail.com",
       };
       const mockToken = "mockedJWT";
+
       repository.register.mockResolvedValue({
         user: mockUser,
         token: mockToken,
@@ -44,15 +45,14 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
         password: "dummyPassword",
         email: "dummyData@mail.com",
       });
+      expect(res.cookie).toHaveBeenCalledWith("token", "mockedJWT", {
+        httpOnly: true,
+      });
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
-        token: "mockedJWT",
-        user: {
-          id: 1,
-          name: "ダミーユーザー",
-          password: "dummyPassword",
-          email: "dummyData@mail.com",
-        },
+        id: 1,
+        name: "ダミーユーザー",
+        email: "dummyData@mail.com",
       });
     });
   });

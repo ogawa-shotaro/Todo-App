@@ -82,11 +82,11 @@ describe("【ユニットテスト】registerUserSchemaの挙動テスト", () =
         ]),
       );
     });
-    it("【passwordプロパティ有り・入力値が不正(8文字以下)な場合】例外(min_error)が発生する。", () => {
+    it("【passwordプロパティ有り・入力値が不正(7文字以下)な場合】例外(min_error)が発生する。", () => {
       const data = {
         body: {
           name: "ダミーユーザー",
-          password: "",
+          password: "Invalid",
           email: "dummyData@mail.com",
         },
       };
@@ -105,11 +105,11 @@ describe("【ユニットテスト】registerUserSchemaの挙動テスト", () =
         ]),
       );
     });
-    it("【passwordプロパティ有り・入力値が不正(16文字以上)な場合】例外(max_error)が発生する。", () => {
+    it("【passwordプロパティ有り・入力値が不正(16文字より多い場合)な場合】例外(max_error)が発生する。", () => {
       const data = {
         body: {
           name: "ダミーユーザー",
-          password: "ExcessivePassword ",
+          password: "ExcessivePassword",
           email: "dummyData@mail.com",
         },
       };
