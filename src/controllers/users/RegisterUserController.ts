@@ -12,21 +12,21 @@ export class RegisterUserController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, password, email } = req.body;
-      const newUser = await this.repository.register({
+      const { user, token } = await this.repository.register({
         name,
         password,
         email,
       });
 
       res
-        .cookie("token", newUser.token, {
+        .cookie("token", token, {
           httpOnly: true,
         })
         .status(StatusCodes.OK)
         .json({
-          id: newUser.user.id,
-          name: newUser.user.name,
-          email: newUser.user.email,
+          id: user.id,
+          name: user.name,
+          email: user.email,
         });
     } catch (error) {
       next(error);
