@@ -6,7 +6,7 @@ import type {
   TodoInput,
   TodoListParams,
   TodoModificationParams,
-} from "../types/todos/TodoRequest.type";
+} from "../../types/todos/TodoRequest.type";
 
 export interface ITodoRepository {
   save(inputData: TodoInput): Promise<Todo>;
