@@ -1,10 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import type { User } from "@prisma/client";
 
 import { hashPassword } from "../../auths/password_operator";
+import { ConflictError } from "../../errors/ConflictError";
+import { InternalServerError } from "../../errors/InternalServerError";
 import { NotFoundError } from "../../errors/NotFoundError";
 import { UnauthorizedError } from "../../errors/UnauthorizedError";
 import type {
@@ -24,18 +26,29 @@ const createJWT = (userId: number) => {
 
 export class UserRepository {
   async register(inputData: UserRegisterInput) {
-    const hashedPassword = await hashPassword(inputData.password);
-    const userData: User = await prisma.user.create({
-      data: {
-        name: inputData.name,
-        password: hashedPassword,
-        email: inputData.email,
-      },
-    });
+    try {
+      const hashedPassword = await hashPassword(inputData.password);
+      const userData: User = await prisma.user.create({
+        data: {
+          name: inputData.name,
+          password: hashedPassword,
+          email: inputData.email,
+        },
+      });
 
-    const token = createJWT(userData.id);
+      const token = createJWT(userData.id);
 
-    return { user: userData, token };
+      return { user: userData, token };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        throw new ConflictError("emailの内容が重複しています。");
+      } else {
+        throw new InternalServerError("データベースにエラーが発生しました。");
+      }
+    }
   }
   async login(inputData: UserLoginInput) {
     const user = await prisma.user.findUnique({
