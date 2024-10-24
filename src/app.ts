@@ -10,7 +10,8 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/todos", todoRouter, userRouter);
+app.use("/api/users", userRouter);
+app.use("/api/todos", todoRouter);
 app.use(errorHandler);
 
 export default app;
