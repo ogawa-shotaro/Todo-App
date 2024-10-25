@@ -74,7 +74,7 @@ describe("【UserRepositoryのテスト】", () => {
           password: "dummyPassword",
           email: "dummyData@mail.com",
         }),
-      ).rejects.toThrow("Unique constraint failed on the fields: (`email`)");
+      ).rejects.toThrow("emailの内容が重複しています。");
     });
     it("【loginメソッド実行時】存在しないユーザーを指定した場合、エラーオブジェクトが返る。", async () => {
       const repository = new UserRepository();

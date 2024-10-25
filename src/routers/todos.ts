@@ -13,7 +13,7 @@ import { createTodoSchema } from "../schemas/todos/createTodoSchema";
 import { getTodosSchema } from "../schemas/todos/getTodosSchema";
 import { updateTodoSchema } from "../schemas/todos/updateTodoSchema";
 
-const router = express.Router();
+const todoRouter = express.Router();
 
 const todoRepository = new TodoRepository();
 const todoCreateController = new CreateTodoController(todoRepository);
@@ -22,7 +22,7 @@ const todoGetController = new GetTodoController(todoRepository);
 const todoUpdateController = new UpdateTodoController(todoRepository);
 const todoDeleteController = new DeleteTodoController(todoRepository);
 
-router
+todoRouter
   .route("/")
   .post(authHandler, validator(createTodoSchema), (req, res, next) => {
     todoCreateController.create(req, res, next);
@@ -31,7 +31,7 @@ router
     todosGetController.list(req, res, next);
   });
 
-router
+todoRouter
   .route("/:id")
   .get(authHandler, validator(requestIdSchema), (req, res, next) => {
     todoGetController.find(req, res, next);
@@ -43,4 +43,4 @@ router
     todoDeleteController.delete(req, res, next);
   });
 
-export default router;
+export default todoRouter;
