@@ -9,5 +9,5 @@ export interface IUserRepository {
   register(
     inputData: UserRegisterInput,
   ): Promise<{ user: User; token: string }>;
-  login(inputData: UserLoginInput): Promise<string>;
+  login(inputData: UserLoginInput): Promise<{ user: User; token: string }>;
 }

@@ -39,13 +39,13 @@ describe("【UserRepositoryのテスト】", () => {
       const decodedToken2 = jwt.verify(result2.token, process.env.JWT_SECRET!);
       expect(decodedToken2).toMatchObject({ userId: result2.user.id });
     });
-    it("【loginメソッド実行時】DBから認証Userの検索を行い、トークンを返す。", async () => {
-      const user = await createTestUser();
-      const email = user.email;
+    it("【loginメソッド実行時】DBから認証Userの検索を行い、ユーザー情報とトークンを返す。", async () => {
+      const userData = await createTestUser();
+      const email = userData.email;
 
       const repository = new UserRepository();
 
-      const token = await repository.login({
+      const { user, token } = await repository.login({
         password: "dummyPassword",
         email: email,
       });

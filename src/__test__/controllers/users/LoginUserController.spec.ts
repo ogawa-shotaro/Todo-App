@@ -1,22 +1,21 @@
 import { StatusCodes } from "http-status-codes";
 
-import { RegisterUserController } from "../../../controllers/users/RegisterUserController";
+import { LoginUserController } from "../../../controllers/users/LoginUserController";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
-describe("【ユニットテスト】ユーザーの新規登録", () => {
+describe("【ユニットテスト】ユーザーログイン機能", () => {
   let repository: MockRepository;
-  let controller: RegisterUserController;
+  let controller: LoginUserController;
   beforeEach(async () => {
     repository = new MockRepository();
-    controller = new RegisterUserController(repository);
+    controller = new LoginUserController(repository);
   });
   describe("【成功パターン】", () => {
-    it("Registerメソッドのパラメータが正しいと、User(jsonとstatus(ok=200))が返る。", async () => {
+    it("Loginメソッドのパラメータが正しいと、tokenとstatus(ok=200)が返る。", async () => {
       const req = createMockRequest({
         body: {
-          name: "ダミーユーザー",
           password: "dummyPassword",
           email: "dummyData@mail.com",
         },
@@ -32,15 +31,11 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
       };
       const mockToken = "mockedJWT";
 
-      repository.register.mockResolvedValue({
-        user: mockUser,
-        token: mockToken,
-      });
+      repository.login.mockResolvedValue({ user: mockUser, token: mockToken });
 
-      await controller.register(req, res, next);
+      await controller.login(req, res, next);
 
-      expect(repository.register).toHaveBeenCalledWith({
-        name: "ダミーユーザー",
+      expect(repository.login).toHaveBeenCalledWith({
         password: "dummyPassword",
         email: "dummyData@mail.com",
       });
@@ -56,10 +51,9 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("Registerメソッドのパラメータが不正の場合、next関数(パラメーターがError)を実行する。", async () => {
+    it("loginメソッドのパラメータが不正の場合、next関数(パラメーターがError)を実行する。", async () => {
       const req = createMockRequest({
         body: {
-          name: "InvalidName",
           password: "InvalidPassword",
           email: "InvalidEmail",
         },
@@ -67,9 +61,9 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
       const res = createMockResponse();
       const next = jest.fn();
 
-      repository.register.mockRejectedValue(new Error("dummy error"));
+      repository.login.mockRejectedValue(new Error("dummy error"));
 
-      await controller.register(req, res, next);
+      await controller.login(req, res, next);
 
       expect(next).toHaveBeenCalledWith(expect.any(Error));
     });
