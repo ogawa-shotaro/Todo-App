@@ -8,9 +8,9 @@ import { UpdateTodoController } from "../controllers/todos/UpdateTodoController"
 import { authHandler } from "../middlewares/authHandler";
 import { validator } from "../middlewares/validateHandler";
 import { TodoRepository } from "../repositories/todos/TodoRepository";
-import { requestIdSchema } from "../schemas/shared/requestIdSchema";
 import { createTodoSchema } from "../schemas/todos/createTodoSchema";
 import { getTodosSchema } from "../schemas/todos/getTodosSchema";
+import { requestIdSchema } from "../schemas/todos/shared/requestIdSchema";
 import { updateTodoSchema } from "../schemas/todos/updateTodoSchema";
 
 const todoRouter = express.Router();

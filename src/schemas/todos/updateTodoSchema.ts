@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { idParamsSchema } from "../shared/idParamsSchema";
+import { idParamsSchema } from "./shared/idParamsSchema";
 
 export const updateTodoSchema = z.object({
   params: z.object({ id: idParamsSchema }),
