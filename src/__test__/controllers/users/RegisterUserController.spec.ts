@@ -1,7 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
 import { RegisterUserController } from "../../../controllers/users/RegisterUserController";
-import { InvalidError } from "../../../errors/InvalidError";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
@@ -57,7 +56,7 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
     });
   });
   describe("【異常パターン】", () => {
-    it("Registerメソッドのパラメータが不正の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+    it("Registerメソッドのパラメータが不正の場合、next関数(パラメーターがError)を実行する。", async () => {
       const req = createMockRequest({
         body: {
           name: "InvalidName",
@@ -68,13 +67,11 @@ describe("【ユニットテスト】ユーザーの新規登録", () => {
       const res = createMockResponse();
       const next = jest.fn();
 
-      repository.register.mockRejectedValue(
-        new InvalidError("registerUserSchemaに基づくエラー内容"),
-      );
+      repository.register.mockRejectedValue(new Error("dummy error"));
 
       await controller.register(req, res, next);
 
-      expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 });

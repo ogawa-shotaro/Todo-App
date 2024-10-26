@@ -12,7 +12,7 @@ export class LoginUserController {
   async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { password, email } = req.body;
-      const token = await this.repository.login({
+      const { user, token } = await this.repository.login({
         password,
         email,
       });
@@ -21,7 +21,12 @@ export class LoginUserController {
         .cookie("token", token, {
           httpOnly: true,
         })
-        .status(StatusCodes.OK);
+        .status(StatusCodes.OK)
+        .json({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        });
     } catch (error) {
       next(error);
     }

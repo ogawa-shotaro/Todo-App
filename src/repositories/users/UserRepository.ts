@@ -53,10 +53,6 @@ export class UserRepository {
   async login(inputData: UserLoginInput) {
     const user = await prisma.user.findUnique({
       where: { email: inputData.email },
-      select: {
-        id: true,
-        password: true,
-      },
     });
 
     if (!user) {
@@ -74,6 +70,6 @@ export class UserRepository {
 
     const token = createJWT(user.id);
 
-    return token;
+    return { user, token };
   }
 }

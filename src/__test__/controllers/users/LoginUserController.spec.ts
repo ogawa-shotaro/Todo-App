@@ -1,7 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
 import { LoginUserController } from "../../../controllers/users/LoginUserController";
-import { InvalidError } from "../../../errors/InvalidError";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
@@ -24,9 +23,15 @@ describe("【ユニットテスト】ユーザーログイン機能", () => {
       const res = createMockResponse();
       const next = jest.fn();
 
+      const mockUser = {
+        id: 1,
+        name: "ダミーユーザー",
+        password: "dummyPassword",
+        email: "dummyData@mail.com",
+      };
       const mockToken = "mockedJWT";
 
-      repository.login.mockResolvedValue(mockToken);
+      repository.login.mockResolvedValue({ user: mockUser, token: mockToken });
 
       await controller.login(req, res, next);
 
@@ -38,10 +43,15 @@ describe("【ユニットテスト】ユーザーログイン機能", () => {
         httpOnly: true,
       });
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+      expect(res.json).toHaveBeenCalledWith({
+        id: 1,
+        name: "ダミーユーザー",
+        email: "dummyData@mail.com",
+      });
     });
   });
   describe("【異常パターン】", () => {
-    it("loginメソッドのパラメータが不正の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
+    it("loginメソッドのパラメータが不正の場合、next関数(パラメーターがError)を実行する。", async () => {
       const req = createMockRequest({
         body: {
           password: "InvalidPassword",
@@ -51,13 +61,11 @@ describe("【ユニットテスト】ユーザーログイン機能", () => {
       const res = createMockResponse();
       const next = jest.fn();
 
-      repository.login.mockRejectedValue(
-        new InvalidError("emailPasswordSchemaに基づくエラー内容"),
-      );
+      repository.login.mockRejectedValue(new Error("dummy error"));
 
       await controller.login(req, res, next);
 
-      expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
     });
   });
 });
