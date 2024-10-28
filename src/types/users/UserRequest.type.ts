@@ -10,12 +10,8 @@ export interface UserLoginInput {
 }
 
 export interface UserUpdateInput {
-  userId?: number;
+  userId: number;
   name?: string;
   password?: string;
   email?: string;
 }
-// export interface UserUpdateInput extends UserRegisterInput {
-//   userId: number;
-// }
-// Partial<User>

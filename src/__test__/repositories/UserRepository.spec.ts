@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt";
 import jwt, { type JwtPayload } from "jsonwebtoken";
-import { userInfo } from "os";
 
 import { UserRepository } from "../../repositories/users/UserRepository";
 import { createTestUser } from "../helper/requestHelper";
