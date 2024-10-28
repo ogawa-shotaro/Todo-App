@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt, { type JwtPayload } from "jsonwebtoken";
+import { userInfo } from "os";
 
 import { UserRepository } from "../../repositories/users/UserRepository";
 import { createTestUser } from "../helper/requestHelper";
@@ -57,6 +58,39 @@ describe("【UserRepositoryのテスト】", () => {
 
       expect(decodedToken.userId).toEqual(user.id);
     });
+    it("【updateメソッド実行時】DBのユーザー情報を更新し、ユーザー情報とトークンを返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
+
+      const updatedName = await repository.update({
+        userId: userData.id,
+        name: "変更後のユーザー名",
+      });
+      expect(updatedName.user.id).toEqual(1);
+      expect(updatedName.user.name).toEqual("変更後のユーザー名");
+
+      const updatedEmail = await repository.update({
+        userId: userData.id,
+        email: "updatedEmail@mail.com",
+      });
+      expect(updatedEmail.user.id).toEqual(1);
+      expect(updatedEmail.user.email).toEqual("updatedEmail@mail.com");
+
+      const updatedPassword = await repository.update({
+        userId: userData.id,
+        password: "updatedPassword",
+      });
+      expect(updatedPassword.user.id).toEqual(1);
+      expect(
+        await bcrypt.compare("updatedPassword", updatedPassword.user.password),
+      ).toEqual(true);
+
+      const decodedToken = jwt.verify(
+        updatedPassword.token,
+        process.env.JWT_SECRET!,
+      );
+      expect(decodedToken).toMatchObject({ userId: updatedPassword.user.id });
+    });
   });
   describe("【異常パターン】", () => {
     it("【registerメソッドを実行時】重複したemailはエラーとなる。", async () => {
@@ -98,6 +132,18 @@ describe("【UserRepositoryのテスト】", () => {
           email: email,
         }),
       ).rejects.toThrow("認証に失敗しました。");
+    });
+    it("【updateメソッドを実行時】重複したemailはエラーとなる。", async () => {
+      const repository = new UserRepository();
+      const initialUser = await createTestUser();
+      const secondUser = await createTestUser();
+
+      await expect(
+        repository.update({
+          userId: secondUser.id,
+          email: initialUser.email,
+        }),
+      ).rejects.toThrow("emailの内容が重複しています。");
     });
   });
 });

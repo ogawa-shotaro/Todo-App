@@ -12,6 +12,7 @@ import { UnauthorizedError } from "../../errors/UnauthorizedError";
 import type {
   UserLoginInput,
   UserRegisterInput,
+  UserUpdateInput,
 } from "../../types/users/UserRequest.type";
 
 const prisma = new PrismaClient();
@@ -71,5 +72,42 @@ export class UserRepository {
     const token = createJWT(user.id);
 
     return { user, token };
+  }
+
+  async update(inputData: UserUpdateInput) {
+    try {
+      const updateItems: Partial<User> = {};
+
+      if (inputData.name) {
+        updateItems.name = inputData.name;
+      }
+
+      if (inputData.password) {
+        const hashedPassword = await hashPassword(inputData.password);
+        updateItems.password = hashedPassword;
+      }
+
+      if (inputData.email) {
+        updateItems.email = inputData.email;
+      }
+
+      const updatedUser = await prisma.user.update({
+        where: { id: inputData.userId },
+        data: updateItems,
+      });
+
+      const token = createJWT(updatedUser.id);
+
+      return { user: updatedUser, token };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        throw new ConflictError("emailの内容が重複しています。");
+      } else {
+        throw new InternalServerError("データベースにエラーが発生しました。");
+      }
+    }
   }
 }
