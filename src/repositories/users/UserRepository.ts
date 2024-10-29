@@ -96,9 +96,7 @@ export class UserRepository {
         data: updateItems,
       });
 
-      const token = createJWT(updatedUser.id);
-
-      return { user: updatedUser, token };
+      return updatedUser;
     } catch (error) {
       if (
         error instanceof Prisma.PrismaClientKnownRequestError &&

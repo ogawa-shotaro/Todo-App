@@ -57,7 +57,7 @@ describe("【UserRepositoryのテスト】", () => {
 
       expect(decodedToken.userId).toEqual(user.id);
     });
-    it("【updateメソッド実行時】DBのユーザー情報を更新し、ユーザー情報とトークンを返す。", async () => {
+    it("【updateメソッド実行時】DBのユーザー情報(nameプロパティの値)を更新し、更新情報を返す。", async () => {
       const userData = await createTestUser();
       const repository = new UserRepository();
 
@@ -65,30 +65,49 @@ describe("【UserRepositoryのテスト】", () => {
         userId: userData.id,
         name: "変更後のユーザー名",
       });
-      expect(updatedName.user.id).toEqual(1);
-      expect(updatedName.user.name).toEqual("変更後のユーザー名");
+      expect(updatedName.id).toEqual(1);
+      expect(updatedName.name).toEqual("変更後のユーザー名");
+    });
+    it("【updateメソッド実行時】DBのユーザー情報(emailプロパティの値)を更新し、更新情報を返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
 
       const updatedEmail = await repository.update({
         userId: userData.id,
         email: "updatedEmail@mail.com",
       });
-      expect(updatedEmail.user.id).toEqual(1);
-      expect(updatedEmail.user.email).toEqual("updatedEmail@mail.com");
+      expect(updatedEmail.id).toEqual(1);
+      expect(updatedEmail.email).toEqual("updatedEmail@mail.com");
+    });
+    it("【updateメソッド実行時】DBのユーザー情報(passwordプロパティの値)を更新し、更新情報を返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
 
       const updatedPassword = await repository.update({
         userId: userData.id,
         password: "updatedPassword",
       });
-      expect(updatedPassword.user.id).toEqual(1);
+      expect(updatedPassword.id).toEqual(1);
       expect(
-        await bcrypt.compare("updatedPassword", updatedPassword.user.password),
+        await bcrypt.compare("updatedPassword", updatedPassword.password),
       ).toEqual(true);
+    });
+    it("【updateメソッド実行時】DBのユーザー情報(すべてのプロパティの値)を更新し、更新情報を返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
 
-      const decodedToken = jwt.verify(
-        updatedPassword.token,
-        process.env.JWT_SECRET!,
-      );
-      expect(decodedToken).toMatchObject({ userId: updatedPassword.user.id });
+      const updatedUser = await repository.update({
+        userId: userData.id,
+        name: "変更後のユーザー名",
+        password: "updatedPassword",
+        email: "updatedEmail@mail.com",
+      });
+      expect(updatedUser.id).toEqual(1);
+      expect(updatedUser.name).toEqual("変更後のユーザー名");
+      expect(
+        await bcrypt.compare("updatedPassword", updatedUser.password),
+      ).toEqual(true);
+      expect(updatedUser.email).toEqual("updatedEmail@mail.com");
     });
   });
   describe("【異常パターン】", () => {

@@ -11,5 +11,5 @@ export interface IUserRepository {
     inputData: UserRegisterInput,
   ): Promise<{ user: User; token: string }>;
   login(inputData: UserLoginInput): Promise<{ user: User; token: string }>;
-  update(inputData: UserUpdateInput): Promise<{ user: User; token: string }>;
+  update(inputData: UserUpdateInput): Promise<User>;
 }
