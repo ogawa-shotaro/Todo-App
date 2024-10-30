@@ -57,6 +57,58 @@ describe("【UserRepositoryのテスト】", () => {
 
       expect(decodedToken.userId).toEqual(user.id);
     });
+    it("【updateメソッド実行時】DBのユーザー情報(nameプロパティの値)を更新し、更新情報を返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
+
+      const updatedUser = await repository.update({
+        userId: userData.id,
+        name: "変更後のユーザー名",
+      });
+      expect(updatedUser.id).toEqual(1);
+      expect(updatedUser.name).toEqual("変更後のユーザー名");
+    });
+    it("【updateメソッド実行時】DBのユーザー情報(emailプロパティの値)を更新し、更新情報を返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
+
+      const updatedUser = await repository.update({
+        userId: userData.id,
+        email: "updatedEmail@mail.com",
+      });
+      expect(updatedUser.id).toEqual(1);
+      expect(updatedUser.email).toEqual("updatedEmail@mail.com");
+    });
+    it("【updateメソッド実行時】DBのユーザー情報(passwordプロパティの値)を更新し、更新情報を返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
+
+      const updatedUser = await repository.update({
+        userId: userData.id,
+        password: "updatedPassword",
+      });
+      expect(updatedUser.id).toEqual(1);
+      expect(
+        await bcrypt.compare("updatedPassword", updatedUser.password),
+      ).toEqual(true);
+    });
+    it("【updateメソッド実行時】DBのユーザー情報(すべてのプロパティの値)を更新し、更新情報を返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
+
+      const updatedUser = await repository.update({
+        userId: userData.id,
+        name: "変更後のユーザー名",
+        password: "updatedPassword",
+        email: "updatedEmail@mail.com",
+      });
+      expect(updatedUser.id).toEqual(1);
+      expect(updatedUser.name).toEqual("変更後のユーザー名");
+      expect(
+        await bcrypt.compare("updatedPassword", updatedUser.password),
+      ).toEqual(true);
+      expect(updatedUser.email).toEqual("updatedEmail@mail.com");
+    });
   });
   describe("【異常パターン】", () => {
     it("【registerメソッドを実行時】重複したemailはエラーとなる。", async () => {
@@ -98,6 +150,18 @@ describe("【UserRepositoryのテスト】", () => {
           email: email,
         }),
       ).rejects.toThrow("認証に失敗しました。");
+    });
+    it("【updateメソッドを実行時】重複したemailはエラーとなる。", async () => {
+      const repository = new UserRepository();
+      const initialUser = await createTestUser();
+      const secondUser = await createTestUser();
+
+      await expect(
+        repository.update({
+          userId: secondUser.id,
+          email: initialUser.email,
+        }),
+      ).rejects.toThrow("emailの内容が重複しています。");
     });
   });
 });
