@@ -149,9 +149,9 @@ describe("【ユニットテスト】ユーザー更新機能", () => {
           id: 1,
         },
         body: {
-          name: "InvalidName",
-          password: "InvalidPassword",
-          email: "InvalidEmail",
+          name: "",
+          password: "ExcessivePassword",
+          email: "incorrectFormat.com",
         },
       });
       const res = createMockResponse();
