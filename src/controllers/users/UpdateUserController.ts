@@ -1,8 +1,8 @@
 import type { NextFunction, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import { IUserRepository } from "../../repositories/users/IUserRepository";
-import { AuthenticatedRequest } from "../../types/requests/AuthenticatedRequest.type";
+import type { IUserRepository } from "../../repositories/users/IUserRepository";
+import type { AuthenticatedRequest } from "../../types/requests/AuthenticatedRequest.type";
 
 export class UpdateUserController {
   private repository: IUserRepository;
