@@ -4,6 +4,7 @@ import type { IUserRepository } from "../../../repositories/users/IUserRepositor
 import type {
   UserLoginInput,
   UserRegisterInput,
+  UserUpdateInput,
 } from "../../../types/users/UserRequest.type";
 
 export class MockRepository implements IUserRepository {
@@ -12,4 +13,5 @@ export class MockRepository implements IUserRepository {
     [UserRegisterInput]
   >();
   login = jest.fn<Promise<{ user: User; token: string }>, [UserLoginInput]>();
+  update = jest.fn<Promise<Partial<User>>, [UserUpdateInput]>();
 }
