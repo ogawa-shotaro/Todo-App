@@ -21,15 +21,18 @@ userRouter
   .route("/register")
   .post(validator(registerUserSchema), (req, res, next) => {
     userRegisterController.register(req, res, next);
-  })
-  .put(authHandler, validator(updateUserSchema), (req, res, next) => {
-    updateController.update(req, res, next);
   });
 
 userRouter
   .route("/login")
   .post(validator(loginUserSchema), (req, res, next) => {
     userLoginController.login(req, res, next);
+  });
+
+userRouter
+  .route("/update")
+  .put(authHandler, validator(updateUserSchema), (req, res, next) => {
+    updateController.update(req, res, next);
   });
 
 export default userRouter;

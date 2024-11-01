@@ -19,7 +19,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
       const response = await requestAPIWithAuth({
         method: "put",
-        endPoint: "/api/users/register",
+        endPoint: "/api/users/update",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       }).send(request);
@@ -37,7 +37,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
       const response = await requestAPIWithAuth({
         method: "put",
-        endPoint: "/api/users/register",
+        endPoint: "/api/users/update",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       }).send(request);
@@ -55,7 +55,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
       const response = await requestAPIWithAuth({
         method: "put",
-        endPoint: "/api/users/register",
+        endPoint: "/api/users/update",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       }).send(request);
@@ -75,7 +75,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
       const response = await requestAPIWithAuth({
         method: "put",
-        endPoint: "/api/users/register",
+        endPoint: "/api/users/update",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       }).send(request);
@@ -96,7 +96,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/register",
+          endPoint: "/api/users/update",
           statusCode: StatusCodes.BAD_REQUEST,
           userId: newUser.id,
         }).send(request);
@@ -112,7 +112,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/register",
+          endPoint: "/api/users/update",
           statusCode: StatusCodes.BAD_REQUEST,
           userId: newUser.id,
         }).send(request);
@@ -128,7 +128,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/register",
+          endPoint: "/api/users/update",
           statusCode: StatusCodes.BAD_REQUEST,
           userId: newUser.id,
         }).send(request);
@@ -144,7 +144,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/register",
+          endPoint: "/api/users/update",
           statusCode: StatusCodes.BAD_REQUEST,
           userId: newUser.id,
         }).send(request);
@@ -164,7 +164,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPI({
           method: "put",
-          endPoint: "/api/users/register",
+          endPoint: "/api/users/update",
           statusCode: StatusCodes.UNAUTHORIZED,
         }).send(request);
 
@@ -175,20 +175,14 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
     });
     describe("【DBに関わるエラーテスト】", () => {
       it("【ConflictErrorのテスト】email値が重複している場合。", async () => {
-        const repository = new UserRepository();
-
-        await repository.register({
-          name: "ダミーユーザー",
-          password: "dummyPassword",
-          email: "dummyData@mail.com",
-        });
+        const secondUser = await createTestUser();
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/register",
+          endPoint: "/api/users/update",
           statusCode: StatusCodes.CONFLICT,
-          userId: newUser.id,
-        }).send({ email: "dummyData@mail.com" });
+          userId: secondUser.id,
+        }).send({ email: newUser.email });
 
         expect(response.body).toEqual({
           message: "emailの内容が重複しています。",
@@ -211,7 +205,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/register",
+          endPoint: "/api/users/update",
           statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
           userId: newUser.id,
         }).send(request);
