@@ -30,7 +30,7 @@ userRouter
   });
 
 userRouter
-  .route("/update")
+  .route("/")
   .put(authHandler, validator(updateUserSchema), (req, res, next) => {
     updateController.update(req, res, next);
   });
