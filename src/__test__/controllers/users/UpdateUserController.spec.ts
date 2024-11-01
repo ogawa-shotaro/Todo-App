@@ -144,14 +144,18 @@ describe("【ユニットテスト】ユーザー更新機能", () => {
   });
   describe("【異常パターン】", () => {
     it("updateメソッドのパラメータが不正の場合、next関数(パラメーターがError)を実行する。", async () => {
+      const InvalidName = "";
+      const InvalidPassword = "aaaaaaaaaaaaaaaaa";
+      const InvalideEmail = "incorrectFormat.com";
+
       const req = createMockAuthenticatedRequest({
         user: {
           id: 1,
         },
         body: {
-          name: "",
-          password: "ExcessivePassword",
-          email: "incorrectFormat.com",
+          name: InvalidName,
+          password: InvalidPassword,
+          email: InvalideEmail,
         },
       });
       const res = createMockResponse();
