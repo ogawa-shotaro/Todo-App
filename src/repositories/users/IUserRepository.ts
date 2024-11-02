@@ -1,6 +1,7 @@
 import { User } from "@prisma/client";
 
 import type {
+  UserDeleteInput,
   UserLoginInput,
   UserRegisterInput,
   UserUpdateInput,
@@ -12,4 +13,5 @@ export interface IUserRepository {
   ): Promise<{ user: User; token: string }>;
   login(inputData: UserLoginInput): Promise<{ user: User; token: string }>;
   update(inputData: UserUpdateInput): Promise<Partial<User>>;
+  delete(inputData: UserDeleteInput): Promise<User>;
 }

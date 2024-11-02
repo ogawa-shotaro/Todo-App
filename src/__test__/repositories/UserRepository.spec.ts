@@ -1,8 +1,12 @@
 import bcrypt from "bcrypt";
 import jwt, { type JwtPayload } from "jsonwebtoken";
 
+import { PrismaClient } from "@prisma/client";
+
 import { UserRepository } from "../../repositories/users/UserRepository";
 import { createTestUser } from "../helper/requestHelper";
+
+const prisma = new PrismaClient();
 
 describe("【UserRepositoryのテスト】", () => {
   describe("【成功パターン】", () => {
@@ -109,6 +113,24 @@ describe("【UserRepositoryのテスト】", () => {
       ).toEqual(true);
       expect(updatedUser.email).toEqual("updatedEmail@mail.com");
     });
+    it("【deleteメソッド実行時】DBのユーザーを一件削除し、削除したユーザーの情報を返す。", async () => {
+      const userData = await createTestUser();
+      const repository = new UserRepository();
+
+      const deletedUser = await repository.delete({
+        userId: userData.id,
+      });
+
+      expect(deletedUser.id).toEqual(userData.id);
+      expect(deletedUser.name).toEqual(userData.name);
+      expect(deletedUser.password).toEqual(userData.password);
+      expect(deletedUser.email).toEqual(userData.email);
+
+      const user = await prisma.user.findUnique({
+        where: { id: userData.id },
+      });
+      expect(user).toBeNull();
+    });
   });
   describe("【異常パターン】", () => {
     it("【registerメソッドを実行時】重複したemailはエラーとなる。", async () => {
@@ -151,7 +173,7 @@ describe("【UserRepositoryのテスト】", () => {
         }),
       ).rejects.toThrow("認証に失敗しました。");
     });
-    it("【updateメソッドを実行時】重複したemailはエラーとなる。", async () => {
+    it("【updateメソッド実行時】重複したemailはエラーとなる。", async () => {
       const repository = new UserRepository();
       const initialUser = await createTestUser();
       const secondUser = await createTestUser();
@@ -162,6 +184,15 @@ describe("【UserRepositoryのテスト】", () => {
           email: initialUser.email,
         }),
       ).rejects.toThrow("emailの内容が重複しています。");
+    });
+    it("【deleteメソッド実行時】存在しないユーザーを指定した場合、エラーオブジェクトが返る。", async () => {
+      const repository = new UserRepository();
+
+      await expect(
+        repository.delete({
+          userId: 999,
+        }),
+      ).rejects.toThrow("削除対象のユーザーが見つかりません。");
     });
   });
 });
