@@ -15,3 +15,7 @@ export interface UserUpdateInput {
   password?: string;
   email?: string;
 }
+
+export interface UserDeleteInput {
+  userId: number;
+}

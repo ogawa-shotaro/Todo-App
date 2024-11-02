@@ -10,6 +10,7 @@ import { InternalServerError } from "../../errors/InternalServerError";
 import { NotFoundError } from "../../errors/NotFoundError";
 import { UnauthorizedError } from "../../errors/UnauthorizedError";
 import type {
+  UserDeleteInput,
   UserLoginInput,
   UserRegisterInput,
   UserUpdateInput,
@@ -103,6 +104,25 @@ export class UserRepository {
         error.code === "P2002"
       ) {
         throw new ConflictError("emailの内容が重複しています。");
+      } else {
+        throw new InternalServerError("データベースにエラーが発生しました。");
+      }
+    }
+  }
+
+  async delete(inputData: UserDeleteInput) {
+    try {
+      const deletedUser = await prisma.user.delete({
+        where: { id: inputData.userId },
+      });
+
+      return deletedUser;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new NotFoundError("削除対象のユーザーが見つかりません。");
       } else {
         throw new InternalServerError("データベースにエラーが発生しました。");
       }
