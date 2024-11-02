@@ -19,7 +19,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
       const response = await requestAPIWithAuth({
         method: "put",
-        endPoint: "/api/users/",
+        endPoint: "/api/users",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       }).send(request);
@@ -37,7 +37,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
       const response = await requestAPIWithAuth({
         method: "put",
-        endPoint: "/api/users/",
+        endPoint: "/api/users",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       }).send(request);
@@ -55,7 +55,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
       const response = await requestAPIWithAuth({
         method: "put",
-        endPoint: "/api/users/",
+        endPoint: "/api/users",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       }).send(request);
@@ -75,7 +75,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
       const response = await requestAPIWithAuth({
         method: "put",
-        endPoint: "/api/users/",
+        endPoint: "/api/users",
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       }).send(request);
@@ -96,7 +96,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/",
+          endPoint: "/api/users",
           statusCode: StatusCodes.BAD_REQUEST,
           userId: newUser.id,
         }).send(request);
@@ -112,7 +112,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/",
+          endPoint: "/api/users",
           statusCode: StatusCodes.BAD_REQUEST,
           userId: newUser.id,
         }).send(request);
@@ -128,7 +128,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/",
+          endPoint: "/api/users",
           statusCode: StatusCodes.BAD_REQUEST,
           userId: newUser.id,
         }).send(request);
@@ -144,7 +144,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/",
+          endPoint: "/api/users",
           statusCode: StatusCodes.BAD_REQUEST,
           userId: newUser.id,
         }).send(request);
@@ -164,7 +164,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPI({
           method: "put",
-          endPoint: "/api/users/",
+          endPoint: "/api/users",
           statusCode: StatusCodes.UNAUTHORIZED,
         }).send(request);
 
@@ -179,7 +179,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/",
+          endPoint: "/api/users",
           statusCode: StatusCodes.CONFLICT,
           userId: secondUser.id,
         }).send({ email: newUser.email });
@@ -205,7 +205,7 @@ describe("【APIテスト】 ユーザーの更新機能", () => {
 
         const response = await requestAPIWithAuth({
           method: "put",
-          endPoint: "/api/users/",
+          endPoint: "/api/users",
           statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
           userId: newUser.id,
         }).send(request);
