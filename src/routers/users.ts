@@ -31,6 +31,10 @@ userRouter
     userLoginController.login(req, res, next);
   });
 
+userRouter.route("/logout").post((req, res) => {
+  userLoginController.logout(res);
+});
+
 userRouter
   .route("/")
   .put(authHandler, validator(updateUserSchema), (req, res, next) => {

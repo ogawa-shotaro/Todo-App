@@ -31,4 +31,11 @@ export class LoginUserController {
       next(error);
     }
   }
+
+  async logout(res: Response) {
+    res
+      .clearCookie("token", { httpOnly: true })
+      .status(StatusCodes.OK)
+      .json("ログアウトしました。");
+  }
 }

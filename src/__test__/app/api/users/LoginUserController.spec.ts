@@ -33,6 +33,19 @@ describe("【APIテスト】ユーザーログイン機能", () => {
       });
       expect(cookie[0]).toContain("token=");
     });
+    it("ログアウトリクエストでトークンが無効化され、メッセージが表示される。", async () => {
+      const response = await requestAPI({
+        method: "post",
+        endPoint: "/api/users/logout",
+        statusCode: StatusCodes.OK,
+      });
+      const message = response.body;
+      const cookie = response.header["set-cookie"];
+
+      expect(message).toEqual("ログアウトしました。");
+      expect(cookie[0]).toContain("token=;");
+      expect(cookie[0]).toContain("Expires=");
+    });
   });
   describe("【異常パターン】", () => {
     describe("【loginUserSchemaに基づくInvalidErrorのテスト】", () => {
