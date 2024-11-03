@@ -1,5 +1,6 @@
 import express from "express";
 
+import { DeleteUserController } from "../controllers/users/DeleteUserController";
 import { LoginUserController } from "../controllers/users/LoginUserController";
 import { RegisterUserController } from "../controllers/users/RegisterUserController";
 import { UpdateUserController } from "../controllers/users/UpdateUserController";
@@ -15,7 +16,8 @@ const userRouter = express.Router();
 const userRepository = new UserRepository();
 const userRegisterController = new RegisterUserController(userRepository);
 const userLoginController = new LoginUserController(userRepository);
-const updateController = new UpdateUserController(userRepository);
+const userUpdateController = new UpdateUserController(userRepository);
+const userDeleteUserController = new DeleteUserController(userRepository);
 
 userRouter
   .route("/register")
@@ -32,7 +34,10 @@ userRouter
 userRouter
   .route("/")
   .put(authHandler, validator(updateUserSchema), (req, res, next) => {
-    updateController.update(req, res, next);
+    userUpdateController.update(req, res, next);
+  })
+  .delete(authHandler, (req, res, next) => {
+    userDeleteUserController.delete(req, res, next);
   });
 
 export default userRouter;
