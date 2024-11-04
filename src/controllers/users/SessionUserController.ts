@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 
 import { IUserRepository } from "../../repositories/users/IUserRepository";
 
-export class LoginUserController {
+export class SessionUserController {
   private repository: IUserRepository;
   constructor(repository: IUserRepository) {
     this.repository = repository;
@@ -32,10 +32,15 @@ export class LoginUserController {
     }
   }
 
-  async logout(res: Response) {
-    res
-      .clearCookie("token", { httpOnly: true })
-      .status(StatusCodes.OK)
-      .json("ログアウトしました。");
+  async logout(res: Response, next: NextFunction) {
+    try {
+      res
+        .clearCookie("token", { httpOnly: true })
+        .status(StatusCodes.OK)
+        .json();
+      next();
+    } catch (error) {
+      next(error);
+    }
   }
 }

@@ -1,16 +1,16 @@
 import { StatusCodes } from "http-status-codes";
 
-import { LoginUserController } from "../../../controllers/users/LoginUserController";
+import { SessionUserController } from "../../../controllers/users/SessionUserController";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】ユーザーログイン機能", () => {
   let repository: MockRepository;
-  let controller: LoginUserController;
+  let controller: SessionUserController;
   beforeEach(async () => {
     repository = new MockRepository();
-    controller = new LoginUserController(repository);
+    controller = new SessionUserController(repository);
   });
   describe("【成功パターン】", () => {
     it("Loginメソッドのパラメータが正しいと、tokenとstatus(ok=200)が返る。", async () => {
