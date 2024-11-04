@@ -3,7 +3,11 @@ import { StatusCodes } from "http-status-codes";
 import { type User } from "@prisma/client";
 
 import { UserRepository } from "../../../../repositories/users/UserRepository";
-import { createTestUser, requestAPI } from "../../../helper/requestHelper";
+import {
+  createTestUser,
+  requestAPI,
+  requestAPIWithAuth,
+} from "../../../helper/requestHelper";
 
 describe("【APIテスト】ユーザーログイン機能", () => {
   let newUser: User;
@@ -32,6 +36,19 @@ describe("【APIテスト】ユーザーログイン機能", () => {
         email: newUser.email,
       });
       expect(cookie[0]).toContain("token=");
+    });
+    it("リクエスト(ログアウト)を送った場合、トークンが無効化される。", async () => {
+      const response = await requestAPIWithAuth({
+        method: "post",
+        endPoint: "/api/users/logout",
+        statusCode: StatusCodes.OK,
+        userId: newUser.id,
+      });
+
+      const cookie = response.header["set-cookie"];
+
+      expect(cookie[0]).toContain("token=;");
+      expect(cookie[0]).toContain("Expires=");
     });
   });
   describe("【異常パターン】", () => {

@@ -1,8 +1,8 @@
 import express from "express";
 
 import { DeleteUserController } from "../controllers/users/DeleteUserController";
-import { LoginUserController } from "../controllers/users/LoginUserController";
 import { RegisterUserController } from "../controllers/users/RegisterUserController";
+import { SessionUserController } from "../controllers/users/SessionUserController";
 import { UpdateUserController } from "../controllers/users/UpdateUserController";
 import { authHandler } from "../middlewares/authHandler";
 import { validator } from "../middlewares/validateHandler";
@@ -15,7 +15,7 @@ const userRouter = express.Router();
 
 const userRepository = new UserRepository();
 const userRegisterController = new RegisterUserController(userRepository);
-const userLoginController = new LoginUserController(userRepository);
+const userSessionController = new SessionUserController(userRepository);
 const userUpdateController = new UpdateUserController(userRepository);
 const userDeleteUserController = new DeleteUserController(userRepository);
 
@@ -28,8 +28,12 @@ userRouter
 userRouter
   .route("/login")
   .post(validator(loginUserSchema), (req, res, next) => {
-    userLoginController.login(req, res, next);
+    userSessionController.login(req, res, next);
   });
+
+userRouter.route("/logout").post(authHandler, (req, res, next) => {
+  userSessionController.logout(res, next);
+});
 
 userRouter
   .route("/")
