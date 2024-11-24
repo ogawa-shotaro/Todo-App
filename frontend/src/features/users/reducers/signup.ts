@@ -31,13 +31,11 @@ export const buildSignupExtraReducer = (
       state.signup.inProgress = false;
     })
     .addCase(signup.rejected, (state, action) => {
-      const { name, message, code } = action.error;
+      const { message } = action.error;
       state.signup.isSucceeded = false;
       state.signup.inProgress = false;
       state.signup.error = {
-        error: name ?? "例外エラー",
         message: message ?? "例外エラー",
-        statusCode: code ? parseInt(code) : 0,
       };
     });
 };
