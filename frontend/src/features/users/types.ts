@@ -16,7 +16,5 @@ export type SignupResponse = SignupSuccess | SignupError;
 
 export type SignupSuccess = undefined;
 export interface SignupError {
-  error: string;
   message: string[] | string;
-  statusCode: number;
 }

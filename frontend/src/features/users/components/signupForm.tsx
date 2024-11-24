@@ -7,14 +7,12 @@ import { signup } from "../authSlice";
 const SignupForm: FC = () => {
   const dispatch = useAppDispatch();
   const signupState = useAppSelector((state) => state.auth.signup);
-  console.log(signupState, `@@@@@@@@`);
+
   const [formData, setFormData] = useState<SignupInput>({
     name: "",
     email: "",
     password: "",
   });
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [errorMessages, setErrorMessages] = useState<string[]>([]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { name, value } = event.target;
@@ -25,31 +23,15 @@ const SignupForm: FC = () => {
   };
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
-    try {
-      event.preventDefault();
-      dispatch(signup(formData));
-      if (signupState.inProgress) {
-        return <p>送信中...</p>;
-      }
-
-      if (signupState.isSucceeded) {
-        setIsSubmitted(true);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        const errorMessages = !signupState.error
-          ? []
-          : Array.isArray(signupState.error.message)
-          ? signupState.error.message
-          : [signupState.error.message];
-
-        setErrorMessages(errorMessages);
-      }
-    }
+    event.preventDefault();
+    dispatch(signup(formData));
   };
 
-  console.log(signupState, `2@@@@@@@@`);
-  if (isSubmitted) {
+  if (signupState.inProgress) {
+    return <p>送信中...</p>;
+  }
+
+  if (signupState.isSucceeded) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
@@ -63,6 +45,38 @@ const SignupForm: FC = () => {
       </div>
     );
   }
+  if (signupState.error) {
+    const errorMessages = Array.isArray(signupState.error.message)
+      ? signupState.error.message
+      : [signupState.error.message];
+
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
+          <h2 className="text-2xl font-bold text-center text-red-600">
+            登録に失敗しました
+          </h2>
+          <p className="text-center text-gray-600">
+            以下のエラーを修正して、再度お試しください。
+          </p>
+          <div className="flex justify-center">
+            <ul className="text-sm text-red-600 space-y-2">
+              {errorMessages.map((text: string, index: number) => (
+                <li key={index}>{text}</li>
+              ))}
+            </ul>
+          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="w-full px-4 py-2 font-semibold text-white bg-red-600 rounded-md hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:outline-none"
+          >
+            再試行する
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
@@ -127,15 +141,6 @@ const SignupForm: FC = () => {
               required
             />
           </div>
-
-          {/* エラーメッセージ */}
-          {errorMessages.length > 0 && (
-            <ul className="text-sm text-red-600">
-              {errorMessages.map((text, index) => (
-                <li key={index}>{text}</li>
-              ))}
-            </ul>
-          )}
           {/* Submit button */}
           <button
             type="submit"

@@ -20,7 +20,7 @@ export const buildSignupExtraReducer = (
       state.signup.inProgress = true;
     })
     .addCase(signup.fulfilled, (state, action) => {
-      if (action.payload?.error) {
+      if (action.payload?.message) {
         state.signup.error = action.payload;
         state.signup.isSucceeded = false;
       } else {

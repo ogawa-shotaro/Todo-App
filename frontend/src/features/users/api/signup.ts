@@ -1,4 +1,3 @@
-"use server";
 import type { SignupInput, SignupResponse } from "../types";
 
 export const signupApi = async (
