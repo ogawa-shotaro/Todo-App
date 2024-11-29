@@ -1,8 +1,10 @@
 "use client";
-import { ChangeEventHandler, FormEventHandler, useState, type FC } from "react";
-import { useAppDispatch, useAppSelector } from "../../../stores/hooks";
-import type { SignupInput } from "../types";
-import { signup } from "../authSlice";
+
+import { useState } from "react";
+import type { ChangeEventHandler, FormEventHandler, FC } from "react";
+import { useAppDispatch, useAppSelector } from "@/stores/hooks";
+import type { SignupInput } from "@/features/users/types";
+import { signup } from "@/features/users/authSlice";
 
 const SignupForm: FC = () => {
   const dispatch = useAppDispatch();
@@ -45,7 +47,7 @@ const SignupForm: FC = () => {
       </div>
     );
   }
-  if (signupState.error) {
+  if (signupState.error?.message) {
     const errorMessages = Array.isArray(signupState.error.message)
       ? signupState.error.message
       : [signupState.error.message];

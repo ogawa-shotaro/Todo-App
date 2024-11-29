@@ -2,7 +2,11 @@ export interface AuthState {
   signup: {
     inProgress: boolean;
     isSucceeded: boolean;
-    error: SignupError | null;
+    error: SignupResponse | null;
+  };
+  user: {
+    name: string;
+    email: string;
   };
 }
 
@@ -12,9 +16,10 @@ export interface SignupInput {
   password: string;
 }
 
-export type SignupResponse = SignupSuccess | SignupError;
-
-export type SignupSuccess = undefined;
-export interface SignupError {
-  message: string[] | string;
+export interface SignupResponse {
+  user?: {
+    name: string;
+    email: string;
+  };
+  message?: string[] | string;
 }

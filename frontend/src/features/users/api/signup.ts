@@ -1,17 +1,23 @@
-import type { SignupInput, SignupResponse } from "../types";
+import type { SignupInput, SignupResponse } from "@/features/users/types";
 
 export const signupApi = async (
   formData: SignupInput
 ): Promise<SignupResponse> => {
-  const response = await fetch("http://localhost:3000/api/users/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(formData),
-  });
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/register`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+      credentials: "include",
+    }
+  );
   if (!response.ok) {
     const errorData = await response.json();
 
-    return errorData;
+    throw errorData;
   }
-  return undefined as SignupResponse;
+  const { name, email } = await response.json();
+
+  return { user: { name, email } };
 };
