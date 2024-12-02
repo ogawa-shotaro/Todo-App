@@ -83,7 +83,7 @@ npx prisma migrate dev
 以下のコマンドを実行してください：
 
 ```bash
-cd .\frontend\
+cd ..\frontend\
 .env.localファイルを作成
 
 ```
