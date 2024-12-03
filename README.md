@@ -113,6 +113,17 @@ npm start
 ```
 
 ## 7.【テストコマンド（バックエンド）】
+dockerを起動し、ローカルにDBを立ち上げます。<br />
+docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
+以下のコマンドを実行してください：
+
+```bash
+起動コマンド
+docker compose -f docker-compose.yaml -f docker-compose.test.yml up
+
+停止コマンド
+docker compose down
+
 結合テスト（単体テスト含む）は、<br />
 以下のコマンドを実行してください：
 
