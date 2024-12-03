@@ -59,7 +59,7 @@ dockerを起動し、ローカルにDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
 
-### 開発環境用コマンド
+### 【開発環境用コマンド】
 ```bash
 起動コマンド
 docker compose up
@@ -77,7 +77,7 @@ npx prisma migrate dev
 
 ```
 
-### テスト環境用コマンド
+### 【テスト環境用コマンド】
 dockerを起動し、ローカルにテスト用のDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
@@ -122,7 +122,7 @@ docker-repositories(ターミナルをもう一つ用意)にいる事を確認�
 
 ```bash
 起動コマンド
-docker compose -f docker-compose.yaml up
+docker compose up
 
 停止コマンド
 docker compose down
