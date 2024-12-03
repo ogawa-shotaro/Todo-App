@@ -23,7 +23,8 @@ npm install
 バックエンドディレクトリに移動し、環境変数を設定します。
 
 .envファイルを作成( .env.exampleファイルをコピー)します。<br />
-バックエンドディレクトリにいる事を確認し、以下のコマンドを実行してください：
+バックエンドディレクトリにいる事を確認し、<br />
+以下のコマンドを実行してください：
 
 ```bash
 cp .env.example .env
@@ -37,8 +38,9 @@ JWT_SECRET="mysecretkey"
 
 ```
 
-.env.testファイルを作成( .env.exampleファイルをコピー)します。
-バックエンドディレクトリにいる事を確認し、以下のコマンドを実行してください：
+.env.testファイルを作成( .env.exampleファイルをコピー)します。<br />
+バックエンドディレクトリにいる事を確認し、<br />
+以下のコマンドを実行してください：
 
 ```bash
 cp .env.example .env.test　
@@ -54,7 +56,7 @@ JWT_SECRET="JWT_SECRET_TEST"
 
 ## 4.【Prismaの設定】
 dockerを起動し、ローカルにDBを立ち上げます。<br />
-docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。
+docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
 
 ### 開発環境用コマンド
@@ -65,6 +67,7 @@ docker compose up
 停止コマンド
 docker compose down
 
+```
 バックエンドディレクトリにいる事を確認し、<br />
 以下のコマンドを実行してください：
 
@@ -75,6 +78,10 @@ npx prisma migrate dev
 ```
 
 ### テスト環境用コマンド
+dockerを起動し、ローカルにテスト用のDBを立ち上げます。<br />
+docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
+以下のコマンドを実行してください：
+
 ```bash
 起動コマンド
 docker compose -f docker-compose.yaml -f docker-compose.test.yml up
@@ -82,12 +89,15 @@ docker compose -f docker-compose.yaml -f docker-compose.test.yml up
 停止コマンド
 docker compose down
 
-バックエンドディレクトリにいる事を確認し、<br />
-以下のコマンドを実行してください：
-npx prisma generate
-npx dotenv -e .env.test -- npx prisma migrate dev
 ```
 
+バックエンドディレクトリにいる事を確認し、<br />
+以下のコマンドを実行してください：
+```bash
+npx prisma generate
+npx dotenv -e .env.test -- npx prisma migrate dev
+
+```
 ## 5.【フロントエンド環境の設定】
 フロントエンドの環境変数を設定します。
 
