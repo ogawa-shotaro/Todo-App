@@ -59,7 +59,7 @@ docker-repositories(ターミナルをもう一つ用意)にいる事を確認�
 
 ```bash
 起動コマンド
-docker compose -f docker-compose.yaml 
+docker compose -f docker-compose.yaml up
 
 停止コマンド
 docker compose down
@@ -99,7 +99,7 @@ docker-repositories(ターミナルをもう一つ用意)にいる事を確認�
 
 ```bash
 起動コマンド
-docker compose -f docker-compose.yaml 
+docker compose -f docker-compose.yaml up
 
 停止コマンド
 docker compose down
