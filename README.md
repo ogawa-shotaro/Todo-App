@@ -19,7 +19,23 @@ git checkout feature/frontend-signup
 npm install
 ```
 
-## 3.【バックエンド環境の設定】
+## 3.【フロントエンド環境の設定】
+フロントエンドの環境変数を設定します。
+
+フロントエンドディレクトリのルートディレクトリに、以下のファイルを作成します。：
+
+```bash
+.env.local
+
+```
+
+内容を以下のように設定します：
+
+```bash
+NEXT_PUBLIC_API_URL="http://localhost:3000"
+```
+
+## 4.【バックエンド環境の設定】
 バックエンドディレクトリに移動し、環境変数を設定します。
 
 .envファイルを作成( .env.exampleファイルをコピー)します。<br />
@@ -54,12 +70,12 @@ JWT_SECRET="JWT_SECRET_TEST"
 
 ```
 
-## 4.【Prismaの設定】
+## 5.【Prismaの設定】
 dockerを起動し、ローカルにDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
 
-### 【開発環境用コマンド】
+### 【開発環境用】
 ```bash
 起動コマンド
 docker compose up
@@ -77,7 +93,7 @@ npx prisma migrate dev
 
 ```
 
-### 【テスト環境用コマンド】
+### 【テスト環境用】
 dockerを起動し、ローカルにテスト用のDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
@@ -97,21 +113,6 @@ docker compose down
 npx prisma generate
 npx dotenv -e .env.test -- npx prisma migrate dev
 
-```
-## 5.【フロントエンド環境の設定】
-フロントエンドの環境変数を設定します。
-
-フロントエンドディレクトリのルートディレクトリに、以下のファイルを作成します。：
-
-```bash
-.env.local
-
-```
-
-内容を以下のように設定します：
-
-```bash
-NEXT_PUBLIC_API_URL="http://localhost:3000"
 ```
 
 ## 6.【起動コマンド】
