@@ -59,18 +59,12 @@ docker-repositories(ターミナルをもう一つ用意)にいる事を確認�
 
 ### 開発環境用コマンド
 ```bash
-
-
-```
-
-開発環境用コマンド
-# 起動コマンド
+起動コマンド
 docker compose up
 
-# 停止コマンド
+停止コマンド
 docker compose down
 
-Prisma関連のコマンドを実行し、データベースを作成します。<br />
 バックエンドディレクトリにいる事を確認し、<br />
 以下のコマンドを実行してください：
 
@@ -80,39 +74,18 @@ npx prisma migrate dev
 
 ```
 
-開発環境用コマンド
-# 起動コマンド
-docker compose up
-
-# 停止コマンド
-docker compose down
-
-Prisma関連のコマンドを実行し、データベースを作成します。<br />
-バックエンドディレクトリにいる事を確認し、<br />
-以下のコマンドを実行してください：
-
+### テスト環境用コマンド
 ```bash
-npx prisma generate
-npx prisma migrate dev
-
-```
-
-テスト環境用コマンド
-
-# 起動コマンド
+起動コマンド
 docker compose -f docker-compose.yaml -f docker-compose.test.yml up
 
-# 停止コマンド
+停止コマンド
 docker compose down
 
-Prisma関連のコマンドを実行し、データベースを作成します。<br />
 バックエンドディレクトリにいる事を確認し、<br />
 以下のコマンドを実行してください：
-
-```bash
 npx prisma generate
 npx dotenv -e .env.test -- npx prisma migrate dev
-
 ```
 
 ## 5.【フロントエンド環境の設定】
