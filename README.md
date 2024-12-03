@@ -72,6 +72,7 @@ Prisma関連のコマンドを実行し、データベースを作成します�
 ```bash
 npx prisma generate
 npx prisma migrate dev
+npx dotenv -e .env.test -- npx prisma migrate dev
 
 ```
 
