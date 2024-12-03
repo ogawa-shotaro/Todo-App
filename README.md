@@ -76,11 +76,14 @@ docker-repositories(ターミナルをもう一つ用意)にいる事を確認�
 以下のコマンドを実行してください：
 
 ### 【開発環境用】
-```bash
 起動コマンド
+```bash
 docker compose up
 
+```
+
 停止コマンド
+```bash
 docker compose down
 
 ```
@@ -89,6 +92,10 @@ docker compose down
 
 ```bash
 npx prisma generate
+
+```
+
+```bash
 npx prisma migrate dev
 
 ```
@@ -98,11 +105,14 @@ dockerを起動し、ローカルにテスト用のDBを立ち上げます。<br
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
 
-```bash
 起動コマンド
+```bash
 docker compose -f docker-compose.yaml -f docker-compose.test.yml up
 
+```
+
 停止コマンド
+```bash
 docker compose down
 
 ```
@@ -111,6 +121,10 @@ docker compose down
 以下のコマンドを実行してください：
 ```bash
 npx prisma generate
+
+```
+
+```bash
 npx dotenv -e .env.test -- npx prisma migrate dev
 
 ```
@@ -120,13 +134,16 @@ dockerを起動し、ローカルにDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
 
-
-```bash
 起動コマンド
+```bash
 docker compose up
 
+```
 停止コマンド
+```bash
 docker compose down
+
+```
 
 Todo-Appに移動し、アプリケーションを起動します。<br />
 以下のコマンドを実行してください：
@@ -141,13 +158,18 @@ dockerを起動し、ローカルにDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
 
-```bash
 起動コマンド
+```bash
 docker compose -f docker-compose.yaml -f docker-compose.test.yml up
 
+```
+
 停止コマンド
+```bash
 docker compose down
 
+
+```
 結合テスト（単体テスト含む）は、<br />
 以下のコマンドを実行してください：
 
@@ -160,6 +182,5 @@ npm run test:integration
 以下のコマンドを実行してください：
 ```bash
 npm run test:unit
-
 
 ```
