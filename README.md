@@ -47,7 +47,7 @@ cp .env.example .env.test　
 内容を以下のように設定します：
 
 ```bash
-DATABASE_URL="postgresql://ogawa:ogawa777@localhost:5433/todo?schema=public"
+DATABASE_URL="postgresql://ogawa:ogawa777@localhost:5433/todo_test?schema=public"
 JWT_SECRET="JWT_SECRET_TEST"
 
 ```
@@ -59,10 +59,10 @@ docker-repositories(ターミナルをもう一つ用意)にいる事を確認�
 
 ```bash
 起動コマンド
-docker compose -f docker-compose.yaml -f docker-compose.test.yml up
+docker compose -f docker-compose.yaml 
 
 停止コマンド
-docker compose -f docker-compose.yaml -f docker-compose.test.yml down
+docker compose down
 
 ```
 Prisma関連のコマンドを実行し、データベースを作成します。<br />
@@ -96,14 +96,13 @@ dockerを起動し、ローカルにDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
 
+
 ```bash
 起動コマンド
-docker compose -f docker-compose.yaml -f docker-compose.test.yml up
+docker compose -f docker-compose.yaml 
 
 停止コマンド
-docker compose -f docker-compose.yaml -f docker-compose.test.yml down
-
-```
+docker compose down
 
 Todo-Appに移動し、アプリケーションを起動します。<br />
 以下のコマンドを実行してください：
