@@ -57,14 +57,14 @@ dockerを起動し、ローカルにDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
 以下のコマンドを実行してください：
 
-```bash
-起動コマンド
-docker compose -f docker-compose.yaml -f docker-compose.test.yml up
 
-停止コマンド
+開発環境用コマンド
+# 起動コマンド
+docker compose up
+
+# 停止コマンド
 docker compose down
 
-```
 Prisma関連のコマンドを実行し、データベースを作成します。<br />
 バックエンドディレクトリにいる事を確認し、<br />
 以下のコマンドを実行してください：
@@ -72,6 +72,40 @@ Prisma関連のコマンドを実行し、データベースを作成します�
 ```bash
 npx prisma generate
 npx prisma migrate dev
+
+```
+
+開発環境用コマンド
+# 起動コマンド
+docker compose up
+
+# 停止コマンド
+docker compose down
+
+Prisma関連のコマンドを実行し、データベースを作成します。<br />
+バックエンドディレクトリにいる事を確認し、<br />
+以下のコマンドを実行してください：
+
+```bash
+npx prisma generate
+npx prisma migrate dev
+
+```
+
+テスト環境用コマンド
+
+# 起動コマンド
+docker compose -f docker-compose.yaml -f docker-compose.test.yml up
+
+# 停止コマンド
+docker compose down
+
+Prisma関連のコマンドを実行し、データベースを作成します。<br />
+バックエンドディレクトリにいる事を確認し、<br />
+以下のコマンドを実行してください：
+
+```bash
+npx prisma generate
 npx dotenv -e .env.test -- npx prisma migrate dev
 
 ```
