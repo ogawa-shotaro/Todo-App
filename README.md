@@ -66,7 +66,7 @@ cp .env.example .env.test　
 内容を以下のように設定します：
 
 ```bash
-DATABASE_URL="postgresql://ogawa:ogawa777@localhost:5433/todo_test?schema=public"
+DATABASE_URL="postgresql://ogawa:ogawa777@localhost:5434/todo_test?schema=public"
 JWT_SECRET="JWT_SECRET_TEST"
 
 ```
