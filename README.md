@@ -100,6 +100,11 @@ npx prisma migrate dev
 
 ```
 
+```bash
+npx dotenv -e .env.test -- npx prisma migrate dev
+
+```
+
 ## 6.【起動コマンド】
 dockerを起動し、ローカルにDBを立ち上げます。<br />
 docker-repositories(ターミナルをもう一つ用意)にいる事を確認し、dockerを起動します。<br />
