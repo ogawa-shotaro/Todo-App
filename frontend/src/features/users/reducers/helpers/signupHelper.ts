@@ -1,9 +1,5 @@
-import type {
-  AuthState,
-  SignupResponse,
-  SignupInput,
-} from "@/features/users/types";
-import { PayloadAction, SerializedError } from "@reduxjs/toolkit";
+import type { AuthState, SignupResponse } from "@/features/users/types";
+import type { PayloadAction, SerializedError } from "@reduxjs/toolkit";
 
 export const pendingOperation = (state: AuthState) => {
   state.signup.inProgress = true;
@@ -11,16 +7,7 @@ export const pendingOperation = (state: AuthState) => {
 
 export const fulfilledOperation = (
   state: AuthState,
-  action: PayloadAction<
-    SignupResponse,
-    string,
-    {
-      arg: SignupInput;
-      requestId: string;
-      requestStatus: "fulfilled";
-    },
-    never
-  >
+  action: PayloadAction<SignupResponse>
 ) => {
   state.signup.error = null;
   state.signup.isSucceeded = true;
@@ -35,27 +22,10 @@ export const fulfilledOperation = (
 
 export const rejectedOperation = (
   state: AuthState,
-  action: PayloadAction<
-    unknown,
-    string,
-    {
-      arg: SignupInput;
-      requestId: string;
-      requestStatus: "rejected";
-      aborted: boolean;
-      condition: boolean;
-    } & (
-      | {
-          rejectedWithValue: true;
-        }
-      | ({
-          rejectedWithValue: false;
-        } & {})
-    ),
-    SerializedError
-  >
+  action: { error: SerializedError }
 ) => {
-  const { message } = action.error;
+  const message = action.error.message;
+
   state.signup.isSucceeded = false;
   state.signup.inProgress = false;
   state.signup.error = {

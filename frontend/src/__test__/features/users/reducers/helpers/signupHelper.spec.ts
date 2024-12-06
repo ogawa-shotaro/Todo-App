@@ -1,15 +1,11 @@
-import type {
-  AuthState,
-  SignupInput,
-  SignupResponse,
-} from "@/features/users/types";
-import { SerializedError } from "@reduxjs/toolkit";
+import { createAction } from "@reduxjs/toolkit";
+import type { AuthState, SignupResponse } from "@/features/users/types";
+import type { SerializedError } from "@reduxjs/toolkit";
 import {
   pendingOperation,
   fulfilledOperation,
   rejectedOperation,
 } from "@/features/users/reducers/helpers/signupHelper";
-import { createTestAction } from "@/__test__/helpers/actions/createTestAction";
 
 describe("【ユニットテスト】State操作に関わるヘルパー関数(ユーザー登録)のテスト。", () => {
   let state: AuthState;
@@ -34,20 +30,14 @@ describe("【ユニットテスト】State操作に関わるヘルパー関数(�
     expect(state.signup.error).toEqual(null);
   });
   it("fulfilledOperation関数を実行すると、signupのisSucceedをtrueにし、user情報の更新をする。", () => {
-    const action = createTestAction<
-      SignupResponse,
-      string,
-      {
-        arg: SignupInput;
-        requestId: string;
-        requestStatus: "fulfilled";
-      }
-    >("signup/fulfilled", {
+    const signupFulfilled = createAction<SignupResponse>("signup/fulfilled");
+    const action = signupFulfilled({
       user: {
         name: "ダミーユーザー",
         email: "dummyData@mail.com",
       },
     });
+
     fulfilledOperation(state, action);
 
     expect(state.signup.inProgress).toEqual(false);
@@ -58,45 +48,12 @@ describe("【ユニットテスト】State操作に関わるヘルパー関数(�
     expect(state.user.email).toEqual("dummyData@mail.com");
   });
   it("rejectedOperation関数を実行すると、error情報の更新をする。", () => {
-    const action = createTestAction<
-      unknown,
-      string,
-      {
-        arg: SignupInput;
-        requestId: string;
-        requestStatus: "rejected";
-        aborted: boolean;
-        condition: boolean;
-      } & (
-        | {
-            rejectedWithValue: true;
-          }
-        | ({
-            rejectedWithValue: false;
-          } & {})
-      ),
-      SerializedError
-    >(
-      "signup/rejecte",
-      {},
-      {
-        arg: {
-          name: "ダミーユーザー",
-          password: "dummyPassword",
-          email: "dummyData@mail.com",
-        },
-        requestId: "1",
-        requestStatus: "rejected",
-        aborted: false,
-        condition: true,
-        rejectedWithValue: true,
-      },
-      {
-        message: "dummyMessage",
-      }
+    const signupRejected = createAction<{ error: SerializedError }>(
+      "signup/rejected"
     );
+    const action = signupRejected({ error: { message: "dummyMessage" } });
 
-    rejectedOperation(state, action);
+    rejectedOperation(state, action.payload);
 
     expect(state.signup.inProgress).toEqual(false);
     expect(state.signup.isSucceeded).toEqual(false);
