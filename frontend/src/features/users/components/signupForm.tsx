@@ -3,7 +3,7 @@
 import { useState } from "react";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import type { SignupInput } from "../types/signupTypes";
+import type { SignupInput } from "@/features/users/types/signupTypes";
 import { signup } from "@/features/users/stores/signupSlice";
 import { InputField } from "./shared/inputField";
 import { SubmitButton } from "./shared/submitButton";

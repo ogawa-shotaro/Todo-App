@@ -1,4 +1,7 @@
-import type { SignupInput, SignupResponse } from "../types/signupTypes";
+import type {
+  SignupInput,
+  SignupResponse,
+} from "@/features/users/types/signupTypes";
 
 export const signupApi = async (
   formData: SignupInput
