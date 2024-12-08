@@ -17,9 +17,9 @@ export const InputField: FC<InputFieldProps> = ({
   name,
   value,
   onChange,
-  placeholder = "",
+  placeholder,
   label,
-  required = false,
+  required,
 }) => {
   return (
     <div>
@@ -27,7 +27,7 @@ export const InputField: FC<InputFieldProps> = ({
         {label}
       </label>
       <input
-        id=""
+        id={id}
         type={type}
         name={name}
         value={value}

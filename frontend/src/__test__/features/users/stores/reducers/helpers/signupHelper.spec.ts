@@ -1,11 +1,15 @@
 import { createAction } from "@reduxjs/toolkit";
-import type { AuthState, SignupResponse } from "@/features/users/types";
 import type { SerializedError } from "@reduxjs/toolkit";
+
 import {
-  pendingOperation,
   fulfilledOperation,
+  pendingOperation,
   rejectedOperation,
-} from "@/features/users/reducers/helpers/signupHelper";
+} from "@/features/users/stores/reducers/helpers/signupHelper";
+import type {
+  AuthState,
+  SignupResponse,
+} from "@/features/users/types/signupTypes";
 
 describe("【ユニットテスト】State操作に関わるヘルパー関数(ユーザー登録)のテスト。", () => {
   let state: AuthState;

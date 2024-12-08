@@ -1,5 +1,9 @@
-import type { AuthState, SignupResponse } from "@/features/users/types";
 import type { PayloadAction, SerializedError } from "@reduxjs/toolkit";
+
+import type {
+  AuthState,
+  SignupResponse,
+} from "@/features/users/types/signupTypes";
 
 export const pendingOperation = (state: AuthState) => {
   state.signup.inProgress = true;

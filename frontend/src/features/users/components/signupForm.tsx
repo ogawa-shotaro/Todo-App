@@ -3,10 +3,10 @@
 import { useState } from "react";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import type { SignupInput } from "@/features/users/types";
-import { signup } from "@/features/users/authSlice";
-import { InputField } from "./inputField";
-import { SubmitButton } from "./submitButton";
+import type { SignupInput } from "../types/signupTypes";
+import { signup } from "@/features/users/stores/signupSlice";
+import { InputField } from "./shared/inputField";
+import { SubmitButton } from "./shared/submitButton";
 
 const SignupForm: FC = () => {
   const dispatch = useAppDispatch();
@@ -37,6 +37,21 @@ const SignupForm: FC = () => {
 
   if (signupState.inProgress) {
     return <p>送信中...</p>;
+  }
+
+  if (signupState.isSucceeded) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
+          <h2 className="text-2xl font-bold text-center text-gray-700">
+            登録が完了しました!
+          </h2>
+          <p className="text-center text-gray-600">
+            ご登録ありがとうございます！サービスを利用する準備ができました。
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (
