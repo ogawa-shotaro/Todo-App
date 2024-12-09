@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { signupApi } from "../api/signup";
+import { signupApi } from "@/features/users/api/signup";
 import {
   pendingOperation,
   fulfilledOperation,
   rejectedOperation,
-} from "./reducers/helpers/signupHelper";
+} from "./reducers/signupReducers";
 import type {
   AuthState,
   SignupInput,
