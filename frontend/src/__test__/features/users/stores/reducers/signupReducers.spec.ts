@@ -2,10 +2,10 @@ import { createAction } from "@reduxjs/toolkit";
 import type { SerializedError } from "@reduxjs/toolkit";
 
 import {
-  fulfilledOperation,
   pendingOperation,
+  fulfilledOperation,
   rejectedOperation,
-} from "@/features/users/stores/reducers/helpers/signupHelper";
+} from "@/features/users/stores/reducers/signupReducers";
 import type {
   AuthState,
   SignupResponse,
