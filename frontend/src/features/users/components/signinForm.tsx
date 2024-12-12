@@ -1,19 +1,20 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import type { SignupInput } from "@/features/users/types/authTypes";
-import { signup } from "@/features/users/stores/signupSlice";
-import { InputField } from "./shared/inputField";
-import { SubmitButton } from "./shared/submitButton";
+import type { SigninInput } from "@/features/users/types/authTypes";
+import { signin } from "@/features/users/stores/signinSlice";
+import { InputField } from "@/features/users/components/shared/inputField";
+import { SubmitButton } from "@/features/users/components/shared/submitButton";
 
-const SignupForm: FC = () => {
+const SigninForm: FC = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
-  const signupState = useAppSelector((state) => state.signup.auth);
+  const signinState = useAppSelector((state) => state.signin.auth);
 
-  const [formData, setFormData] = useState<SignupInput>({
-    name: "",
+  const [formData, setFormData] = useState<SigninInput>({
     email: "",
     password: "",
   });
@@ -28,58 +29,38 @@ const SignupForm: FC = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(signup(formData));
+    dispatch(signin(formData));
 
-    if (signupState.error) {
+    if (signinState.error) {
       setFormData((formData) => ({ ...formData, password: "" }));
     }
   };
 
-  if (signupState.inProgress) {
-    return <p>送信中...</p>;
-  }
+  useEffect(() => {
+    if (signinState.isSucceeded) {
+      router.push("/");
+    }
+  }, [signinState.isSucceeded, router]);
 
-  if (signupState.isSucceeded) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
-          <h2 className="text-2xl font-bold text-center text-gray-700">
-            登録が完了しました!
-          </h2>
-          <p className="text-center text-gray-600">
-            ご登録ありがとうございます！サービスを利用する準備ができました。
-          </p>
-        </div>
-      </div>
-    );
+  if (signinState.inProgress) {
+    return <p>送信中...</p>;
   }
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold text-center text-gray-700">
-          Sign Up
+          Sign In
         </h2>
-        {signupState.error?.message && (
+        {signinState.error?.message && (
           <p className="text-center text-red-600">
-            {Array.isArray(signupState.error.message)
-              ? signupState.error.message.join(" ")
-              : signupState.error.message}
+            {Array.isArray(signinState.error.message)
+              ? signinState.error.message.join(" ")
+              : signinState.error.message}
           </p>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name field */}
-          <InputField
-            id="name"
-            name="name"
-            type="text"
-            value={formData.name}
-            onChange={handleChange}
-            placeholder="Enter your name"
-            label="Name"
-            required
-          />
           {/* Email field */}
           <InputField
             id="email"
@@ -103,11 +84,11 @@ const SignupForm: FC = () => {
             required
           />
           {/* button */}
-          <SubmitButton label="Sign Up" />
+          <SubmitButton label="Sign In" />
         </form>
       </div>
     </div>
   );
 };
 
-export default SignupForm;
+export default SigninForm;

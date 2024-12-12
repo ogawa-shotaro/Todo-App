@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import { signupApi } from "@/features/users/api/signup";
+import { signinApi } from "@/features/users/api/signin";
 import {
   initialState,
   pendingOperation,
@@ -8,27 +8,27 @@ import {
   rejectedOperation,
 } from "@/features/users/stores/reducers/authReducers";
 import type {
-  SignupInput,
+  SigninInput,
   AuthResponse,
 } from "@/features/users/types/authTypes";
 
-export const signup = createAsyncThunk<AuthResponse, SignupInput>(
-  "auth/signup",
+export const signin = createAsyncThunk<AuthResponse, SigninInput>(
+  "auth/signin",
   async (input) => {
-    return signupApi(input);
+    return signinApi(input);
   }
 );
 
-export const signupSlice = createSlice({
+export const signinSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {},
   extraReducers(builder) {
     builder
-      .addCase(signup.pending, pendingOperation)
-      .addCase(signup.fulfilled, fulfilledOperation)
-      .addCase(signup.rejected, rejectedOperation);
+      .addCase(signin.pending, pendingOperation)
+      .addCase(signin.fulfilled, fulfilledOperation)
+      .addCase(signin.rejected, rejectedOperation);
   },
 });
 
-export default signupSlice.reducer;
+export default signinSlice.reducer;

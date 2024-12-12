@@ -1,21 +1,30 @@
 import type { PayloadAction, SerializedError } from "@reduxjs/toolkit";
 
-import type {
-  AuthState,
-  SignupResponse,
-} from "@/features/users/types/signupTypes";
+import type { AuthState, AuthResponse } from "@/features/users/types/authTypes";
+
+export const initialState: AuthState = {
+  auth: {
+    inProgress: false,
+    isSucceeded: false,
+    error: null,
+  },
+  user: {
+    name: "",
+    email: "",
+  },
+};
 
 export const pendingOperation = (state: AuthState) => {
-  state.signup.inProgress = true;
+  state.auth.inProgress = true;
 };
 
 export const fulfilledOperation = (
   state: AuthState,
-  action: PayloadAction<SignupResponse>
+  action: PayloadAction<AuthResponse>
 ) => {
-  state.signup.error = null;
-  state.signup.isSucceeded = true;
-  state.signup.inProgress = false;
+  state.auth.error = null;
+  state.auth.isSucceeded = true;
+  state.auth.inProgress = false;
   if (action.payload.user) {
     state.user = {
       name: action.payload.user?.name,
@@ -30,9 +39,9 @@ export const rejectedOperation = (
 ) => {
   const message = action.error.message;
 
-  state.signup.isSucceeded = false;
-  state.signup.inProgress = false;
-  state.signup.error = {
+  state.auth.isSucceeded = false;
+  state.auth.inProgress = false;
+  state.auth.error = {
     message: message ?? "例外エラー",
   };
 };

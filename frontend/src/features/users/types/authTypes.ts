@@ -1,8 +1,8 @@
 export interface AuthState {
-  signup: {
+  auth: {
     inProgress: boolean;
     isSucceeded: boolean;
-    error: SignupResponse | null;
+    error: AuthResponse | null;
   };
   user: {
     name: string;
@@ -10,13 +10,16 @@ export interface AuthState {
   };
 }
 
-export interface SignupInput {
-  name: string;
+export interface SigninInput {
   email: string;
   password: string;
 }
 
-export interface SignupResponse {
+export interface SignupInput extends SigninInput {
+  name: string;
+}
+
+export interface AuthResponse {
   user?: {
     name: string;
     email: string;
