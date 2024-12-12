@@ -14,6 +14,12 @@ const SigninForm: FC = () => {
   const dispatch = useAppDispatch();
   const signinState = useAppSelector((state) => state.signin.auth);
 
+  useEffect(() => {
+    if (signinState.isSucceeded) {
+      router.push("/");
+    }
+  }, [signinState.isSucceeded, router]);
+
   const [formData, setFormData] = useState<SigninInput>({
     email: "",
     password: "",
@@ -35,12 +41,6 @@ const SigninForm: FC = () => {
       setFormData((formData) => ({ ...formData, password: "" }));
     }
   };
-
-  useEffect(() => {
-    if (signinState.isSucceeded) {
-      router.push("/");
-    }
-  }, [signinState.isSucceeded, router]);
 
   if (signinState.inProgress) {
     return <p>送信中...</p>;
