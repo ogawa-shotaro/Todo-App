@@ -12,7 +12,7 @@ import { SubmitButton } from "@/features/users/components/shared/submitButton";
 const SigninForm: FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const signinState = useAppSelector((state) => state.auth.auth);
+  const signinState = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (signinState.isSucceeded) {

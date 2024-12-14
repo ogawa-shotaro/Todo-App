@@ -4,12 +4,10 @@ import { buildSignupExtraReducer } from "@/features/users/stores/reducers/signup
 import { buildSigninExtraReducer } from "@/features/users/stores/reducers/signinReducer";
 import type { AuthState } from "@/features/users/types/authTypes";
 
-export const initialState: AuthState = {
-  auth: {
-    inProgress: false,
-    isSucceeded: false,
-    error: null,
-  },
+const initialState: AuthState = {
+  inProgress: false,
+  isSucceeded: false,
+  error: null,
   user: {
     name: "",
     email: "",

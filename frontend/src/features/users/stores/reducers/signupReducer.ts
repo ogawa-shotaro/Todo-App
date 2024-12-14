@@ -3,10 +3,10 @@ import type { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 
 import { signupApi } from "@/features/users/api/signup";
 import {
-  pendingOperation,
-  fulfilledOperation,
-  rejectedOperation,
-} from "@/features/users/stores/reducers/operator/authOperation";
+  pendingReducer,
+  fulfilledReducer,
+  rejectedReducer,
+} from "@/features/users/stores/reducers/authReducer";
 import type {
   AuthState,
   SignupInput,
@@ -24,7 +24,7 @@ export const buildSignupExtraReducer = (
   builder: ActionReducerMapBuilder<AuthState>
 ) => {
   builder
-    .addCase(signup.pending, pendingOperation)
-    .addCase(signup.fulfilled, fulfilledOperation)
-    .addCase(signup.rejected, rejectedOperation);
+    .addCase(signup.pending, pendingReducer)
+    .addCase(signup.fulfilled, fulfilledReducer)
+    .addCase(signup.rejected, rejectedReducer);
 };

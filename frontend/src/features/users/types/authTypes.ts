@@ -1,9 +1,7 @@
 export interface AuthState {
-  auth: {
-    inProgress: boolean;
-    isSucceeded: boolean;
-    error: AuthResponseError | null;
-  };
+  inProgress: boolean;
+  isSucceeded: boolean;
+  error: AuthResponseError | null;
   user: {
     name: string;
     email: string;

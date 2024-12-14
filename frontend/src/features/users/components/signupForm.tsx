@@ -10,7 +10,7 @@ import { SubmitButton } from "@/features/users/components/shared/submitButton";
 
 const SignupForm: FC = () => {
   const dispatch = useAppDispatch();
-  const signupState = useAppSelector((state) => state.auth.auth);
+  const signupState = useAppSelector((state) => state.auth);
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",
