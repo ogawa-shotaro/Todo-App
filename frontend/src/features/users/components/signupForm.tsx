@@ -4,13 +4,13 @@ import { useState } from "react";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SignupInput } from "@/features/users/types/authTypes";
-import { signup } from "@/features/users/stores/signupSlice";
-import { InputField } from "./shared/inputField";
-import { SubmitButton } from "./shared/submitButton";
+import { signup } from "@/features/users/stores/reducers/signupReducer";
+import { InputField } from "@/features/users/components/shared/inputField";
+import { SubmitButton } from "@/features/users/components/shared/submitButton";
 
 const SignupForm: FC = () => {
   const dispatch = useAppDispatch();
-  const signupState = useAppSelector((state) => state.signup.auth);
+  const signupState = useAppSelector((state) => state.auth.auth);
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",

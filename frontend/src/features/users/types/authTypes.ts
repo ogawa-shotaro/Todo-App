@@ -2,7 +2,7 @@ export interface AuthState {
   auth: {
     inProgress: boolean;
     isSucceeded: boolean;
-    error: AuthResponse | null;
+    error: AuthResponseError | null;
   };
   user: {
     name: string;
@@ -24,5 +24,9 @@ export interface AuthResponse {
     name: string;
     email: string;
   };
+  message?: string[] | string;
+}
+
+export interface AuthResponseError {
   message?: string[] | string;
 }

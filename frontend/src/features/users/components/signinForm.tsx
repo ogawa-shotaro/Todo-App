@@ -5,20 +5,20 @@ import { useRouter } from "next/navigation";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SigninInput } from "@/features/users/types/authTypes";
-import { signin } from "@/features/users/stores/signinSlice";
+import { signin } from "@/features/users/stores/reducers/signinReducer";
 import { InputField } from "@/features/users/components/shared/inputField";
 import { SubmitButton } from "@/features/users/components/shared/submitButton";
 
 const SigninForm: FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const signinState = useAppSelector((state) => state.signin.auth);
+  const signinState = useAppSelector((state) => state.auth.auth);
 
   useEffect(() => {
     if (signinState.isSucceeded) {
       router.push("/");
     }
-  }, [signinState.isSucceeded, router]);
+  }, [signinState.isSucceeded]);
 
   const [formData, setFormData] = useState<SigninInput>({
     email: "",

@@ -2,18 +2,6 @@ import type { PayloadAction, SerializedError } from "@reduxjs/toolkit";
 
 import type { AuthState, AuthResponse } from "@/features/users/types/authTypes";
 
-export const initialState: AuthState = {
-  auth: {
-    inProgress: false,
-    isSucceeded: false,
-    error: null,
-  },
-  user: {
-    name: "",
-    email: "",
-  },
-};
-
 export const pendingOperation = (state: AuthState) => {
   state.auth.inProgress = true;
 };
