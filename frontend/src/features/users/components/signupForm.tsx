@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SignupInput } from "@/features/users/types/authTypes";
-import { signup } from "@/features/users/stores/reducers/signupReducer";
+import { signupAction } from "@/features/users/stores/reducers/signupReducer";
 import { InputField } from "@/features/users/components/shared/inputField";
 import { SubmitButton } from "@/features/users/components/shared/submitButton";
 
@@ -28,7 +28,7 @@ const SignupForm: FC = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(signup(formData));
+    dispatch(signupAction(formData));
 
     if (signupState.error) {
       setFormData((formData) => ({ ...formData, password: "" }));

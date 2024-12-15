@@ -5,7 +5,7 @@ import {
   pendingReducer,
   fulfilledReducer,
   rejectedReducer,
-} from "@/features/users/stores/reducers/authReducer";
+} from "@/features/users/stores/reducers/authExtraReducer";
 import type { AuthState, AuthResponse } from "@/features/users/types/authTypes";
 
 describe("【ユニットテスト】State操作に関わるReducer関数(ユーザー登録)のテスト。", () => {
