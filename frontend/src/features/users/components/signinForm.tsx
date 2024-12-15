@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SigninInput } from "@/features/users/types/authTypes";
-import { signinAction } from "@/features/users/stores/reducers/signinReducer";
+import { createSigninAction } from "@/features/users/stores/reducers/signinReducer";
 import { InputField } from "@/features/users/components/shared/inputField";
 import { SubmitButton } from "@/features/users/components/shared/submitButton";
 
@@ -35,7 +35,7 @@ const SigninForm: FC = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(signinAction(formData));
+    dispatch(createSigninAction(formData));
 
     if (signinState.error) {
       setFormData((formData) => ({ ...formData, password: "" }));

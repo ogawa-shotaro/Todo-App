@@ -13,7 +13,7 @@ import type {
   AuthResponse,
 } from "@/features/users/types/authTypes";
 
-export const signinAction = createAsyncThunk<AuthResponse, SigninInput>(
+export const createSigninAction = createAsyncThunk<AuthResponse, SigninInput>(
   "auth/signin",
   async (input) => {
     return signinApi(input);
@@ -24,7 +24,7 @@ export const buildSigninExtraReducer = (
   builder: ActionReducerMapBuilder<AuthState>
 ) => {
   builder
-    .addCase(signinAction.pending, pendingReducer)
-    .addCase(signinAction.fulfilled, fulfilledReducer)
-    .addCase(signinAction.rejected, rejectedReducer);
+    .addCase(createSigninAction.pending, pendingReducer)
+    .addCase(createSigninAction.fulfilled, fulfilledReducer)
+    .addCase(createSigninAction.rejected, rejectedReducer);
 };
