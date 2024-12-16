@@ -1,13 +1,13 @@
 import type {
-  SignupInput,
+  SigninInput,
   AuthResponse,
 } from "@/features/users/types/authTypes";
 
-export const signupApi = async (
-  formData: SignupInput
+export const signinApi = async (
+  formData: SigninInput
 ): Promise<AuthResponse> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/register`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/users/login`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
