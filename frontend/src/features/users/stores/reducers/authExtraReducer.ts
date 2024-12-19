@@ -10,9 +10,10 @@ export const fulfilledReducer = (
   state: AuthState,
   action: PayloadAction<AuthResponse>
 ) => {
-  state.error = null;
-  state.isSucceeded = true;
   state.inProgress = false;
+  state.isSucceeded = true;
+  state.isSignedOut = false;
+  state.error = null;
   if (action.payload.user) {
     state.user = {
       name: action.payload.user?.name,
@@ -21,14 +22,22 @@ export const fulfilledReducer = (
   }
 };
 
+export const signoutFulfilledReducer = (state: AuthState) => {
+  state.inProgress = false;
+  state.isSucceeded = false;
+  state.isSignedOut = true;
+  state.error = null;
+};
+
 export const rejectedReducer = (
   state: AuthState,
   action: { error: SerializedError }
 ) => {
   const message = action.error.message;
 
-  state.isSucceeded = false;
   state.inProgress = false;
+  state.isSucceeded = false;
+  state.isSignedOut = false;
   state.error = {
     message: message ?? "例外エラー",
   };
