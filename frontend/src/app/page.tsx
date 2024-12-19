@@ -1,9 +1,6 @@
 import React from "react";
+import Header from "@/components/shared/header";
 
 export default function TodoPage() {
-  return (
-    <div>
-      <h1>Todoページ</h1>
-    </div>
-  );
+  return <Header />;
 }
