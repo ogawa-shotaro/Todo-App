@@ -16,9 +16,5 @@ export default function TodoPage() {
       router.push("/signin");
     }
   }, [authState.user]);
-  return (
-    <>
-      <Header />;
-    </>
-  );
+  return <Header />;
 }
