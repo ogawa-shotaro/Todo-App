@@ -11,6 +11,4 @@ export const signoutApi = async () => {
 
     throw errorData;
   }
-
-  return undefined;
 };

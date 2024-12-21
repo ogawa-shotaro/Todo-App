@@ -9,20 +9,20 @@ import { createSignoutAction } from "@/features/users/stores/reducers/signoutRed
 const Header: FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const signoutState = useAppSelector((state) => state.auth);
+  const authState = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (signoutState.isSignedOut) {
+    if (authState.user === null) {
       router.push("/signin");
     }
-  }, [signoutState.isSignedOut]);
+  }, [authState.user]);
 
   const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (event) => {
     event.preventDefault();
     dispatch(createSignoutAction());
   };
 
-  if (signoutState.inProgress) {
+  if (authState.inProgress) {
     return <p>送信中...</p>;
   }
 

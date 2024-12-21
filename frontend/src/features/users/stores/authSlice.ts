@@ -8,12 +8,8 @@ import type { AuthState } from "@/features/users/types/authTypes";
 const initialState: AuthState = {
   inProgress: false,
   isSucceeded: false,
-  isSignedOut: false,
   error: null,
-  user: {
-    name: "",
-    email: "",
-  },
+  user: null,
 };
 
 export const authSlice = createSlice({

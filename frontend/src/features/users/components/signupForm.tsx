@@ -10,7 +10,7 @@ import { SubmitButton } from "@/features/users/components/shared/submitButton";
 
 const SignupForm: FC = () => {
   const dispatch = useAppDispatch();
-  const signupState = useAppSelector((state) => state.auth);
+  const authState = useAppSelector((state) => state.auth);
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",
@@ -30,16 +30,16 @@ const SignupForm: FC = () => {
     event.preventDefault();
     dispatch(createSignupAction(formData));
 
-    if (signupState.error) {
+    if (authState.error) {
       setFormData((formData) => ({ ...formData, password: "" }));
     }
   };
 
-  if (signupState.inProgress) {
+  if (authState.inProgress) {
     return <p>送信中...</p>;
   }
 
-  if (signupState.isSucceeded) {
+  if (authState.isSucceeded) {
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
@@ -60,11 +60,11 @@ const SignupForm: FC = () => {
         <h2 className="text-2xl font-bold text-center text-gray-700">
           Sign Up
         </h2>
-        {signupState.error?.message && (
+        {authState.error?.message && (
           <p className="text-center text-red-600">
-            {Array.isArray(signupState.error.message)
-              ? signupState.error.message.join(" ")
-              : signupState.error.message}
+            {Array.isArray(authState.error.message)
+              ? authState.error.message.join(" ")
+              : authState.error.message}
           </p>
         )}
 

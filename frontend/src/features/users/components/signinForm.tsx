@@ -12,13 +12,13 @@ import { SubmitButton } from "@/features/users/components/shared/submitButton";
 const SigninForm: FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const signinState = useAppSelector((state) => state.auth);
+  const authState = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (signinState.isSucceeded) {
+    if (authState.isSucceeded) {
       router.push("/");
     }
-  }, [signinState.isSucceeded]);
+  }, [authState.isSucceeded]);
 
   const [formData, setFormData] = useState<SigninInput>({
     email: "",
@@ -37,12 +37,12 @@ const SigninForm: FC = () => {
     event.preventDefault();
     dispatch(createSigninAction(formData));
 
-    if (signinState.error) {
+    if (authState.error) {
       setFormData((formData) => ({ ...formData, password: "" }));
     }
   };
 
-  if (signinState.inProgress) {
+  if (authState.inProgress) {
     return <p>送信中...</p>;
   }
 
@@ -52,11 +52,11 @@ const SigninForm: FC = () => {
         <h2 className="text-2xl font-bold text-center text-gray-700">
           Sign In
         </h2>
-        {signinState.error?.message && (
+        {authState.error?.message && (
           <p className="text-center text-red-600">
-            {Array.isArray(signinState.error.message)
-              ? signinState.error.message.join(" ")
-              : signinState.error.message}
+            {Array.isArray(authState.error.message)
+              ? authState.error.message.join(" ")
+              : authState.error.message}
           </p>
         )}
 

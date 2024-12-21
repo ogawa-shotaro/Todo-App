@@ -12,7 +12,6 @@ export const fulfilledReducer = (
 ) => {
   state.inProgress = false;
   state.isSucceeded = true;
-  state.isSignedOut = false;
   state.error = null;
   if (action.payload.user) {
     state.user = {
@@ -25,8 +24,8 @@ export const fulfilledReducer = (
 export const signoutFulfilledReducer = (state: AuthState) => {
   state.inProgress = false;
   state.isSucceeded = false;
-  state.isSignedOut = true;
   state.error = null;
+  state.user = null;
 };
 
 export const rejectedReducer = (
@@ -37,7 +36,6 @@ export const rejectedReducer = (
 
   state.inProgress = false;
   state.isSucceeded = false;
-  state.isSignedOut = false;
   state.error = {
     message: message ?? "例外エラー",
   };
