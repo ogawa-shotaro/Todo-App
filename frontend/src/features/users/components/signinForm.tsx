@@ -15,10 +15,10 @@ const SigninForm: FC = () => {
   const authState = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (authState.isSucceeded) {
+    if (authState.user) {
       router.push("/");
     }
-  }, [authState.isSucceeded]);
+  }, [authState.user]);
 
   const [formData, setFormData] = useState<SigninInput>({
     email: "",
