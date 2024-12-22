@@ -27,7 +27,7 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
     expect(state.inProgress).toEqual(true);
     expect(state.error).toEqual(null);
   });
-  it("fulfilledReducer関数を実行すると、isSucceedをtrueにし、user情報の更新をする。", () => {
+  it("fulfilledReducer関数を実行すると、user情報の更新をする。", () => {
     const signupFulfilled = createAction<AuthResponse>("signup/fulfilled");
     const action = signupFulfilled({
       user: {
