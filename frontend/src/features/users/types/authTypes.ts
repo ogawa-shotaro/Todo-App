@@ -5,9 +5,8 @@ interface User {
 
 export interface AuthState {
   inProgress: boolean;
-  isSucceeded: boolean;
-  error: AuthResponseError | null;
   user: User | null;
+  error: AuthResponseError | null;
 }
 
 export interface SigninInput {

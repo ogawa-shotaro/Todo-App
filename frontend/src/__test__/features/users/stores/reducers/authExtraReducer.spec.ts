@@ -14,19 +14,17 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
   beforeEach(() => {
     state = {
       inProgress: false,
-      isSucceeded: false,
-      error: null,
       user: {
         name: "",
         email: "",
       },
+      error: null,
     };
   });
   it("pendingReducer関数を実行すると、inProgressをtrueにする。", () => {
     pendingReducer(state);
 
     expect(state.inProgress).toEqual(true);
-    expect(state.isSucceeded).toEqual(false);
     expect(state.error).toEqual(null);
   });
   it("fulfilledReducer関数を実行すると、isSucceedをtrueにし、user情報の更新をする。", () => {
@@ -41,10 +39,9 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
     fulfilledReducer(state, action);
 
     expect(state.inProgress).toEqual(false);
-    expect(state.isSucceeded).toEqual(true);
-    expect(state.error).toEqual(null);
     expect(state.user?.name).toEqual("ダミーユーザー");
     expect(state.user?.email).toEqual("dummyData@mail.com");
+    expect(state.error).toEqual(null);
   });
   it("rejectedReducer関数を実行すると、error情報の更新をする。", () => {
     const signupRejected = createAction<{ error: SerializedError }>(
@@ -55,15 +52,13 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
     rejectedReducer(state, action.payload);
 
     expect(state.inProgress).toEqual(false);
-    expect(state.isSucceeded).toEqual(false);
     expect(state.error?.message).toEqual("dummyMessage");
   });
   it("signoutFulfilledReducer関数を実行すると、user情報をnullにする。", () => {
     signoutFulfilledReducer(state);
 
     expect(state.inProgress).toEqual(false);
-    expect(state.isSucceeded).toEqual(false);
-    expect(state.error).toEqual(null);
     expect(state.user).toEqual(null);
+    expect(state.error).toEqual(null);
   });
 });
