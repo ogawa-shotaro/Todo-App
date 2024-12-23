@@ -1,7 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
+
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SignupInput } from "@/features/users/types/authTypes";
 import { createSignupAction } from "@/features/users/stores/reducers/signupReducer";
@@ -9,8 +11,15 @@ import { InputField } from "@/features/users/components/shared/inputField";
 import { SubmitButton } from "@/features/users/components/shared/submitButton";
 
 const SignupForm: FC = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
-  const signupState = useAppSelector((state) => state.auth);
+  const authState = useAppSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (authState.user) {
+      router.push("/");
+    }
+  }, [authState.user]);
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",
@@ -30,28 +39,13 @@ const SignupForm: FC = () => {
     event.preventDefault();
     dispatch(createSignupAction(formData));
 
-    if (signupState.error) {
+    if (authState.error) {
       setFormData((formData) => ({ ...formData, password: "" }));
     }
   };
 
-  if (signupState.inProgress) {
+  if (authState.inProgress) {
     return <p>送信中...</p>;
-  }
-
-  if (signupState.isSucceeded) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-gray-100">
-        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
-          <h2 className="text-2xl font-bold text-center text-gray-700">
-            登録が完了しました!
-          </h2>
-          <p className="text-center text-gray-600">
-            ご登録ありがとうございます！サービスを利用する準備ができました。
-          </p>
-        </div>
-      </div>
-    );
   }
 
   return (
@@ -60,11 +54,11 @@ const SignupForm: FC = () => {
         <h2 className="text-2xl font-bold text-center text-gray-700">
           Sign Up
         </h2>
-        {signupState.error?.message && (
+        {authState.error?.message && (
           <p className="text-center text-red-600">
-            {Array.isArray(signupState.error.message)
-              ? signupState.error.message.join(" ")
-              : signupState.error.message}
+            {Array.isArray(authState.error.message)
+              ? authState.error.message.join(" ")
+              : authState.error.message}
           </p>
         )}
 

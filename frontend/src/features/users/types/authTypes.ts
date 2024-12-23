@@ -1,11 +1,12 @@
+interface User {
+  name: string;
+  email: string;
+}
+
 export interface AuthState {
   inProgress: boolean;
-  isSucceeded: boolean;
+  user: User | null;
   error: AuthResponseError | null;
-  user: {
-    name: string;
-    email: string;
-  };
 }
 
 export interface SigninInput {
