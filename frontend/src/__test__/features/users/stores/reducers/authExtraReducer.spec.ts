@@ -6,6 +6,7 @@ import {
   fulfilledReducer,
   rejectedReducer,
   signoutFulfilledReducer,
+  updateUserFulfilledReducer,
 } from "@/features/users/stores/reducers/authExtraReducer";
 import type { AuthState, AuthResponse } from "@/features/users/types/authTypes";
 
@@ -18,6 +19,7 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
         name: "",
         email: "",
       },
+      isUserUpdateAuthorized: false,
       error: null,
     };
   });
@@ -41,6 +43,7 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
     expect(state.inProgress).toEqual(false);
     expect(state.user?.name).toEqual("ダミーユーザー");
     expect(state.user?.email).toEqual("dummyData@mail.com");
+    expect(state.isUserUpdateAuthorized).toEqual(false);
     expect(state.error).toEqual(null);
   });
   it("rejectedReducer関数を実行すると、error情報の更新をする。", () => {
@@ -59,6 +62,15 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
 
     expect(state.inProgress).toEqual(false);
     expect(state.user).toEqual(null);
+    expect(state.isUserUpdateAuthorized).toEqual(false);
+    expect(state.error).toEqual(null);
+  });
+  it("updateUserFulfilledReducer関数を実行すると、isUserUpdateAuthorizedをtrueにする。", () => {
+    updateUserFulfilledReducer(state);
+
+    expect(state.inProgress).toEqual(false);
+    expect(state.user).toEqual(null);
+    expect(state.isUserUpdateAuthorized).toEqual(true);
     expect(state.error).toEqual(null);
   });
 });
