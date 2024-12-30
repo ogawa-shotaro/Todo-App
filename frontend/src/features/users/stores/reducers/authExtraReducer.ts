@@ -11,7 +11,6 @@ export const fulfilledReducer = (
   action: PayloadAction<AuthResponse>
 ) => {
   state.inProgress = false;
-  state.isUserUpdateAuthorized = false;
   state.error = null;
   if (action.payload.user) {
     state.user = {
@@ -21,17 +20,9 @@ export const fulfilledReducer = (
   }
 };
 
-export const updateUserFulfilledReducer = (state: AuthState) => {
-  state.inProgress = false;
-  state.user = null;
-  state.isUserUpdateAuthorized = true;
-  state.error = null;
-};
-
 export const signoutFulfilledReducer = (state: AuthState) => {
   state.inProgress = false;
   state.user = null;
-  state.isUserUpdateAuthorized = false;
   state.error = null;
 };
 

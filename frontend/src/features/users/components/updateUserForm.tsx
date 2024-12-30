@@ -1,9 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { useState, useEffect } from "react";
+import Link from "next/link";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 
 import { createUserUpdateAction } from "@/features/users/stores/reducers/updateUserReducer";
@@ -11,9 +9,9 @@ import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SignupInput as UpdateUserInput } from "@/features/users/types/authTypes";
 import { InputField } from "@/features/users/components/shared/inputField";
 import { SubmitButton } from "@/features/users/components/shared/submitButton";
+import { BlueButton, GreenButton } from "@/components/shared/buttons";
 
 const UpdateUserForm: FC = () => {
-  const router = useRouter();
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
 
@@ -22,6 +20,18 @@ const UpdateUserForm: FC = () => {
     email: "",
     password: "",
   });
+
+  const [isUpdated, setIsUpdated] = useState(false);
+
+  useEffect(() => {
+    if (authState.user) {
+      setFormData({
+        name: authState.user.name,
+        email: authState.user.email,
+        password: "",
+      });
+    }
+  }, [authState.user]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { name, value } = event.target;
@@ -37,21 +47,39 @@ const UpdateUserForm: FC = () => {
 
     "error" in result
       ? setFormData((formData) => ({ ...formData, password: "" }))
-      : toast.success("アカウントの更新が完了しました!");
-    setTimeout(() => {
-      router.push("/");
-    }, 3000);
+      : setIsUpdated(true);
   };
 
   if (authState.inProgress) {
     return <p>送信中...</p>;
   }
 
+  if (isUpdated) {
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gray-100">
+        <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
+          <h2 className="text-2xl font-bold text-center text-gray-700">
+            更新が完了しました!
+          </h2>
+          <div className="flex justify-center space-x-4">
+            <Link href={"/"}>
+              <BlueButton label="Todoページへ" />
+            </Link>
+            <GreenButton
+              label="編集を続ける"
+              onClick={() => setIsUpdated(false)}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold text-center text-gray-700">
-          Account Update
+          アカウント更新
         </h2>
         {authState.error?.message && (
           <p className="text-center text-red-600">
@@ -69,8 +97,8 @@ const UpdateUserForm: FC = () => {
             type="text"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Enter your name"
-            label="Name"
+            placeholder="お名前を入力して下さい。"
+            label="名前"
             required
           />
           {/* Email field */}
@@ -80,8 +108,8 @@ const UpdateUserForm: FC = () => {
             type="text"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Enter your email"
-            label="Email"
+            placeholder="メールアドレスを入力して下さい。"
+            label="メールアドレス"
             required
           />
           {/* Password field */}
@@ -91,19 +119,14 @@ const UpdateUserForm: FC = () => {
             type="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Enter your password"
-            label="Password"
+            placeholder="パスワードを入力して下さい。"
+            label="パスワード"
             required
           />
           {/* button */}
-          <SubmitButton label="Account Update" />
+          <SubmitButton label="送信" />
         </form>
       </div>
-      {/* Toast */}
-      <ToastContainer
-        position="top-center"
-        className="custom-toast-container"
-      />
     </div>
   );
 };

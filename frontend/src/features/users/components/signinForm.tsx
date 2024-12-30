@@ -1,24 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
+
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SigninInput } from "@/features/users/types/authTypes";
 import { createSigninAction } from "@/features/users/stores/reducers/signinReducer";
 import { InputField } from "@/features/users/components/shared/inputField";
 import { SubmitButton } from "@/features/users/components/shared/submitButton";
+import { useAuthTodoRedirect } from "@/hooks/useAuthTodoRedirect";
 
 const SigninForm: FC = () => {
-  const router = useRouter();
+  useAuthTodoRedirect();
+
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (authState.user) {
-      router.push("/");
-    }
-  }, [authState.user]);
 
   const [formData, setFormData] = useState<SigninInput>({
     email: "",
@@ -50,7 +46,7 @@ const SigninForm: FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold text-center text-gray-700">
-          Sign In
+          サインイン
         </h2>
         {authState.error?.message && (
           <p className="text-center text-red-600">
@@ -68,8 +64,8 @@ const SigninForm: FC = () => {
             type="text"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Enter your email"
-            label="Email"
+            placeholder="メールアドレスを入力して下さい。"
+            label="メールアドレス"
             required
           />
           {/* Password field */}
@@ -79,12 +75,12 @@ const SigninForm: FC = () => {
             type="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Enter your password"
-            label="Password"
+            placeholder="パスワードを入力して下さい。"
+            label="パスワード"
             required
           />
           {/* button */}
-          <SubmitButton label="Sign In" />
+          <SubmitButton label="送信" />
         </form>
       </div>
     </div>

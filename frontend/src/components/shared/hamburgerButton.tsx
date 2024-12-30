@@ -27,7 +27,7 @@ const HamburgerButton: FC = () => {
               <a>プロフィール</a>
             </li>
             <li className="p-2 border-b hover:bg-gray-200">
-              <Link href="/authUser">アカウント更新</Link>
+              <Link href="/updateUser">アカウント更新</Link>
             </li>
             <li className="p-2 border-b hover:bg-gray-200">
               <a>アカウント削除</a>

@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
@@ -9,17 +8,13 @@ import type { SignupInput } from "@/features/users/types/authTypes";
 import { createSignupAction } from "@/features/users/stores/reducers/signupReducer";
 import { InputField } from "@/features/users/components/shared/inputField";
 import { SubmitButton } from "@/features/users/components/shared/submitButton";
+import { useAuthTodoRedirect } from "@/hooks/useAuthTodoRedirect";
 
 const SignupForm: FC = () => {
-  const router = useRouter();
+  useAuthTodoRedirect();
+
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
-
-  useEffect(() => {
-    if (authState.user) {
-      router.push("/");
-    }
-  }, [authState.user]);
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",
@@ -52,7 +47,7 @@ const SignupForm: FC = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 space-y-6 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold text-center text-gray-700">
-          Sign Up
+          サインアップ
         </h2>
         {authState.error?.message && (
           <p className="text-center text-red-600">
@@ -70,8 +65,8 @@ const SignupForm: FC = () => {
             type="text"
             value={formData.name}
             onChange={handleChange}
-            placeholder="Enter your name"
-            label="Name"
+            placeholder="お名前を入力して下さい。"
+            label="名前"
             required
           />
           {/* Email field */}
@@ -81,8 +76,8 @@ const SignupForm: FC = () => {
             type="text"
             value={formData.email}
             onChange={handleChange}
-            placeholder="Enter your email"
-            label="Email"
+            placeholder="メールアドレスを入力して下さい。"
+            label="メールアドレス"
             required
           />
           {/* Password field */}
@@ -92,12 +87,12 @@ const SignupForm: FC = () => {
             type="password"
             value={formData.password}
             onChange={handleChange}
-            placeholder="Enter your password"
-            label="Password"
+            placeholder="パスワードを入力して下さい。"
+            label="パスワード"
             required
           />
           {/* button */}
-          <SubmitButton label="Sign Up" />
+          <SubmitButton label="送信" />
         </form>
       </div>
     </div>
