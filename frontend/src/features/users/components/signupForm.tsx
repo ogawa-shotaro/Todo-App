@@ -8,11 +8,8 @@ import type { SignupInput } from "@/features/users/types/authTypes";
 import { createSignupAction } from "@/features/users/stores/reducers/signupReducer";
 import { InputField } from "@/features/users/components/shared/inputField";
 import { SubmitButton } from "@/features/users/components/shared/submitButton";
-import { useAuthTodoRedirect } from "@/hooks/useAuthTodoRedirect";
 
 const SignupForm: FC = () => {
-  useAuthTodoRedirect();
-
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
 

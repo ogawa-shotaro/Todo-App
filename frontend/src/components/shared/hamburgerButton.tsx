@@ -23,13 +23,22 @@ const HamburgerButton: FC = () => {
       {menu && (
         <div className="absolute left-0 mt-2 w-48 bg-white text-black shadow-lg rounded-md">
           <ul>
-            <li className="p-2 border-b hover:bg-gray-200">
+            <li
+              className="p-2 border-b hover:bg-gray-200"
+              onClick={handleToggleMenu}
+            >
               <a>プロフィール</a>
             </li>
-            <li className="p-2 border-b hover:bg-gray-200">
-              <Link href="/updateUser">アカウント更新</Link>
+            <li
+              className="p-2 border-b hover:bg-gray-200"
+              onClick={handleToggleMenu}
+            >
+              <Link href="/users/updateUser">アカウント更新</Link>
             </li>
-            <li className="p-2 border-b hover:bg-gray-200">
+            <li
+              className="p-2 border-b hover:bg-gray-200"
+              onClick={handleToggleMenu}
+            >
               <a>アカウント削除</a>
             </li>
           </ul>

@@ -62,7 +62,7 @@ const UpdateUserForm: FC = () => {
             更新が完了しました!
           </h2>
           <div className="flex justify-center space-x-4">
-            <Link href={"/"}>
+            <Link href={"/todos"}>
               <BlueButton label="Todoページへ" />
             </Link>
             <GreenButton

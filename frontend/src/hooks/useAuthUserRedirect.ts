@@ -3,13 +3,13 @@ import { useRouter } from "next/navigation";
 
 import { useAppSelector } from "@/stores/hooks";
 
-export const useAuthTodoRedirect = () => {
+export const useAuthUserRedirect = () => {
   const router = useRouter();
   const authState = useAppSelector((state) => state.auth);
 
   useEffect(() => {
     if (authState.user) {
-      router.push("/");
+      router.push("/todos");
     }
   }, [authState.user]);
 };

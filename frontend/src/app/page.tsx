@@ -1,12 +1,10 @@
-"use client";
+import TopPageHeader from "@/components/shared/topPageHeader";
 
-import React from "react";
-
-import Header from "@/components/shared/header";
-import { useAuthSigninRedirect } from "@/hooks/useAuthSigninRedirect";
-
-export default function TodoPage() {
-  useAuthSigninRedirect();
-
-  return <Header />;
+export default function TopPage() {
+  return (
+    <div>
+      <TopPageHeader />
+      <h1>トップページ</h1>
+    </div>
+  );
 }
