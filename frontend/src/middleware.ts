@@ -7,9 +7,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  return NextResponse.redirect(new URL("/auth/signin", request.url));
+  return NextResponse.redirect(new URL("/signin", request.url));
 }
 
 export const config = {
-  matcher: ["/todos/:path*", "/users/:path*"],
+  matcher: ["/todo/:path*", "/updateUser/:path*"],
 };

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
@@ -37,6 +38,10 @@ const SigninForm: FC = () => {
 
   if (authState.inProgress) {
     return <p>送信中...</p>;
+  }
+
+  if (authState.user) {
+    localStorage.setItem("user", "loggedIn");
   }
 
   return (
@@ -79,6 +84,18 @@ const SigninForm: FC = () => {
           {/* button */}
           <SubmitButton label="送信" />
         </form>
+        {/* 導線 */}
+        <div className="text-center space-y-2">
+          <p className="text-gray-600">
+            アカウントを作成していない方→{" "}
+            <Link href="/signup" className="text-blue-500 hover:underline">
+              {" "}
+              <strong>
+                <u>アカウント作成</u>
+              </strong>
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );
