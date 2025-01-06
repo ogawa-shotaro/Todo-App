@@ -7,7 +7,7 @@ export default function TodoPageLayout({
 }) {
   return (
     <div>
-      <Header currentPage="content" />
+      <Header />
       {children}
     </div>
   );

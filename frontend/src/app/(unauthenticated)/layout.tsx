@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAppSelector } from "@/stores/hooks";
+import Header from "@/components/shared/header";
 
 export default function AuthPageLayout({
   children,
@@ -15,9 +16,14 @@ export default function AuthPageLayout({
 
   useEffect(() => {
     if (authState.user) {
-      router.push("/todo");
+      router.push("/todos");
     }
   }, [authState.user]);
 
-  return <div>{children}</div>;
+  return (
+    <div>
+      <Header />
+      {children}
+    </div>
+  );
 }
