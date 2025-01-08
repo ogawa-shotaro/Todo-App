@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAppSelector } from "@/stores/hooks";
-import Header from "@/components/shared/header";
 
 export default function AuthPageLayout({
   children,
@@ -20,10 +19,5 @@ export default function AuthPageLayout({
     }
   }, [authState.user]);
 
-  return (
-    <div>
-      <Header />
-      {children}
-    </div>
-  );
+  return <div>{children}</div>;
 }
