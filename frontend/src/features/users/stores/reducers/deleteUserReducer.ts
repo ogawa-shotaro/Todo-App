@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 
-import { signoutApi } from "@/features/users/api/signout";
+import { deleteUserApi } from "@/features/users/api/deleteUser";
 import {
   pendingReducer,
   authClearedFulfilledReducer,
@@ -9,18 +9,18 @@ import {
 } from "@/features/users/stores/reducers/authExtraReducer";
 import type { AuthState } from "@/features/users/types/authTypes";
 
-export const createSignoutAction = createAsyncThunk(
-  "auth/signout",
+export const createUserDeleteAction = createAsyncThunk(
+  "auth/deleteUser",
   async () => {
-    return signoutApi();
+    return deleteUserApi();
   }
 );
 
-export const buildSignoutExtraReducer = (
+export const buildDeleteUserExtraReducer = (
   builder: ActionReducerMapBuilder<AuthState>
 ) => {
   builder
-    .addCase(createSignoutAction.pending, pendingReducer)
-    .addCase(createSignoutAction.fulfilled, authClearedFulfilledReducer)
-    .addCase(createSignoutAction.rejected, rejectedReducer);
+    .addCase(createUserDeleteAction.pending, pendingReducer)
+    .addCase(createUserDeleteAction.fulfilled, authClearedFulfilledReducer)
+    .addCase(createUserDeleteAction.rejected, rejectedReducer);
 };
