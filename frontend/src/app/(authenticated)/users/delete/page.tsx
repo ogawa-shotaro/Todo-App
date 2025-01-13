@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { BlueButton, RedButton } from "@/components/shared/buttons";
 import { createUserDeleteAction } from "@/features/users/stores/reducers/deleteUserReducer";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
-import { successToast, errorToast } from "@/features/users/stores/toastSlice";
+import { successToast, errorToast } from "@/stores/toastSlice";
 
 const DeleteUserPage = () => {
   const router = useRouter();

@@ -10,7 +10,7 @@ import "react-toastify/dist/ReactToastify.css";
 import Header from "@/components/shared/header";
 import Footer from "@/components/shared/footer";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import { clearToast } from "@/features/users/stores/toastSlice";
+import { clearToast } from "@/stores/toastSlice";
 
 function HandlerShowToast() {
   const successMessage = useAppSelector((state) => state.toast.successMessage);
@@ -46,6 +46,7 @@ export default function RootLayout({
           <ToastContainer
             position="top-center"
             className="custom-toast-container"
+            autoClose={2000}
           />
           <Footer />
         </Provider>
