@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
 import type { MouseEventHandler } from "react";
 
@@ -11,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { BlueButton, RedButton } from "@/components/shared/buttons";
 import { createUserDeleteAction } from "@/features/users/stores/reducers/deleteUserReducer";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
+import { successToast, errorToast } from "@/features/users/stores/toastSlice";
 
 const DeleteUserPage = () => {
   const router = useRouter();
@@ -23,15 +22,21 @@ const DeleteUserPage = () => {
     setIsModalOpen((state) => !state);
   };
 
-  const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (event) => {
+  const handleDeleteAccount: MouseEventHandler<HTMLButtonElement> = async (
+    event
+  ) => {
     event.preventDefault();
     const result = await dispatch(createUserDeleteAction());
 
     "error" in result
-      ? toast.error("アカウントの削除に失敗しました。")
-      : router.push(
-          "/?toastMessage=アカウントが削除されました! ご利用ありがとうございました。"
+      ? dispatch(errorToast("アカウントの削除に失敗しました。"))
+      : dispatch(
+          successToast(
+            "アカウントが削除されました。ご利用ありがとうございました。"
+          )
         );
+
+    router.push("/");
   };
 
   if (authState.inProgress) {
@@ -61,7 +66,7 @@ const DeleteUserPage = () => {
               この操作は元に戻すことはできません。
             </p>
             <div className="flex justify-center mt-4 space-x-4">
-              <RedButton label="削除する" onClick={handleSubmit} />
+              <RedButton label="削除する" onClick={handleDeleteAccount} />
               <Link href={"/todos"}>
                 <BlueButton label="キャンセル" />
               </Link>
@@ -69,12 +74,6 @@ const DeleteUserPage = () => {
           </div>
         </DeleteAccountModal>
       )}
-      {/* トースト */}
-      <ToastContainer
-        position="top-center"
-        className="custom-toast-container"
-        autoClose={2000}
-      />
     </div>
   );
 };
