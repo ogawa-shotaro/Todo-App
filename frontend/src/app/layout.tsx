@@ -13,18 +13,17 @@ import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { clearToast } from "@/stores/toastSlice";
 
 function HandlerShowToast() {
-  const successMessage = useAppSelector((state) => state.toast.successMessage);
-  const errorMessage = useAppSelector((state) => state.toast.errorMessage);
+  const message = useAppSelector((state) => state.toast.message);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    const message = successMessage || errorMessage;
-    const toastType = successMessage ? "success" : "error";
-
     if (message) {
-      toast[toastType](message, { onClose: () => dispatch(clearToast()) });
+      toast(message.text, {
+        type: message.type,
+        onClose: () => dispatch(clearToast()),
+      });
     }
-  }, [successMessage, errorMessage]);
+  }, [message]);
 
   return null;
 }

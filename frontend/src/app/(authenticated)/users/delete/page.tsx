@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { BlueButton, RedButton } from "@/components/shared/buttons";
 import { createUserDeleteAction } from "@/features/users/stores/reducers/deleteUserReducer";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
-import { successToast, errorToast } from "@/stores/toastSlice";
+import { showToast } from "@/stores/toastSlice";
 
 const DeleteUserPage = () => {
   const router = useRouter();
@@ -29,11 +29,14 @@ const DeleteUserPage = () => {
     const result = await dispatch(createUserDeleteAction());
 
     "error" in result
-      ? dispatch(errorToast("アカウントの削除に失敗しました。"))
+      ? dispatch(
+          showToast({ text: "アカウントの削除に失敗しました。", type: "error" })
+        )
       : dispatch(
-          successToast(
-            "アカウントが削除されました。ご利用ありがとうございました。"
-          )
+          showToast({
+            text: "アカウントが削除されました。ご利用ありがとうございました。",
+            type: "success",
+          })
         );
 
     router.push("/");
