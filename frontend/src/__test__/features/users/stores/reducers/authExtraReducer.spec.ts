@@ -5,7 +5,7 @@ import {
   pendingReducer,
   fulfilledReducer,
   rejectedReducer,
-  signoutFulfilledReducer,
+  authClearedFulfilledReducer,
 } from "@/features/users/stores/reducers/authExtraReducer";
 import type { AuthState, AuthResponse } from "@/features/users/types/authTypes";
 
@@ -54,8 +54,8 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
     expect(state.inProgress).toEqual(false);
     expect(state.error?.message).toEqual("dummyMessage");
   });
-  it("signoutFulfilledReducer関数を実行すると、user情報をnullにする。", () => {
-    signoutFulfilledReducer(state);
+  it("authClearedFulfilledReducer関数を実行すると、user情報をnullにする。", () => {
+    authClearedFulfilledReducer(state);
 
     expect(state.inProgress).toEqual(false);
     expect(state.user).toEqual(null);

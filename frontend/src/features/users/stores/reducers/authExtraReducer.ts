@@ -20,7 +20,7 @@ export const fulfilledReducer = (
   }
 };
 
-export const signoutFulfilledReducer = (state: AuthState) => {
+export const authClearedFulfilledReducer = (state: AuthState) => {
   state.inProgress = false;
   state.user = null;
   state.error = null;

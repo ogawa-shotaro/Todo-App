@@ -1,9 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { buildSignupExtraReducer } from "@/features/users/stores/reducers/signupReducer";
-import { buildSigninExtraReducer } from "./reducers/signinReducer";
+import { buildSigninExtraReducer } from "@/features/users/stores/reducers/signinReducer";
 import { buildSignoutExtraReducer } from "@/features/users/stores/reducers/signoutReducer";
 import { buildUpdateUserExtraReducer } from "@/features/users/stores/reducers/updateUserReducer";
+import { buildDeleteUserExtraReducer } from "@/features/users/stores/reducers/deleteUserReducer";
 import type { AuthState } from "@/features/users/types/authTypes";
 
 const initialState: AuthState = {
@@ -21,6 +22,7 @@ export const authSlice = createSlice({
     buildSigninExtraReducer(builder);
     buildSignoutExtraReducer(builder);
     buildUpdateUserExtraReducer(builder);
+    buildDeleteUserExtraReducer(builder);
   },
 });
 

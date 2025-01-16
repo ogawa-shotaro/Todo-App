@@ -39,7 +39,7 @@ const HamburgerButton: FC = () => {
               className="p-2 border-b hover:bg-gray-200"
               onClick={handleToggleMenu}
             >
-              <a>アカウント削除</a>
+              <Link href="/users/delete">アカウント削除</Link>
             </li>
           </ul>
         </div>

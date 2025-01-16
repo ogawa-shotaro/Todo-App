@@ -9,7 +9,7 @@ export const RedButton: FC<ButtonProps> = ({ label, onClick }) => {
   return (
     <button
       type="submit"
-      className="px-4 py-2 text-white text-lg bg-red-500 rounded hover:bg-red-600"
+      className="px-4 py-2 text-white  bg-red-500 rounded hover:bg-red-600"
       onClick={onClick}
     >
       {label}
