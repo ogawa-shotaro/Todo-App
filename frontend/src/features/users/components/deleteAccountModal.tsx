@@ -18,20 +18,22 @@ const DeleteAccountModal: FC = () => {
     event.preventDefault();
     const result = await dispatch(createUserDeleteAction());
 
-    "error" in result
-      ? dispatch(
-          showToast({
-            text: "アカウントの削除に失敗しました。",
-            type: "error",
-          })
-        )
-      : dispatch(
-          showToast({
-            text: "アカウントが削除されました。ご利用ありがとうございました。",
-            type: "success",
-          }),
-          router.push("/")
-        );
+    if ("error" in result) {
+      dispatch(
+        showToast({
+          text: "アカウントの削除に失敗しました。",
+          type: "error",
+        })
+      );
+    } else {
+      dispatch(
+        showToast({
+          text: "アカウントが削除されました。ご利用ありがとうございました。",
+          type: "success",
+        })
+      );
+      router.push("/");
+    }
   };
 
   return (
