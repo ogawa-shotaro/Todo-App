@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { useAppDispatch } from "@/stores/hooks";
-import { BlueButton, RedButton } from "@/components/shared/buttons";
+import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
 import { createUserDeleteAction } from "@/features/users/stores/reducers/deleteUserReducer";
 import { showToast } from "@/stores/toastSlice";
 import Modal from "@/components/shared/modal";

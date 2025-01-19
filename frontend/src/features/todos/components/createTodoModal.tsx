@@ -2,11 +2,11 @@ import { useState, type FC, ChangeEventHandler, FormEventHandler } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 
-import { InputField } from "@/components/shared/inputField";
-import { SubmitButton } from "@/components/shared/submitButton";
+import { InputField } from "@/components/shared/form-elements/inputField";
+import { SubmitButton } from "@/components/shared/buttons/submitButton";
 import Modal from "@/components/shared/modal";
-import { TextField } from "@/components/shared/textField";
-import { CloseButton } from "@/components/shared/buttons";
+import { TextField } from "@/components/shared/form-elements/textField";
+import { CloseButton } from "@/components/shared/buttons/buttons";
 import { closeModal } from "@/features/todos/stores/todoSlice";
 import { createTodoInitializeAction } from "@/features/todos/stores/reducers/createTodoReducer";
 

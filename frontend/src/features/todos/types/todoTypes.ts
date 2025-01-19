@@ -1,5 +1,3 @@
-import { Dispatch, SetStateAction } from "react";
-
 interface Todo {
   id: number;
   title: string;
@@ -26,10 +24,6 @@ export interface TodoState {
 export interface TodoInput {
   title: string;
   body: string;
-}
-
-export interface ModalProps {
-  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
 export interface TodoResponseError {

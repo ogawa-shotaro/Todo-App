@@ -2,7 +2,7 @@
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 
-import { BlueButton } from "@/components/shared/buttons";
+import { BlueButton } from "@/components/shared/buttons/buttons";
 import CreateTodoModal from "@/features/todos/components/createTodoModal";
 import { openModal } from "@/features/todos/stores/todoSlice";
 

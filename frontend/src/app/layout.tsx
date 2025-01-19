@@ -4,8 +4,8 @@ import "@/styles/globals.css";
 import { store } from "@/stores/store";
 import { Provider } from "react-redux";
 
-import Header from "@/components/shared/header";
-import Footer from "@/components/shared/footer";
+import Header from "@/components/shared/layouts/header";
+import Footer from "@/components/shared/layouts/footer";
 import Toast from "@/components/shared/toast";
 
 export default function RootLayout({
