@@ -7,8 +7,8 @@ import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { createUserUpdateAction } from "@/features/users/stores/reducers/updateUserReducer";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SignupInput as UpdateUserInput } from "@/features/users/types/authTypes";
-import { InputField } from "@/features/users/components/shared/inputField";
-import { SubmitButton } from "@/features/users/components/shared/submitButton";
+import { InputField } from "@/components/shared/inputField";
+import { SubmitButton } from "@/components/shared/submitButton";
 import { BlueButton, GreenButton } from "@/components/shared/buttons";
 
 const UpdateUserForm: FC = () => {

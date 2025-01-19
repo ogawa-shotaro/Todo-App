@@ -52,3 +52,15 @@ export const BlueButtonWithBorder: FC<ButtonProps> = ({ label, onClick }) => {
     </button>
   );
 };
+
+export const CloseButton: FC<ButtonProps> = ({ label, onClick }) => {
+  return (
+    <button
+      type="submit"
+      className="absolute top-2 right-2 px-2 py-1 text-xs text-gray-400 bg-gray-100 rounded hover:bg-gray-200 hover:text-gray-600 transition focus:outline-none"
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
+};

@@ -7,7 +7,7 @@ import type { MouseEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { createSignoutAction } from "@/features/users/stores/reducers/signoutReducer";
 import HamburgerButton from "@/components/shared/hamburgerButton";
-import { RedButton } from "@/components/shared/buttons";
+import { RedButton } from "./buttons";
 import { BlueButtonWithBorder } from "./buttons";
 
 const Header: FC = () => {

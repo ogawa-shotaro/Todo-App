@@ -7,8 +7,8 @@ import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SigninInput } from "@/features/users/types/authTypes";
 import { createSigninAction } from "@/features/users/stores/reducers/signinReducer";
-import { InputField } from "@/features/users/components/shared/inputField";
-import { SubmitButton } from "@/features/users/components/shared/submitButton";
+import { InputField } from "@/components/shared/inputField";
+import { SubmitButton } from "@/components/shared/submitButton";
 
 const SigninForm: FC = () => {
   const dispatch = useAppDispatch();
