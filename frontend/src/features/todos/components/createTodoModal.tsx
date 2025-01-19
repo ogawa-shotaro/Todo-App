@@ -36,7 +36,7 @@ const CreateTodoModal: FC = () => {
     event.preventDefault();
     dispatch(createTodoInitializeAction(formData));
 
-    if (todoState.todo !== null) {
+    if (!todoState.inProgress) {
       dispatch(closeModal());
     }
   };
@@ -44,6 +44,10 @@ const CreateTodoModal: FC = () => {
   const handleIsModalClose = () => {
     dispatch(closeModal());
   };
+
+  if (todoState.inProgress) {
+    return <p>送信中...</p>;
+  }
 
   return (
     <Modal>
@@ -80,7 +84,7 @@ const CreateTodoModal: FC = () => {
             value={formData.body}
             onChange={handleChange}
             placeholder="Todoの詳細を入力して下さい。"
-            label="ボディ"
+            label="詳細"
             required
           />
           {/* 送信ボタン */}
