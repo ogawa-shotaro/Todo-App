@@ -1,10 +1,9 @@
 "use client";
 
-import { useAppDispatch, useAppSelector } from "@/stores/hooks";
+import { useState } from "react";
 
 import { BlueButton } from "@/components/shared/buttons/buttons";
 import CreateTodoModal from "@/features/todos/components/createTodoModal";
-import { openModal } from "@/features/todos/stores/todoSlice";
 
 // ダミーデータ
 const todos = [
@@ -18,11 +17,10 @@ const todos = [
 ];
 
 const TodosPage = () => {
-  const dispatch = useAppDispatch();
-  const todoState = useAppSelector((state) => state.todo);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleIsModalOpen = () => {
-    dispatch(openModal());
+  const openModal = () => {
+    setIsModalOpen((state) => !state);
   };
 
   return (
@@ -32,7 +30,7 @@ const TodosPage = () => {
           📝 Todo 一覧
         </h1>
         <div className="flex justify-end mb-6 text-lg font-medium ">
-          <BlueButton label="新規Todo" onClick={handleIsModalOpen} />
+          <BlueButton label="新規Todo" onClick={openModal} />
         </div>
         <div className="space-y-6">
           {todos.map((todo) => (
@@ -47,7 +45,7 @@ const TodosPage = () => {
         </div>
       </div>
       {/* モーダル */}
-      {todoState.isModalOpen && <CreateTodoModal />}
+      {isModalOpen && <CreateTodoModal setIsModalOpen={setIsModalOpen} />}
     </div>
   );
 };

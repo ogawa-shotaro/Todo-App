@@ -6,18 +6,9 @@ interface Todo {
   updatedAt: Date;
 }
 
-type TODO_STATUS =
-  | "waiting"
-  | "working"
-  | "pending"
-  | "discontinued"
-  | "completed";
-
 export interface TodoState {
   inProgress: boolean;
-  todo: Todo | null;
-  isModalOpen: boolean;
-  status: TODO_STATUS;
+  todos: Todo[];
   error: null | TodoResponseError;
 }
 
@@ -39,4 +30,8 @@ export interface TodoResponse {
     updatedAt: Date;
   };
   message?: string[] | string;
+}
+
+export interface ModalProps {
+  setIsModalOpen: (isModalOpen: boolean) => void;
 }

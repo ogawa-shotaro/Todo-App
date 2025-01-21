@@ -1,4 +1,4 @@
-import { useState, type FC, ChangeEventHandler, FormEventHandler } from "react";
+import { useState, type ChangeEventHandler, FormEventHandler } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 
@@ -7,12 +7,11 @@ import { SubmitButton } from "@/components/shared/buttons/submitButton";
 import Modal from "@/components/shared/modal";
 import { TextField } from "@/components/shared/form-elements/textField";
 import { CloseButton } from "@/components/shared/buttons/buttons";
-import { closeModal } from "@/features/todos/stores/todoSlice";
 import { createTodoInitializeAction } from "@/features/todos/stores/reducers/createTodoReducer";
 
-import type { TodoInput } from "@/features/todos/types/todoTypes";
+import type { TodoInput, ModalProps } from "@/features/todos/types/todoTypes";
 
-const CreateTodoModal: FC = () => {
+const CreateTodoModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
   const dispatch = useAppDispatch();
   const todoState = useAppSelector((state) => state.todo);
 
@@ -34,15 +33,13 @@ const CreateTodoModal: FC = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(createTodoInitializeAction(formData));
 
-    if (!todoState.inProgress) {
-      dispatch(closeModal());
-    }
+    const res = await dispatch(createTodoInitializeAction(formData));
+    res.payload && closeModal();
   };
 
-  const handleIsModalClose = () => {
-    dispatch(closeModal());
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   if (todoState.inProgress) {
@@ -53,7 +50,7 @@ const CreateTodoModal: FC = () => {
     <Modal>
       <div className="relative w-full max-w-3xl p-8 space-y-6 bg-white shadow-md rounded-md">
         {/* クローズボタン */}
-        <CloseButton label="閉じる" onClick={handleIsModalClose} />
+        <CloseButton label="閉じる" onClick={closeModal} />
         <h2 className="text-2xl font-bold text-center text-gray-700">
           Todo追加
         </h2>
