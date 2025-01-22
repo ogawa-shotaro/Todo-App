@@ -1,9 +1,9 @@
-interface Todo {
-  id: number;
+export interface Todo {
+  id?: number;
   title: string;
   body: string;
-  createdAt: Date;
-  updatedAt: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface TodoState {
@@ -30,8 +30,4 @@ export interface TodoResponse {
     updatedAt: Date;
   };
   message?: string[] | string;
-}
-
-export interface ModalProps {
-  setIsModalOpen: (isModalOpen: boolean) => void;
 }

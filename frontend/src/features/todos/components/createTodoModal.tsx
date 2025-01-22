@@ -9,9 +9,19 @@ import { TextField } from "@/components/shared/form-elements/textField";
 import { CloseButton } from "@/components/shared/buttons/buttons";
 import { createTodoInitializeAction } from "@/features/todos/stores/reducers/createTodoReducer";
 
-import type { TodoInput, ModalProps } from "@/features/todos/types/todoTypes";
+import type { TodoInput } from "@/features/todos/types/todoTypes";
 
-const CreateTodoModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
+interface ModalProps {
+  onCreateSuccess: () => void;
+  onCreateFailed: () => void;
+  onCancel: () => void;
+}
+
+const CreateTodoModal: React.FC<ModalProps> = ({
+  onCreateSuccess,
+  onCreateFailed,
+  onCancel,
+}) => {
   const dispatch = useAppDispatch();
   const todoState = useAppSelector((state) => state.todo);
 
@@ -33,13 +43,13 @@ const CreateTodoModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
+    dispatch(createTodoInitializeAction(formData));
 
-    const res = await dispatch(createTodoInitializeAction(formData));
-    res.payload && closeModal();
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
+    if (todoState.error) {
+      onCreateFailed();
+    } else {
+      onCreateSuccess();
+    }
   };
 
   if (todoState.inProgress) {
@@ -50,7 +60,7 @@ const CreateTodoModal: React.FC<ModalProps> = ({ setIsModalOpen }) => {
     <Modal>
       <div className="relative w-full max-w-3xl p-8 space-y-6 bg-white shadow-md rounded-md">
         {/* クローズボタン */}
-        <CloseButton label="閉じる" onClick={closeModal} />
+        <CloseButton label="閉じる" onClick={onCancel} />
         <h2 className="text-2xl font-bold text-center text-gray-700">
           Todo追加
         </h2>

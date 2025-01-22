@@ -2,25 +2,20 @@
 
 import { useState } from "react";
 
+import { useAppSelector } from "@/stores/hooks";
 import { BlueButton } from "@/components/shared/buttons/buttons";
 import CreateTodoModal from "@/features/todos/components/createTodoModal";
 
-// ダミーデータ
-const todos = [
-  { id: 1, title: "issueを作成", body: "Todo機能のCRUD処理に関する事。" },
-  { id: 2, title: "JS、CSSの勉強", body: "サイトを作成する。" },
-  {
-    id: 3,
-    title: "プログラミング学習",
-    body: "Reactの公式ドキュメントを読む",
-  },
-];
-
 const TodosPage = () => {
+  const todos = useAppSelector((state) => state.todo.todos);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
-    setIsModalOpen((state) => !state);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -45,7 +40,13 @@ const TodosPage = () => {
         </div>
       </div>
       {/* モーダル */}
-      {isModalOpen && <CreateTodoModal setIsModalOpen={setIsModalOpen} />}
+      {isModalOpen && (
+        <CreateTodoModal
+          onCreateSuccess={() => closeModal()}
+          onCreateFailed={() => {}}
+          onCancel={() => closeModal()}
+        />
+      )}
     </div>
   );
 };
