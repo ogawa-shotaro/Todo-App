@@ -41,9 +41,9 @@ const CreateTodoModal: React.FC<ModalProps> = ({
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(createTodoAction(formData));
+    const result = await dispatch(createTodoAction(formData));
 
-    if (todoState.error === null) {
+    if (result.payload) {
       onCreateSuccess();
     }
   };
