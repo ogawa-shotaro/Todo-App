@@ -43,7 +43,6 @@ const TodosPage = () => {
       {isModalOpen && (
         <CreateTodoModal
           onCreateSuccess={() => closeModal()}
-          onCreateFailed={() => {}}
           onCancel={() => closeModal()}
         />
       )}

@@ -13,18 +13,18 @@ import type {
 } from "@/features/todos/types/todoTypes";
 import { createTodoApi } from "@/features/todos/api/createTodo";
 
-export const createTodoInitializeAction = createAsyncThunk<
-  TodoResponse,
-  TodoInput
->("todo/createTodo", async (input) => {
-  return createTodoApi(input);
-});
+export const createTodoAction = createAsyncThunk<TodoResponse, TodoInput>(
+  "todo/createTodo",
+  async (input) => {
+    return createTodoApi(input);
+  }
+);
 
 export const buildCreateTodoExtraReducer = (
   builder: ActionReducerMapBuilder<TodoState>
 ) => {
   builder
-    .addCase(createTodoInitializeAction.pending, pendingReducer)
-    .addCase(createTodoInitializeAction.fulfilled, fulfilledReducer)
-    .addCase(createTodoInitializeAction.rejected, rejectedReducer);
+    .addCase(createTodoAction.pending, pendingReducer)
+    .addCase(createTodoAction.fulfilled, fulfilledReducer)
+    .addCase(createTodoAction.rejected, rejectedReducer);
 };

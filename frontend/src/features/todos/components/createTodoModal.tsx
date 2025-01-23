@@ -7,19 +7,17 @@ import { SubmitButton } from "@/components/shared/buttons/submitButton";
 import Modal from "@/components/shared/modal";
 import { TextField } from "@/components/shared/form-elements/textField";
 import { CloseButton } from "@/components/shared/buttons/buttons";
-import { createTodoInitializeAction } from "@/features/todos/stores/reducers/createTodoReducer";
+import { createTodoAction } from "@/features/todos/stores/reducers/createTodoReducer";
 
 import type { TodoInput } from "@/features/todos/types/todoTypes";
 
 interface ModalProps {
   onCreateSuccess: () => void;
-  onCreateFailed: () => void;
   onCancel: () => void;
 }
 
 const CreateTodoModal: React.FC<ModalProps> = ({
   onCreateSuccess,
-  onCreateFailed,
   onCancel,
 }) => {
   const dispatch = useAppDispatch();
@@ -43,11 +41,9 @@ const CreateTodoModal: React.FC<ModalProps> = ({
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(createTodoInitializeAction(formData));
+    dispatch(createTodoAction(formData));
 
-    if (todoState.error) {
-      onCreateFailed();
-    } else {
+    if (todoState.error === null) {
       onCreateSuccess();
     }
   };
