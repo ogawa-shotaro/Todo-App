@@ -6,9 +6,9 @@ import type { MouseEventHandler, FC } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { createSignoutAction } from "@/features/users/stores/reducers/signoutReducer";
-import HamburgerButton from "@/components/shared/hamburgerButton";
-import { RedButton } from "@/components/shared/buttons";
-import { BlueButtonWithBorder } from "./buttons";
+import HamburgerButton from "@/components/shared//buttons/hamburgerButton";
+import { RedButton } from "@/components/shared/buttons/buttons";
+import { BlueButtonWithBorder } from "@/components/shared/buttons/buttons";
 
 const Header: FC = () => {
   const router = useRouter();

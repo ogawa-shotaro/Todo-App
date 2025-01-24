@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 
 import { useAppSelector } from "@/stores/hooks";
-import { BlueButton, RedButton } from "@/components/shared/buttons";
+import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
 
 const DeleteUserPage = () => {
