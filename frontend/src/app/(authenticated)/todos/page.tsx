@@ -1,22 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { useAppSelector } from "@/stores/hooks";
-import { BlueButton } from "@/components/shared/buttons/buttons";
+import { useAppDispatch, useAppSelector } from "@/stores/hooks";
+import { BlueButton, GrayButton } from "@/components/shared/buttons/buttons";
 import CreateTodoModal from "@/features/todos/components/createTodoModal";
+import { getTodosAction } from "@/features/todos/stores/reducers/getTodosReducer";
+import TodoList from "@/features/todos/components/todoList";
 
 const TodosPage = () => {
-  const todos = useAppSelector((state) => state.todo.todos);
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state) => state.todo);
+
+  const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  const take = 10;
+  const skip = (page - 1) * take;
+  const todos = state.todos.slice(skip, skip + take);
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  useEffect(() => {
+    dispatch(getTodosAction({ page }));
+  }, [page]);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const setNextPage = () => setPage((page) => page + 1);
+  const setPrevPage = () => setPage((page) => page - 1);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-100 p-6">
@@ -27,17 +38,8 @@ const TodosPage = () => {
         <div className="flex justify-end mb-6 text-lg font-medium ">
           <BlueButton label="新規Todo" onClick={openModal} />
         </div>
-        <div className="space-y-6">
-          {todos.map((todo) => (
-            <div
-              key={todo.id}
-              className="p-6 border rounded-lg shadow-md hover:shadow-lg bg-white transform hover:scale-105 transition duration-300"
-            >
-              <h2 className="text-xl font-bold text-gray-700">{todo.title}</h2>
-              <p className="text-gray-600 mt-2 leading-relaxed">{todo.body}</p>
-            </div>
-          ))}
-        </div>
+        {/* Todoリスト */}
+        <TodoList todos={todos} />
       </div>
       {/* モーダル */}
       {isModalOpen && (
@@ -46,6 +48,20 @@ const TodosPage = () => {
           onCancel={() => closeModal()}
         />
       )}
+      {/* ページ選択 */}
+      <div className="flex items-center justify-center mt-6">
+        {page > 1 && (
+          <>
+            <GrayButton label="前のページ" onClick={setPrevPage} />
+            <span className="text-lg font-medium text-gray-600 mx-4">
+              ページ: {page}
+            </span>
+          </>
+        )}
+        {todos.length === take && (
+          <GrayButton label="次のページ" onClick={setNextPage} />
+        )}
+      </div>
     </div>
   );
 };

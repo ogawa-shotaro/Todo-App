@@ -13,7 +13,11 @@ export const fulfilledReducer = (
   state.inProgress = false;
   state.error = null;
   if (action.payload.todo) {
-    state.todos = [...state.todos, action.payload.todo];
+    if (Array.isArray(action.payload.todo)) {
+      state.todos = [...state.todos, ...action.payload.todo];
+    } else {
+      state.todos = [...state.todos, action.payload.todo];
+    }
   }
 };
 

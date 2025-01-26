@@ -17,6 +17,14 @@ export interface TodoInput {
   body: string;
 }
 
+export interface TodoListParams {
+  page?: number;
+}
+
+export interface TodoListProps {
+  todos: Todo[];
+}
+
 export interface TodoResponseError {
   message?: string[] | string;
 }
