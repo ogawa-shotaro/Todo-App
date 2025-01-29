@@ -7,12 +7,11 @@ export const getTodosApi = async (
   paramsData: TodoListParams
 ): Promise<TodoResponse> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/todos?page=${paramsData?.page}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/todos?page=${paramsData.page}`,
     {
       method: "GET",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
-      cache: "force-cache",
     }
   );
   if (!response.ok) {
@@ -20,7 +19,7 @@ export const getTodosApi = async (
 
     throw errorData;
   }
-  const todos = await response.json();
 
-  return { todo: todos };
+  const todos = await response.json();
+  return { todos };
 };

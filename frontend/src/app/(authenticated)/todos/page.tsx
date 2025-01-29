@@ -8,6 +8,8 @@ import CreateTodoModal from "@/features/todos/components/createTodoModal";
 import { getTodosAction } from "@/features/todos/stores/reducers/getTodosReducer";
 import TodoList from "@/features/todos/components/todoList";
 
+const PAGE_SIZE = 10;
+
 const TodosPage = () => {
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state.todo);
@@ -15,9 +17,8 @@ const TodosPage = () => {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const take = 10;
-  const skip = (page - 1) * take;
-  const todos = state.todos.slice(skip, skip + take);
+  const skip = (page - 1) * PAGE_SIZE;
+  const todos = state.todos.slice(skip, skip + PAGE_SIZE);
 
   useEffect(() => {
     dispatch(getTodosAction({ page }));
@@ -58,7 +59,7 @@ const TodosPage = () => {
             </span>
           </>
         )}
-        {todos.length === take && (
+        {todos.length === PAGE_SIZE && (
           <GrayButton label="次のページ" onClick={setNextPage} />
         )}
       </div>

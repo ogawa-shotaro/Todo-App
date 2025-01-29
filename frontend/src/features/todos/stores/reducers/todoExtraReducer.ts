@@ -6,18 +6,25 @@ export const pendingReducer = (state: TodoState) => {
   state.inProgress = true;
 };
 
-export const fulfilledReducer = (
+export const addTodoFulfilledReducer = (
   state: TodoState,
   action: PayloadAction<TodoResponse>
 ) => {
   state.inProgress = false;
   state.error = null;
   if (action.payload.todo) {
-    if (Array.isArray(action.payload.todo)) {
-      state.todos = [...state.todos, ...action.payload.todo];
-    } else {
-      state.todos = [...state.todos, action.payload.todo];
-    }
+    state.todos = [...state.todos, action.payload.todo];
+  }
+};
+
+export const addTodosFulfilledReducer = (
+  state: TodoState,
+  action: PayloadAction<TodoResponse>
+) => {
+  state.inProgress = false;
+  state.error = null;
+  if (Array.isArray(action.payload.todos)) {
+    state.todos = [...state.todos, ...action.payload.todos];
   }
 };
 

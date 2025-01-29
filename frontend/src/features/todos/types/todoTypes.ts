@@ -37,5 +37,6 @@ export interface TodoResponse {
     createdAt: Date;
     updatedAt: Date;
   };
+  todos?: Todo[];
   message?: string[] | string;
 }
