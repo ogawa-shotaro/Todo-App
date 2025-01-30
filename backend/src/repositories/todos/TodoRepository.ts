@@ -53,7 +53,9 @@ export class TodoRepository implements ITodoRepository {
       take: count,
     });
 
-    return todos;
+    const totalCount = await prisma.todo.count();
+
+    return { todos, totalCount };
   }
 
   async find(inputData: TodoFindParams) {

@@ -58,41 +58,49 @@ describe("【TodoRepositoryのテスト】", () => {
           });
         }
       });
-      it("【listメソッドを実行時】パラメーターの指定がない場合は、先頭から10件のデータを取得する。", async () => {
+      it("【listメソッドを実行時】パラメーターの指定がない場合は、先頭から10件のデータとTodo総数を取得する。", async () => {
         const repository = new TodoRepository();
-        const todoList = await repository.list();
+        const todoItems = await repository.list();
 
-        expect(todoList.length).toEqual(10);
-        expect(todoList[2].id).toEqual(3);
-        expect(todoList[2].title).toEqual("ダミータイトル3");
-        expect(todoList[2].body).toEqual("ダミーボディ3");
+        expect(todoItems.todos.length).toEqual(10);
+        expect(todoItems.todos[2].id).toEqual(3);
+        expect(todoItems.todos[2].title).toEqual("ダミータイトル3");
+        expect(todoItems.todos[2].body).toEqual("ダミーボディ3");
+
+        expect(todoItems.totalCount).toEqual(21);
       });
-      it("【listメソッドを実行時】パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータを取得する。", async () => {
+      it("【listメソッドを実行時】パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータとTodo総数を取得する。", async () => {
         const repository = new TodoRepository();
-        const todoList = await repository.list({ page: 2 });
+        const todoItems = await repository.list({ page: 2 });
 
-        expect(todoList.length).toEqual(10);
-        expect(todoList[0].id).toEqual(11);
-        expect(todoList[0].title).toEqual("ダミータイトル11");
-        expect(todoList[0].body).toEqual("ダミーボディ11");
+        expect(todoItems.todos.length).toEqual(10);
+        expect(todoItems.todos[0].id).toEqual(11);
+        expect(todoItems.todos[0].title).toEqual("ダミータイトル11");
+        expect(todoItems.todos[0].body).toEqual("ダミーボディ11");
+
+        expect(todoItems.totalCount).toEqual(21);
       });
-      it("【listメソッドを実行時】パラメーターの指定(count=5)をした場合、先頭から5件のデータを取得する。", async () => {
+      it("【listメソッドを実行時】パラメーターの指定(count=5)をした場合、先頭から5件のデータとTodo総数を取得する。", async () => {
         const repository = new TodoRepository();
-        const todoList = await repository.list({ count: 5 });
+        const todoItems = await repository.list({ count: 5 });
 
-        expect(todoList.length).toEqual(5);
-        expect(todoList[4].id).toEqual(5);
-        expect(todoList[4].title).toEqual("ダミータイトル5");
-        expect(todoList[4].body).toEqual("ダミーボディ5");
+        expect(todoItems.todos.length).toEqual(5);
+        expect(todoItems.todos[4].id).toEqual(5);
+        expect(todoItems.todos[4].title).toEqual("ダミータイトル5");
+        expect(todoItems.todos[4].body).toEqual("ダミーボディ5");
+
+        expect(todoItems.totalCount).toEqual(21);
       });
-      it("【listメソッドを実行時】パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータを取得する。", async () => {
+      it("【listメソッドを実行時】パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータとTodo総数を取得する。", async () => {
         const repository = new TodoRepository();
-        const todoList = await repository.list({ page: 2, count: 3 });
+        const todoItems = await repository.list({ page: 2, count: 3 });
 
-        expect(todoList.length).toEqual(3);
-        expect(todoList[0].id).toEqual(4);
-        expect(todoList[0].title).toEqual("ダミータイトル4");
-        expect(todoList[0].body).toEqual("ダミーボディ4");
+        expect(todoItems.todos.length).toEqual(3);
+        expect(todoItems.todos[0].id).toEqual(4);
+        expect(todoItems.todos[0].title).toEqual("ダミータイトル4");
+        expect(todoItems.todos[0].body).toEqual("ダミーボディ4");
+
+        expect(todoItems.totalCount).toEqual(21);
       });
       it("【findメソッドを実行時】DBに保持されているデータから、一件のTodoを取得する事ができる。", async () => {
         const repository = new TodoRepository();
@@ -153,12 +161,9 @@ describe("【TodoRepositoryのテスト】", () => {
         });
         const newTodos = await repository.list();
 
-        const oldTodoIds = oldTodos.map((todo) => todo.id);
-        const newTodoIds = newTodos.map((todo) => todo.id);
-
         expect(deletedTodo.id).toEqual(1);
-        expect(oldTodoIds).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
-        expect(newTodoIds).toEqual([2, 3, 4, 5, 6, 7, 8, 9, 10, 11]);
+        expect(oldTodos.totalCount).toEqual(21);
+        expect(newTodos.totalCount).toEqual(20);
       });
     });
   });

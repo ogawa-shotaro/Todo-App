@@ -18,11 +18,8 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const req = createMockRequest({ query: {} });
       const res = createMockResponse();
       const next = jest.fn();
-
       repository.list.mockResolvedValue([]);
-
       await controller.list(req, res, next);
-
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith([]);
     });
@@ -32,7 +29,6 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const req = createMockRequest({ query: {} });
       const res = createMockResponse();
       const next = jest.fn();
-
       repository.list.mockResolvedValue([
         {
           id: 1,
@@ -59,9 +55,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
           userId: 3,
         },
       ]);
-
       await controller.list(req, res, next);
-
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith([
         {
@@ -96,9 +90,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const req = createMockRequest({ query: {} });
       const res = createMockResponse();
       const next = jest.fn();
-
       await controller.list(req, res, next);
-
       expect(repository.list).toHaveBeenCalledWith({
         page: undefined,
         count: undefined,
@@ -108,9 +100,7 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const req = createMockRequest({ query: { page: 2, count: 5 } });
       const res = createMockResponse();
       const next = jest.fn();
-
       await controller.list(req, res, next);
-
       expect(repository.list).toHaveBeenCalledWith({
         page: 2,
         count: 5,
@@ -120,18 +110,14 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const req = createMockRequest({ query: { page: 2 } });
       const res = createMockResponse();
       const next = jest.fn();
-
       await controller.list(req, res, next);
-
       expect(repository.list).toHaveBeenCalledWith({ page: 2 });
     });
     it("listメソッドのパラメーターが【count=3】で呼び出される", async () => {
       const req = createMockRequest({ query: { count: 3 } });
       const res = createMockResponse();
       const next = jest.fn();
-
       await controller.list(req, res, next);
-
       expect(repository.list).toHaveBeenCalledWith({ count: 3 });
     });
   });
@@ -140,26 +126,20 @@ describe("【ユニットテスト】 Todo一覧取得", () => {
       const req = createMockRequest({ query: { page: 0 } });
       const res = createMockResponse();
       const next = jest.fn();
-
       repository.list.mockRejectedValue(
         new InvalidError("pageは1以上の整数のみ"),
       );
-
       await controller.list(req, res, next);
-
       expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
     it("パラメーターに指定した値が不正(count=整数の1以上でない値)の場合、next関数(パラメーターがInvalidError)を実行する。", async () => {
       const req = createMockRequest({ query: { count: 0 } });
       const res = createMockResponse();
       const next = jest.fn();
-
       repository.list.mockRejectedValue(
         new InvalidError("countは1以上の整数のみ"),
       );
-
       await controller.list(req, res, next);
-
       expect(next).toHaveBeenCalledWith(expect.any(InvalidError));
     });
   });
