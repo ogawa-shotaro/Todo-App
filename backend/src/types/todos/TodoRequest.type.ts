@@ -18,6 +18,7 @@ export interface TodoModificationParams extends TodoInput {
 }
 
 export interface TodoListParams {
+  userId: number;
   page?: number;
   count?: number;
 }

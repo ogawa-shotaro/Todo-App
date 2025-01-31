@@ -12,13 +12,18 @@ export class GetTodosController {
   }
 
   async list(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    const userId = req.user?.id as number;
     const page = req.query.page ? Number(req.query.page) : undefined;
     const count = req.query.count ? Number(req.query.count) : undefined;
 
     try {
-      const todos = await this.repository.list({ page, count });
+      const listResponse = await this.repository.list({
+        userId,
+        page,
+        count,
+      });
 
-      res.status(StatusCodes.OK).json(todos);
+      res.status(StatusCodes.OK).json(listResponse);
     } catch (error) {
       next(error);
     }

@@ -43,19 +43,21 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async list({
+    userId,
     page = DEFAULT_PAGE,
     count = DEFAULT_COUNT,
-  }: TodoListParams = {}) {
+  }: TodoListParams) {
     const offset = (page - 1) * count;
 
-    const todos = await prisma.todo.findMany({
+    const items = await prisma.todo.findMany({
+      where: { userId },
       skip: offset,
       take: count,
     });
 
-    const totalCount = await prisma.todo.count();
+    const totalCount = await prisma.todo.count({ where: { userId } });
 
-    return { todos, totalCount };
+    return { items, totalCount };
   }
 
   async find(inputData: TodoFindParams) {
