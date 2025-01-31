@@ -12,7 +12,7 @@ export class GetTodosController {
   }
 
   async list(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-    const userId = req.user?.id as number;
+    const userId = Number(req.user?.id);
     const page = req.query.page ? Number(req.query.page) : undefined;
     const count = req.query.count ? Number(req.query.count) : undefined;
 
