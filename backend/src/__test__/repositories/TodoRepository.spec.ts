@@ -60,47 +60,47 @@ describe("【TodoRepositoryのテスト】", () => {
       });
       it("【listメソッドを実行時】パラメーターの指定がない場合は、先頭から10件のデータとTodo総数を取得する。", async () => {
         const repository = new TodoRepository();
-        const todoItems = await repository.list();
+        const result = await repository.list();
 
-        expect(todoItems.todos.length).toEqual(10);
-        expect(todoItems.todos[2].id).toEqual(3);
-        expect(todoItems.todos[2].title).toEqual("ダミータイトル3");
-        expect(todoItems.todos[2].body).toEqual("ダミーボディ3");
+        expect(result.todos.length).toEqual(10);
+        expect(result.todos[2].id).toEqual(3);
+        expect(result.todos[2].title).toEqual("ダミータイトル3");
+        expect(result.todos[2].body).toEqual("ダミーボディ3");
 
-        expect(todoItems.totalCount).toEqual(21);
+        expect(result.totalCount).toEqual(21);
       });
       it("【listメソッドを実行時】パラメーターの指定(page=2)をした場合、11件目のデータから20件のデータとTodo総数を取得する。", async () => {
         const repository = new TodoRepository();
-        const todoItems = await repository.list({ page: 2 });
+        const result = await repository.list({ page: 2 });
 
-        expect(todoItems.todos.length).toEqual(10);
-        expect(todoItems.todos[0].id).toEqual(11);
-        expect(todoItems.todos[0].title).toEqual("ダミータイトル11");
-        expect(todoItems.todos[0].body).toEqual("ダミーボディ11");
+        expect(result.todos.length).toEqual(10);
+        expect(result.todos[0].id).toEqual(11);
+        expect(result.todos[0].title).toEqual("ダミータイトル11");
+        expect(result.todos[0].body).toEqual("ダミーボディ11");
 
-        expect(todoItems.totalCount).toEqual(21);
+        expect(result.totalCount).toEqual(21);
       });
       it("【listメソッドを実行時】パラメーターの指定(count=5)をした場合、先頭から5件のデータとTodo総数を取得する。", async () => {
         const repository = new TodoRepository();
-        const todoItems = await repository.list({ count: 5 });
+        const result = await repository.list({ count: 5 });
 
-        expect(todoItems.todos.length).toEqual(5);
-        expect(todoItems.todos[4].id).toEqual(5);
-        expect(todoItems.todos[4].title).toEqual("ダミータイトル5");
-        expect(todoItems.todos[4].body).toEqual("ダミーボディ5");
+        expect(result.todos.length).toEqual(5);
+        expect(result.todos[4].id).toEqual(5);
+        expect(result.todos[4].title).toEqual("ダミータイトル5");
+        expect(result.todos[4].body).toEqual("ダミーボディ5");
 
-        expect(todoItems.totalCount).toEqual(21);
+        expect(result.totalCount).toEqual(21);
       });
       it("【listメソッドを実行時】パラメーターの指定(page=2,count=3)をした場合、4件目のデータから3件のデータとTodo総数を取得する。", async () => {
         const repository = new TodoRepository();
-        const todoItems = await repository.list({ page: 2, count: 3 });
+        const result = await repository.list({ page: 2, count: 3 });
 
-        expect(todoItems.todos.length).toEqual(3);
-        expect(todoItems.todos[0].id).toEqual(4);
-        expect(todoItems.todos[0].title).toEqual("ダミータイトル4");
-        expect(todoItems.todos[0].body).toEqual("ダミーボディ4");
+        expect(result.todos.length).toEqual(3);
+        expect(result.todos[0].id).toEqual(4);
+        expect(result.todos[0].title).toEqual("ダミータイトル4");
+        expect(result.todos[0].body).toEqual("ダミーボディ4");
 
-        expect(todoItems.totalCount).toEqual(21);
+        expect(result.totalCount).toEqual(21);
       });
       it("【findメソッドを実行時】DBに保持されているデータから、一件のTodoを取得する事ができる。", async () => {
         const repository = new TodoRepository();
