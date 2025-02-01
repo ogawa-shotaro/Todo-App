@@ -63,12 +63,13 @@ export class TodoRepository implements ITodoRepository {
   async find(inputData: TodoFindParams) {
     const todoItem = await prisma.todo.findUnique({
       where: {
+        userId: inputData.userId,
         id: inputData.todoId,
       },
     });
 
-    if (!todoItem) {
-      throw new NotFoundError("存在しないIDを指定しました。");
+    if (todoItem === null) {
+      throw new NotFoundError("Todoの取得に失敗しました。");
     }
 
     return todoItem;

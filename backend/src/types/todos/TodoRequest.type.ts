@@ -6,12 +6,10 @@ export interface TodoInput {
 
 export interface TodoFindParams {
   todoId: number;
+  userId: number;
 }
 
-export interface TodoDeletionParams {
-  userId: number;
-  todoId: number;
-}
+export type TodoDeletionParams = TodoFindParams;
 
 export interface TodoModificationParams extends TodoInput {
   id: number;
