@@ -12,7 +12,6 @@ import {
 import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
-
 describe("【APIテスト】 Todo一覧取得", () => {
   let newUser: User;
   beforeEach(async () => {
@@ -37,9 +36,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       });
-
       const todoItems: TodoResponseType[] = response.body;
-
       expect(todoItems.length).toEqual(10);
       expect(todoItems.map((todo) => todo.id)).toEqual([
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
@@ -76,9 +73,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       });
-
       const todoItems: TodoResponseType[] = response.body;
-
       expect(todoItems.length).toEqual(5);
       expect(todoItems.map((todo) => todo.id)).toEqual([6, 7, 8, 9, 10]);
       expect(todoItems.map((todo) => todo.title)).toEqual([
@@ -103,9 +98,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       });
-
       const todoItems: TodoResponseType[] = response.body;
-
       expect(todoItems.length).toEqual(10);
       expect(todoItems.map((todo) => todo.id)).toEqual([
         11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -142,9 +135,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       });
-
       const todoItems: TodoResponseType[] = response.body;
-
       expect(todoItems.length).toEqual(3);
       expect(todoItems.map((todo) => todo.id)).toEqual([1, 2, 3]);
       expect(todoItems.map((todo) => todo.title)).toEqual([
@@ -167,9 +158,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         statusCode: StatusCodes.OK,
         userId: newUser.id,
       });
-
       const todoItems: TodoResponseType[] = response.body;
-
       expect(todoItems).toEqual([]);
     });
   });
@@ -181,7 +170,6 @@ describe("【APIテスト】 Todo一覧取得", () => {
         statusCode: StatusCodes.BAD_REQUEST,
         userId: newUser.id,
       });
-
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
     });
     it("【パラメーターに指定した値が不正(count=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
@@ -191,7 +179,6 @@ describe("【APIテスト】 Todo一覧取得", () => {
         statusCode: StatusCodes.BAD_REQUEST,
         userId: newUser.id,
       });
-
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
     });
     it("【認証ユーザーでない場合】エラーメッセージとstatus(UNAUTHORIZED=401)が返る。", async () => {
@@ -200,7 +187,6 @@ describe("【APIテスト】 Todo一覧取得", () => {
         endPoint: "/api/todos/",
         statusCode: StatusCodes.UNAUTHORIZED,
       });
-
       expect(response.body).toEqual({
         message: "認証に失敗しました。",
       });
@@ -209,14 +195,12 @@ describe("【APIテスト】 Todo一覧取得", () => {
       jest.spyOn(TodoRepository.prototype, "list").mockImplementation(() => {
         throw new Error("Unexpected Error");
       });
-
       const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
         userId: newUser.id,
       });
-
       expect(response.body).toEqual({ message: "Internal Server Error" });
     });
   });
