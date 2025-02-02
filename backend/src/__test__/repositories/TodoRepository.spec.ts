@@ -10,7 +10,7 @@ const prisma = new PrismaClient();
 describe("【TodoRepositoryのテスト】", () => {
   let firstUser: User;
   let secondUser: User;
-  describe("【成功パターン】新規Todoの作成テスト", () => {
+  describe("【成功パターン】", () => {
     describe("【saveメソッドのテスト】", () => {
       it("【saveメソッドを実行時】DBに値を保持し、その値に重複しないIDが付与される。", async () => {
         firstUser = await createTestUser();
@@ -43,36 +43,34 @@ describe("【TodoRepositoryのテスト】", () => {
         expect(secondTodo.userId).toEqual(firstUser.id);
       });
     });
-  });
-  describe("【成功パターン】作成したデータに基づく取得・更新・削除テスト", () => {
-    beforeEach(async () => {
-      firstUser = await createTestUser();
-      secondUser = await createTestUser();
-
-      for (let i = 1; i <= 21; i++) {
-        await prisma.todo.create({
-          data: {
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
-            user: {
-              connect: { id: firstUser.id },
-            },
-          },
-        });
-      }
-      for (let i = 1; i <= 5; i++) {
-        await prisma.todo.create({
-          data: {
-            title: `dummyTitle${i}`,
-            body: `dummyBody${i}`,
-            user: {
-              connect: { id: secondUser.id },
-            },
-          },
-        });
-      }
-    });
     describe("【listメソッドのテスト】", () => {
+      beforeEach(async () => {
+        firstUser = await createTestUser();
+        secondUser = await createTestUser();
+
+        for (let i = 1; i <= 21; i++) {
+          await prisma.todo.create({
+            data: {
+              title: `ダミータイトル${i}`,
+              body: `ダミーボディ${i}`,
+              user: {
+                connect: { id: firstUser.id },
+              },
+            },
+          });
+        }
+        for (let i = 1; i <= 5; i++) {
+          await prisma.todo.create({
+            data: {
+              title: `dummyTitle${i}`,
+              body: `dummyBody${i}`,
+              user: {
+                connect: { id: secondUser.id },
+              },
+            },
+          });
+        }
+      });
       it("【パラメーターの指定なし】先頭から10件(secondUserは5件)のデータとTodoの総数を取得する。", async () => {
         const repository = new TodoRepository();
         const firstUserResult = await repository.list({ userId: firstUser.id });
@@ -162,6 +160,21 @@ describe("【TodoRepositoryのテスト】", () => {
       });
     });
     describe("【findメソッドのテスト】", () => {
+      beforeEach(async () => {
+        firstUser = await createTestUser();
+
+        for (let i = 1; i <= 2; i++) {
+          await prisma.todo.create({
+            data: {
+              title: `ダミータイトル${i}`,
+              body: `ダミーボディ${i}`,
+              user: {
+                connect: { id: firstUser.id },
+              },
+            },
+          });
+        }
+      });
       it("【findメソッドを実行時】DBから、1件のTodoを取得する事ができる。", async () => {
         const repository = new TodoRepository();
         const initialTodo = await repository.find({
@@ -187,6 +200,21 @@ describe("【TodoRepositoryのテスト】", () => {
       });
     });
     describe("【updateメソッドのテスト】", () => {
+      beforeEach(async () => {
+        firstUser = await createTestUser();
+
+        for (let i = 1; i <= 2; i++) {
+          await prisma.todo.create({
+            data: {
+              title: `ダミータイトル${i}`,
+              body: `ダミーボディ${i}`,
+              user: {
+                connect: { id: firstUser.id },
+              },
+            },
+          });
+        }
+      });
       it("【updateメソッドを実行時】DB内のTodoを更新する事ができる。", async () => {
         const repository = new TodoRepository();
 
@@ -220,6 +248,21 @@ describe("【TodoRepositoryのテスト】", () => {
       });
     });
     describe("【deleteメソッドのテスト】", () => {
+      beforeEach(async () => {
+        firstUser = await createTestUser();
+
+        for (let i = 1; i <= 2; i++) {
+          await prisma.todo.create({
+            data: {
+              title: `ダミータイトル${i}`,
+              body: `ダミーボディ${i}`,
+              user: {
+                connect: { id: firstUser.id },
+              },
+            },
+          });
+        }
+      });
       it("【deleteメソッドを実行時】DB内の指定したTodoを削除する事ができる。", async () => {
         const repository = new TodoRepository();
 
@@ -231,12 +274,27 @@ describe("【TodoRepositoryのテスト】", () => {
         const newTodos = await repository.list({ userId: firstUser.id });
 
         expect(deletedTodo.id).toEqual(1);
-        expect(oldTodos.totalCount).toEqual(21);
-        expect(newTodos.totalCount).toEqual(20);
+        expect(oldTodos.totalCount).toEqual(2);
+        expect(newTodos.totalCount).toEqual(1);
       });
     });
   });
   describe("【異常パターン】", () => {
+    beforeEach(async () => {
+      firstUser = await createTestUser();
+
+      for (let i = 1; i <= 2; i++) {
+        await prisma.todo.create({
+          data: {
+            title: `ダミータイトル${i}`,
+            body: `ダミーボディ${i}`,
+            user: {
+              connect: { id: firstUser.id },
+            },
+          },
+        });
+      }
+    });
     it("【findメソッド実行時】存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
 
