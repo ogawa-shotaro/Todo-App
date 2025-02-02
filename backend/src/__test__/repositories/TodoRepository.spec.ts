@@ -282,6 +282,7 @@ describe("【TodoRepositoryのテスト】", () => {
   describe("【異常パターン】", () => {
     beforeEach(async () => {
       firstUser = await createTestUser();
+      secondUser = await createTestUser();
 
       for (let i = 1; i <= 2; i++) {
         await prisma.todo.create({
