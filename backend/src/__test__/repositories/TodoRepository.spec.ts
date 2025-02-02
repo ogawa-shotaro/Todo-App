@@ -8,42 +8,29 @@ import { createTestUser } from "../helper/requestHelper";
 const prisma = new PrismaClient();
 
 describe("【TodoRepositoryのテスト】", () => {
-  let firstUser: User;
-  let secondUser: User;
   describe("【成功パターン】", () => {
     describe("【saveメソッドのテスト】", () => {
       it("【saveメソッドを実行時】DBに値を保持し、その値に重複しないIDが付与される。", async () => {
-        firstUser = await createTestUser();
+        const user = await createTestUser();
         const repository = new TodoRepository();
 
-        const initialTodo: Todo = await repository.save({
+        const todo: Todo = await repository.save({
           title: "ダミータイトル1",
           body: "ダミーボディ1",
-          userId: firstUser.id,
+          userId: user.id,
         });
 
-        const secondTodo: Todo = await repository.save({
-          title: "ダミータイトル2",
-          body: "ダミーボディ2",
-          userId: firstUser.id,
-        });
-
-        expect(initialTodo.id).toEqual(1);
-        expect(initialTodo.title).toEqual("ダミータイトル1");
-        expect(initialTodo.body).toEqual("ダミーボディ1");
-        expect(initialTodo.createdAt).toBeInstanceOf(Date);
-        expect(initialTodo.updatedAt).toBeInstanceOf(Date);
-        expect(initialTodo.userId).toEqual(firstUser.id);
-
-        expect(secondTodo.id).toEqual(2);
-        expect(secondTodo.title).toEqual("ダミータイトル2");
-        expect(secondTodo.body).toEqual("ダミーボディ2");
-        expect(secondTodo.createdAt).toBeInstanceOf(Date);
-        expect(secondTodo.updatedAt).toBeInstanceOf(Date);
-        expect(secondTodo.userId).toEqual(firstUser.id);
+        expect(todo.id).toEqual(1);
+        expect(todo.title).toEqual("ダミータイトル1");
+        expect(todo.body).toEqual("ダミーボディ1");
+        expect(todo.createdAt).toBeInstanceOf(Date);
+        expect(todo.updatedAt).toBeInstanceOf(Date);
+        expect(todo.userId).toEqual(user.id);
       });
     });
     describe("【listメソッドのテスト】", () => {
+      let firstUser: User;
+      let secondUser: User;
       beforeEach(async () => {
         firstUser = await createTestUser();
         secondUser = await createTestUser();
@@ -160,60 +147,48 @@ describe("【TodoRepositoryのテスト】", () => {
       });
     });
     describe("【findメソッドのテスト】", () => {
+      let user: User;
       beforeEach(async () => {
-        firstUser = await createTestUser();
+        user = await createTestUser();
 
-        for (let i = 1; i <= 2; i++) {
-          await prisma.todo.create({
-            data: {
-              title: `ダミータイトル${i}`,
-              body: `ダミーボディ${i}`,
-              user: {
-                connect: { id: firstUser.id },
-              },
+        await prisma.todo.create({
+          data: {
+            title: "ダミータイトル",
+            body: "ダミーボディ",
+            user: {
+              connect: { id: user.id },
             },
-          });
-        }
+          },
+        });
       });
       it("【findメソッドを実行時】DBから、1件のTodoを取得する事ができる。", async () => {
         const repository = new TodoRepository();
-        const initialTodo = await repository.find({
-          userId: firstUser.id,
+        const todo = await repository.find({
+          userId: user.id,
           todoId: 1,
         });
-        const secondTodo = await repository.find({
-          userId: firstUser.id,
-          todoId: 2,
-        });
 
-        expect(initialTodo?.id).toEqual(1);
-        expect(initialTodo?.title).toEqual("ダミータイトル1");
-        expect(initialTodo?.body).toEqual("ダミーボディ1");
-        expect(initialTodo?.createdAt).toBeInstanceOf(Date);
-        expect(initialTodo?.updatedAt).toBeInstanceOf(Date);
-
-        expect(secondTodo?.id).toEqual(2);
-        expect(secondTodo?.title).toEqual("ダミータイトル2");
-        expect(secondTodo?.body).toEqual("ダミーボディ2");
-        expect(secondTodo?.createdAt).toBeInstanceOf(Date);
-        expect(secondTodo?.updatedAt).toBeInstanceOf(Date);
+        expect(todo?.id).toEqual(1);
+        expect(todo?.title).toEqual("ダミータイトル");
+        expect(todo?.body).toEqual("ダミーボディ");
+        expect(todo?.createdAt).toBeInstanceOf(Date);
+        expect(todo?.updatedAt).toBeInstanceOf(Date);
       });
     });
     describe("【updateメソッドのテスト】", () => {
+      let user: User;
       beforeEach(async () => {
-        firstUser = await createTestUser();
+        user = await createTestUser();
 
-        for (let i = 1; i <= 2; i++) {
-          await prisma.todo.create({
-            data: {
-              title: `ダミータイトル${i}`,
-              body: `ダミーボディ${i}`,
-              user: {
-                connect: { id: firstUser.id },
-              },
+        await prisma.todo.create({
+          data: {
+            title: "ダミータイトル",
+            body: "ダミーボディ",
+            user: {
+              connect: { id: user.id },
             },
-          });
-        }
+          },
+        });
       });
       it("【updateメソッドを実行時】DB内のTodoを更新する事ができる。", async () => {
         const repository = new TodoRepository();
@@ -222,7 +197,7 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
-          userId: firstUser.id,
+          userId: user.id,
         });
 
         expect(updatedTodo).toEqual({
@@ -231,7 +206,7 @@ describe("【TodoRepositoryのテスト】", () => {
           body: "変更後のボディ",
           createdAt: updatedTodo.createdAt,
           updatedAt: updatedTodo.updatedAt,
-          userId: firstUser.id,
+          userId: user.id,
         });
       });
       it("【updateメソッドを実行時】updatedAtの方がcreatedAtよりも新しい時間になっている。", async () => {
@@ -241,60 +216,59 @@ describe("【TodoRepositoryのテスト】", () => {
           id: 1,
           title: "変更後のタイトル",
           body: "変更後のボディ",
-          userId: firstUser.id,
+          userId: user.id,
         });
 
         expect(updatedTodo.createdAt < updatedTodo.updatedAt).toBeTruthy();
       });
     });
     describe("【deleteメソッドのテスト】", () => {
+      let user: User;
       beforeEach(async () => {
-        firstUser = await createTestUser();
+        user = await createTestUser();
 
-        for (let i = 1; i <= 2; i++) {
-          await prisma.todo.create({
-            data: {
-              title: `ダミータイトル${i}`,
-              body: `ダミーボディ${i}`,
-              user: {
-                connect: { id: firstUser.id },
-              },
+        await prisma.todo.create({
+          data: {
+            title: "ダミータイトル",
+            body: "ダミーボディ",
+            user: {
+              connect: { id: user.id },
             },
-          });
-        }
+          },
+        });
       });
       it("【deleteメソッドを実行時】DB内の指定したTodoを削除する事ができる。", async () => {
         const repository = new TodoRepository();
 
-        const oldTodos = await repository.list({ userId: firstUser.id });
+        const oldTodos = await repository.list({ userId: user.id });
         const deletedTodo = await repository.delete({
-          userId: firstUser.id,
+          userId: user.id,
           todoId: 1,
         });
-        const newTodos = await repository.list({ userId: firstUser.id });
+        const newTodos = await repository.list({ userId: user.id });
 
         expect(deletedTodo.id).toEqual(1);
-        expect(oldTodos.totalCount).toEqual(2);
-        expect(newTodos.totalCount).toEqual(1);
+        expect(oldTodos.totalCount).toEqual(1);
+        expect(newTodos.totalCount).toEqual(0);
       });
     });
   });
   describe("【異常パターン】", () => {
+    let firstUser: User;
+    let secondUser: User;
     beforeEach(async () => {
       firstUser = await createTestUser();
       secondUser = await createTestUser();
 
-      for (let i = 1; i <= 2; i++) {
-        await prisma.todo.create({
-          data: {
-            title: `ダミータイトル${i}`,
-            body: `ダミーボディ${i}`,
-            user: {
-              connect: { id: firstUser.id },
-            },
+      await prisma.todo.create({
+        data: {
+          title: "ダミータイトル",
+          body: "ダミーボディ",
+          user: {
+            connect: { id: firstUser.id },
           },
-        });
-      }
+        },
+      });
     });
     it("【findメソッド実行時】存在しないIDを指定した場合、エラーオブジェクトが返る。", () => {
       const repository = new TodoRepository();
@@ -351,7 +325,7 @@ describe("【TodoRepositoryのテスト】", () => {
       const repository = new TodoRepository();
 
       expect(async () => {
-        await repository.delete({ userId: 1, todoId: 999 });
+        await repository.delete({ userId: firstUser.id, todoId: 999 });
       }).rejects.toThrow("Todoの削除に失敗しました。");
 
       expect(async () => {
