@@ -12,11 +12,12 @@ export class GetTodoController {
   }
 
   async find(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+    const userId = Number(req.user?.id);
     const paramsId = req.params.id;
     const todoId = Number(paramsId);
 
     try {
-      const todoItem = await this.repository.find({ todoId });
+      const todoItem = await this.repository.find({ userId, todoId });
 
       res.status(StatusCodes.OK).json(todoItem);
     } catch (error) {
