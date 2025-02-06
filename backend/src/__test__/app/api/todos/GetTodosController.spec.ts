@@ -1,21 +1,22 @@
 import { StatusCodes } from "http-status-codes";
 
 import { PrismaClient } from "@prisma/client";
-import type { User } from "@prisma/client";
+import type { Todo, User } from "@prisma/client";
 
 import { TodoRepository } from "../../../../repositories/todos/TodoRepository";
+import type { PageResult } from "../../../../types/todos/TodoResponse.type";
 import {
   createTestUser,
   requestAPI,
   requestAPIWithAuth,
 } from "../../../helper/requestHelper";
-import type { TodoResponseType } from "../../../helper/types/testTypes";
 
 const prisma = new PrismaClient();
+
 describe("【APIテスト】 Todo一覧取得", () => {
-  let newUser: User;
+  let user: User;
   beforeEach(async () => {
-    newUser = await createTestUser();
+    user = await createTestUser();
   });
   describe("【DBにデータあり】", () => {
     beforeEach(async () => {
@@ -24,24 +25,26 @@ describe("【APIテスト】 Todo一覧取得", () => {
           data: {
             title: `ダミータイトル${i}`,
             body: `ダミーボディ${i}`,
-            userId: newUser.id,
+            userId: user.id,
           },
         });
       }
     });
-    it("【パラメーターの指定なし】先頭から10件のTodoを取得できる。", async () => {
+    it("【パラメーターの指定なし】先頭から10件のTodoとTodo総数を取得できる。", async () => {
       const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
-        userId: newUser.id,
+        userId: user.id,
       });
-      const todoItems: TodoResponseType[] = response.body;
-      expect(todoItems.length).toEqual(10);
-      expect(todoItems.map((todo) => todo.id)).toEqual([
+
+      const result: PageResult<Todo> = response.body;
+
+      expect(result.items.length).toEqual(10);
+      expect(result.items.map((todo) => todo.id)).toEqual([
         1, 2, 3, 4, 5, 6, 7, 8, 9, 10,
       ]);
-      expect(todoItems.map((todo) => todo.title)).toEqual([
+      expect(result.items.map((todo) => todo.title)).toEqual([
         "ダミータイトル1",
         "ダミータイトル2",
         "ダミータイトル3",
@@ -53,7 +56,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         "ダミータイトル9",
         "ダミータイトル10",
       ]);
-      expect(todoItems.map((todo) => todo.body)).toEqual([
+      expect(result.items.map((todo) => todo.body)).toEqual([
         "ダミーボディ1",
         "ダミーボディ2",
         "ダミーボディ3",
@@ -65,45 +68,53 @@ describe("【APIテスト】 Todo一覧取得", () => {
         "ダミーボディ9",
         "ダミーボディ10",
       ]);
+
+      expect(result.totalCount).toEqual(20);
     });
-    it("【page=2,count=5】6件目から5件のTodoを取得できる。", async () => {
+    it("【page=2,count=5】6件目から5件のTodoとTodo総数を取得できる。", async () => {
       const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?page=2&count=5",
         statusCode: StatusCodes.OK,
-        userId: newUser.id,
+        userId: user.id,
       });
-      const todoItems: TodoResponseType[] = response.body;
-      expect(todoItems.length).toEqual(5);
-      expect(todoItems.map((todo) => todo.id)).toEqual([6, 7, 8, 9, 10]);
-      expect(todoItems.map((todo) => todo.title)).toEqual([
+
+      const result: PageResult<Todo> = response.body;
+
+      expect(result.items.length).toEqual(5);
+      expect(result.items.map((todo) => todo.id)).toEqual([6, 7, 8, 9, 10]);
+      expect(result.items.map((todo) => todo.title)).toEqual([
         "ダミータイトル6",
         "ダミータイトル7",
         "ダミータイトル8",
         "ダミータイトル9",
         "ダミータイトル10",
       ]);
-      expect(todoItems.map((todo) => todo.body)).toEqual([
+      expect(result.items.map((todo) => todo.body)).toEqual([
         "ダミーボディ6",
         "ダミーボディ7",
         "ダミーボディ8",
         "ダミーボディ9",
         "ダミーボディ10",
       ]);
+
+      expect(result.totalCount).toEqual(20);
     });
-    it("【page=2】11件目から10件のTodoを取得できる。", async () => {
+    it("【page=2】11件目から10件のTodoとTodo総数を取得できる。", async () => {
       const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?page=2",
         statusCode: StatusCodes.OK,
-        userId: newUser.id,
+        userId: user.id,
       });
-      const todoItems: TodoResponseType[] = response.body;
-      expect(todoItems.length).toEqual(10);
-      expect(todoItems.map((todo) => todo.id)).toEqual([
+
+      const result: PageResult<Todo> = response.body;
+
+      expect(result.items.length).toEqual(10);
+      expect(result.items.map((todo) => todo.id)).toEqual([
         11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
       ]);
-      expect(todoItems.map((todo) => todo.title)).toEqual([
+      expect(result.items.map((todo) => todo.title)).toEqual([
         "ダミータイトル11",
         "ダミータイトル12",
         "ダミータイトル13",
@@ -115,7 +126,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         "ダミータイトル19",
         "ダミータイトル20",
       ]);
-      expect(todoItems.map((todo) => todo.body)).toEqual([
+      expect(result.items.map((todo) => todo.body)).toEqual([
         "ダミーボディ11",
         "ダミーボディ12",
         "ダミーボディ13",
@@ -127,27 +138,33 @@ describe("【APIテスト】 Todo一覧取得", () => {
         "ダミーボディ19",
         "ダミーボディ20",
       ]);
+
+      expect(result.totalCount).toEqual(20);
     });
-    it("【count=3】先頭から3件のTodoを取得できる。", async () => {
+    it("【count=3】先頭から3件のTodoとTodo総数を取得できる。", async () => {
       const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos?count=3",
         statusCode: StatusCodes.OK,
-        userId: newUser.id,
+        userId: user.id,
       });
-      const todoItems: TodoResponseType[] = response.body;
-      expect(todoItems.length).toEqual(3);
-      expect(todoItems.map((todo) => todo.id)).toEqual([1, 2, 3]);
-      expect(todoItems.map((todo) => todo.title)).toEqual([
+
+      const result: PageResult<Todo> = response.body;
+
+      expect(result.items.length).toEqual(3);
+      expect(result.items.map((todo) => todo.id)).toEqual([1, 2, 3]);
+      expect(result.items.map((todo) => todo.title)).toEqual([
         "ダミータイトル1",
         "ダミータイトル2",
         "ダミータイトル3",
       ]);
-      expect(todoItems.map((todo) => todo.body)).toEqual([
+      expect(result.items.map((todo) => todo.body)).toEqual([
         "ダミーボディ1",
         "ダミーボディ2",
         "ダミーボディ3",
       ]);
+
+      expect(result.totalCount).toEqual(20);
     });
   });
   describe("【DBにデータなし】", () => {
@@ -156,10 +173,13 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.OK,
-        userId: newUser.id,
+        userId: user.id,
       });
-      const todoItems: TodoResponseType[] = response.body;
-      expect(todoItems).toEqual([]);
+
+      const result: PageResult<Todo> = response.body;
+
+      expect(result.items).toEqual([]);
+      expect(result.totalCount).toEqual(0);
     });
   });
   describe("【異常パターン】", () => {
@@ -168,8 +188,9 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos?page=0",
         statusCode: StatusCodes.BAD_REQUEST,
-        userId: newUser.id,
+        userId: user.id,
       });
+
       expect(response.body).toEqual({ message: "pageは1以上の整数のみ。" });
     });
     it("【パラメーターに指定した値が不正(count=整数の1以上でない値)の場合】getTodosSchemaに基づくInvalidErrorのテスト。", async () => {
@@ -177,8 +198,9 @@ describe("【APIテスト】 Todo一覧取得", () => {
         method: "get",
         endPoint: "/api/todos?count=0",
         statusCode: StatusCodes.BAD_REQUEST,
-        userId: newUser.id,
+        userId: user.id,
       });
+
       expect(response.body).toEqual({ message: "countは1以上の整数のみ。" });
     });
     it("【認証ユーザーでない場合】エラーメッセージとstatus(UNAUTHORIZED=401)が返る。", async () => {
@@ -187,6 +209,7 @@ describe("【APIテスト】 Todo一覧取得", () => {
         endPoint: "/api/todos/",
         statusCode: StatusCodes.UNAUTHORIZED,
       });
+
       expect(response.body).toEqual({
         message: "認証に失敗しました。",
       });
@@ -195,12 +218,14 @@ describe("【APIテスト】 Todo一覧取得", () => {
       jest.spyOn(TodoRepository.prototype, "list").mockImplementation(() => {
         throw new Error("Unexpected Error");
       });
+
       const response = await requestAPIWithAuth({
         method: "get",
         endPoint: "/api/todos",
         statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
-        userId: newUser.id,
+        userId: user.id,
       });
+
       expect(response.body).toEqual({ message: "Internal Server Error" });
     });
   });

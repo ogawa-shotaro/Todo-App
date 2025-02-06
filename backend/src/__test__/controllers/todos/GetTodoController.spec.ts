@@ -8,15 +8,19 @@ import { createMockAuthenticatedRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】Todo1件の取得", () => {
-  let controller: GetTodoController;
-  let repository: MockRepository;
-  beforeEach(async () => {
-    repository = new MockRepository();
-    controller = new GetTodoController(repository);
-  });
   describe("【成功パターン】", () => {
-    it("findメソッドのパラメーターが【id:1】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
-      const req = createMockAuthenticatedRequest({ params: { id: "1" } });
+    let controller: GetTodoController;
+    let repository: MockRepository;
+    it("findメソッドのパラメーターが【userId:1とid:1】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
+      repository = new MockRepository();
+      controller = new GetTodoController(repository);
+
+      const req = createMockAuthenticatedRequest({
+        user: {
+          id: 1,
+        },
+        params: { id: "1" },
+      });
       const res = createMockResponse();
       const next = jest.fn();
 
@@ -40,11 +44,18 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         updatedAt: expect.any(Date),
         userId: 1,
       });
-
-      expect(repository.find).toHaveBeenCalledWith({ todoId: 1 });
+      expect(repository.find).toHaveBeenCalledWith({ userId: 1, todoId: 1 });
     });
-    it("findメソッドのパラメーターが【id:2】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
-      const req = createMockAuthenticatedRequest({ params: { id: "2" } });
+    it("findメソッドのパラメーターが【userId:1とid:2】で呼び出され、Todo(jsonとstatus(ok=200))が返る", async () => {
+      repository = new MockRepository();
+      controller = new GetTodoController(repository);
+
+      const req = createMockAuthenticatedRequest({
+        user: {
+          id: 1,
+        },
+        params: { id: "2" },
+      });
       const res = createMockResponse();
       const next = jest.fn();
 
@@ -54,7 +65,7 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         body: "ダミーボディ2",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
-        userId: 2,
+        userId: 1,
       });
 
       await controller.find(req, res, next);
@@ -66,15 +77,25 @@ describe("【ユニットテスト】Todo1件の取得", () => {
         body: "ダミーボディ2",
         createdAt: expect.any(Date),
         updatedAt: expect.any(Date),
-        userId: 2,
+        userId: 1,
       });
 
-      expect(repository.find).toHaveBeenCalledWith({ todoId: 2 });
+      expect(repository.find).toHaveBeenCalledWith({ userId: 1, todoId: 2 });
     });
   });
   describe("【異常パターン】", () => {
+    let controller: GetTodoController;
+    let repository: MockRepository;
     it("存在しないIDへのリクエスト時には、next関数(パラメーターがNotFoundError)を実行する。", async () => {
-      const req = createMockAuthenticatedRequest({ params: { id: "999" } });
+      repository = new MockRepository();
+      controller = new GetTodoController(repository);
+
+      const req = createMockAuthenticatedRequest({
+        user: {
+          id: 1,
+        },
+        params: { id: "999" },
+      });
       const res = createMockResponse();
       const next = jest.fn();
 
@@ -87,7 +108,15 @@ describe("【ユニットテスト】Todo1件の取得", () => {
       expect(next).toHaveBeenCalledWith(expect.any(NotFoundError));
     });
     it("パラメーターに指定した値が不正(整数の1以上でない値)時には、next関数(パラメーターがInvalidError)を実行する。", async () => {
-      const req = createMockAuthenticatedRequest({ params: { id: "0" } });
+      repository = new MockRepository();
+      controller = new GetTodoController(repository);
+
+      const req = createMockAuthenticatedRequest({
+        user: {
+          id: 1,
+        },
+        params: { id: "0" },
+      });
       const res = createMockResponse();
       const next = jest.fn();
 
