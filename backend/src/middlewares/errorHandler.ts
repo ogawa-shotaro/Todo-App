@@ -5,7 +5,7 @@ import { ConflictError } from "../errors/ConflictError";
 import { InvalidError } from "../errors/InvalidError";
 import { NotFoundError } from "../errors/NotFoundError";
 import { UnauthorizedError } from "../errors/UnauthorizedError";
-import type { ResponseErrorType } from "../types/todos/TodoResponse.typs";
+import type { ResponseErrorType } from "../types/todos/TodoResponse.type";
 
 export function errorHandler(
   err: ResponseErrorType,

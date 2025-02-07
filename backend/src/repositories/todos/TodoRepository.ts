@@ -43,28 +43,33 @@ export class TodoRepository implements ITodoRepository {
   }
 
   async list({
+    userId,
     page = DEFAULT_PAGE,
     count = DEFAULT_COUNT,
-  }: TodoListParams = {}) {
+  }: TodoListParams) {
     const offset = (page - 1) * count;
 
-    const todos = await prisma.todo.findMany({
+    const items = await prisma.todo.findMany({
+      where: { userId },
       skip: offset,
       take: count,
     });
 
-    return todos;
+    const totalCount = await prisma.todo.count({ where: { userId } });
+
+    return { items, totalCount };
   }
 
   async find(inputData: TodoFindParams) {
     const todoItem = await prisma.todo.findUnique({
       where: {
+        userId: inputData.userId,
         id: inputData.todoId,
       },
     });
 
-    if (!todoItem) {
-      throw new NotFoundError("存在しないIDを指定しました。");
+    if (todoItem === null) {
+      throw new NotFoundError("Todoの取得に失敗しました。");
     }
 
     return todoItem;

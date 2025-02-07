@@ -6,11 +6,12 @@ export interface TodoInput {
 
 export interface TodoFindParams {
   todoId: number;
+  userId: number;
 }
 
 export interface TodoDeletionParams {
-  userId: number;
   todoId: number;
+  userId: number;
 }
 
 export interface TodoModificationParams extends TodoInput {
@@ -18,6 +19,7 @@ export interface TodoModificationParams extends TodoInput {
 }
 
 export interface TodoListParams {
+  userId: number;
   page?: number;
   count?: number;
 }
