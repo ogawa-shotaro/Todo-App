@@ -19,7 +19,7 @@ export const getTodosApi = async (
 
     throw errorData;
   }
+  const pageResult = await response.json();
 
-  const todos = await response.json();
-  return { todos };
+  return pageResult;
 };

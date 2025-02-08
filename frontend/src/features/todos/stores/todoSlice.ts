@@ -6,7 +6,7 @@ import { buildGetTodosExtraReducer } from "./reducers/getTodosReducer";
 
 const initialState: TodoState = {
   inProgress: false,
-  todos: [],
+  todoPage: { items: [], totalCount: 0 },
   error: null,
 };
 

@@ -13,7 +13,7 @@ export const addTodoFulfilledReducer = (
   state.inProgress = false;
   state.error = null;
   if (action.payload.todo) {
-    state.todos = [...state.todos, action.payload.todo];
+    state.todoPage.items = [...state.todoPage.items, action.payload.todo];
   }
 };
 
@@ -23,8 +23,10 @@ export const addTodosFulfilledReducer = (
 ) => {
   state.inProgress = false;
   state.error = null;
-  if (Array.isArray(action.payload.todos)) {
-    state.todos = [...state.todos, ...action.payload.todos];
+
+  if (Array.isArray(action.payload.items) && action.payload.totalCount) {
+    state.todoPage.items = [...state.todoPage.items, ...action.payload.items];
+    state.todoPage.totalCount = action.payload.totalCount;
   }
 };
 

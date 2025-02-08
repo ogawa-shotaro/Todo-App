@@ -3,10 +3,11 @@
 import { useState, useEffect } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import { BlueButton, GrayButton } from "@/components/shared/buttons/buttons";
+import { BlueButton } from "@/components/shared/buttons/buttons";
 import CreateTodoModal from "@/features/todos/components/createTodoModal";
 import { getTodosAction } from "@/features/todos/stores/reducers/getTodosReducer";
 import TodoList from "@/features/todos/components/todoList";
+import { CreatePagination } from "@/features/todos/components/createPagination";
 
 const PAGE_SIZE = 10;
 
@@ -18,11 +19,12 @@ const TodosPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const skip = (page - 1) * PAGE_SIZE;
-  const todos = state.todos.slice(skip, skip + PAGE_SIZE);
+  const items = state.todoPage.items.slice(skip, skip + PAGE_SIZE);
+  const totalCount = state.todoPage.totalCount;
 
   useEffect(() => {
     dispatch(getTodosAction({ page }));
-  }, [page]);
+  }, [page, totalCount]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -40,7 +42,7 @@ const TodosPage = () => {
           <BlueButton label="新規Todo" onClick={openModal} />
         </div>
         {/* Todoリスト */}
-        <TodoList todos={todos} />
+        <TodoList todos={items} />
       </div>
       {/* モーダル */}
       {isModalOpen && (
@@ -49,20 +51,15 @@ const TodosPage = () => {
           onCancel={() => closeModal()}
         />
       )}
-      {/* ページ選択 */}
-      <div className="flex items-center justify-center mt-6">
-        {page > 1 && (
-          <>
-            <GrayButton label="前のページ" onClick={setPrevPage} />
-            <span className="text-lg font-medium text-gray-600 mx-4">
-              ページ: {page}
-            </span>
-          </>
-        )}
-        {todos.length === PAGE_SIZE && (
-          <GrayButton label="次のページ" onClick={setNextPage} />
-        )}
-      </div>
+      {/* ページネーション */}
+      {totalCount > 0 && (
+        <CreatePagination
+          {...{ totalCount, PAGE_SIZE, page }}
+          onNextPage={() => setNextPage()}
+          onPrevPage={() => setPrevPage()}
+          onChangePage={(ChangePage) => setPage(ChangePage)}
+        />
+      )}
     </div>
   );
 };
