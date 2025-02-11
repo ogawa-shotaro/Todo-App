@@ -6,18 +6,12 @@ export const pendingReducer = (state: TodoState) => {
   state.inProgress = true;
 };
 
-export const addTodoFulfilledReducer = (
-  state: TodoState,
-  action: PayloadAction<TodoResponse>
-) => {
+export const createTodoFulfilledReducer = (state: TodoState) => {
   state.inProgress = false;
   state.error = null;
-  if (action.payload.todo) {
-    state.todoPage.items = [...state.todoPage.items, action.payload.todo];
-  }
 };
 
-export const addTodosFulfilledReducer = (
+export const getTodosFulfilledReducer = (
   state: TodoState,
   action: PayloadAction<TodoResponse>
 ) => {
@@ -25,7 +19,7 @@ export const addTodosFulfilledReducer = (
   state.error = null;
 
   if (Array.isArray(action.payload.items) && action.payload.totalCount) {
-    state.todoPage.items = [...state.todoPage.items, ...action.payload.items];
+    state.todoPage.items = action.payload.items;
     state.todoPage.totalCount = action.payload.totalCount;
   }
 };

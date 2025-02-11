@@ -18,13 +18,12 @@ const TodosPage = () => {
   const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const skip = (page - 1) * PAGE_SIZE;
-  const items = state.todoPage.items.slice(skip, skip + PAGE_SIZE);
+  const items = state.todoPage.items;
   const totalCount = state.todoPage.totalCount;
 
   useEffect(() => {
     dispatch(getTodosAction({ page }));
-  }, [page, totalCount]);
+  }, [page, isModalOpen]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
