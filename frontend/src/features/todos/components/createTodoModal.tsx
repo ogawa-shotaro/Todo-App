@@ -10,7 +10,6 @@ import { CloseButton } from "@/components/shared/buttons/buttons";
 import { createTodoAction } from "@/features/todos/stores/reducers/createTodoReducer";
 
 import type { TodoInput } from "@/features/todos/types/todoTypes";
-import { getTodosAction } from "../stores/reducers/getTodosReducer";
 
 interface ModalProps {
   onCreateSuccess: () => void;

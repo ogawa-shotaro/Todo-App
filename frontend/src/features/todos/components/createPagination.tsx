@@ -18,15 +18,15 @@ export const CreatePagination: React.FC<PaginationProps> = ({
   onPrevPage,
   onChangePage,
 }) => {
-  const totalPages = Math.ceil(totalCount / PAGE_SIZE);
-  const pages = [...Array(totalPages)].map((_, i) => i + 1);
+  const totalPage = Math.ceil(totalCount / PAGE_SIZE);
+  const pages = [...Array(totalPage)].map((_, i) => i + 1);
 
   const getPageItems = () => {
-    if (totalPages <= 10) return pages;
-    if (page <= 5) return [1, 2, 3, 4, 5, "...", totalPages];
-    if (page >= totalPages - 4) return [1, "...", ...pages.slice(-5)];
+    if (totalPage <= 10) return pages;
+    if (page <= 5) return [1, 2, 3, 4, 5, "...", totalPage];
+    if (page >= totalPage - 4) return [1, "...", ...pages.slice(-5)];
 
-    return [1, "...", page - 1, page, page + 1, "...", totalPages];
+    return [1, "...", page - 1, page, page + 1, "...", totalPage];
   };
 
   const pageItems = getPageItems() ?? [];
@@ -58,7 +58,7 @@ export const CreatePagination: React.FC<PaginationProps> = ({
           )}
         </div>
         {/* 次へボタン */}
-        {page < totalPages && <GrayButton label="次へ" onClick={onNextPage} />}
+        {page < totalPage && <GrayButton label="次へ" onClick={onNextPage} />}
       </div>
     </div>
   );

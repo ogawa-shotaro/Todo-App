@@ -23,7 +23,7 @@ const TodosPage = () => {
 
   useEffect(() => {
     dispatch(getTodosAction({ page }));
-  }, [page, isModalOpen]);
+  }, [page]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -46,7 +46,10 @@ const TodosPage = () => {
       {/* モーダル */}
       {isModalOpen && (
         <CreateTodoModal
-          onCreateSuccess={() => closeModal()}
+          onCreateSuccess={() => {
+            closeModal();
+            dispatch(getTodosAction({ page }));
+          }}
           onCancel={() => closeModal()}
         />
       )}
