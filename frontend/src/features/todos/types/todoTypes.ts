@@ -8,13 +8,21 @@ interface Todo {
 
 export interface TodoState {
   inProgress: boolean;
-  todos: Todo[];
+  todoPage: { items: Todo[]; totalCount: number };
   error: null | TodoResponseError;
 }
 
 export interface TodoInput {
   title: string;
   body: string;
+}
+
+export interface TodoListParams {
+  page?: number;
+}
+
+export interface TodoListProps {
+  todos: Todo[];
 }
 
 export interface TodoResponseError {
@@ -29,5 +37,7 @@ export interface TodoResponse {
     createdAt: Date;
     updatedAt: Date;
   };
+  items?: Todo[];
+  totalCount?: number;
   message?: string[] | string;
 }

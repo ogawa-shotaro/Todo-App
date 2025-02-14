@@ -3,7 +3,7 @@ import type { ActionReducerMapBuilder } from "@reduxjs/toolkit";
 
 import {
   pendingReducer,
-  fulfilledReducer,
+  createTodoFulfilledReducer,
   rejectedReducer,
 } from "@/features/todos/stores/reducers/todoExtraReducer";
 import type {
@@ -25,6 +25,6 @@ export const buildCreateTodoExtraReducer = (
 ) => {
   builder
     .addCase(createTodoAction.pending, pendingReducer)
-    .addCase(createTodoAction.fulfilled, fulfilledReducer)
+    .addCase(createTodoAction.fulfilled, createTodoFulfilledReducer)
     .addCase(createTodoAction.rejected, rejectedReducer);
 };

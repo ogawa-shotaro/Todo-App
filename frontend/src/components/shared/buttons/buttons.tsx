@@ -64,3 +64,15 @@ export const CloseButton: FC<ButtonProps> = ({ label, onClick }) => {
     </button>
   );
 };
+
+export const GrayButton: FC<ButtonProps> = ({ label, onClick }) => {
+  return (
+    <button
+      type="submit"
+      className="px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+      onClick={onClick}
+    >
+      {label}
+    </button>
+  );
+};

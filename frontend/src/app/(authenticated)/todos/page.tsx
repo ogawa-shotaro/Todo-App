@@ -1,22 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { useAppSelector } from "@/stores/hooks";
+import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { BlueButton } from "@/components/shared/buttons/buttons";
 import CreateTodoModal from "@/features/todos/components/createTodoModal";
+import { getTodosAction } from "@/features/todos/stores/reducers/getTodosReducer";
+import TodoList from "@/features/todos/components/todoList";
+import { CreatePagination } from "@/features/todos/components/createPagination";
+
+const PAGE_SIZE = 10;
 
 const TodosPage = () => {
-  const todos = useAppSelector((state) => state.todo.todos);
+  const dispatch = useAppDispatch();
+  const state = useAppSelector((state) => state.todo);
+
+  const [page, setPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
+  const items = state.todoPage.items;
+  const totalCount = state.todoPage.totalCount;
 
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
+  useEffect(() => {
+    dispatch(getTodosAction({ page }));
+  }, [page]);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-100 p-6">
@@ -27,23 +37,24 @@ const TodosPage = () => {
         <div className="flex justify-end mb-6 text-lg font-medium ">
           <BlueButton label="新規Todo" onClick={openModal} />
         </div>
-        <div className="space-y-6">
-          {todos.map((todo) => (
-            <div
-              key={todo.id}
-              className="p-6 border rounded-lg shadow-md hover:shadow-lg bg-white transform hover:scale-105 transition duration-300"
-            >
-              <h2 className="text-xl font-bold text-gray-700">{todo.title}</h2>
-              <p className="text-gray-600 mt-2 leading-relaxed">{todo.body}</p>
-            </div>
-          ))}
-        </div>
+        {/* Todoリスト */}
+        <TodoList todos={items} />
       </div>
       {/* モーダル */}
       {isModalOpen && (
         <CreateTodoModal
-          onCreateSuccess={() => closeModal()}
+          onCreateSuccess={() => {
+            closeModal();
+            dispatch(getTodosAction({ page }));
+          }}
           onCancel={() => closeModal()}
+        />
+      )}
+      {/* ページネーション */}
+      {totalCount > 0 && (
+        <CreatePagination
+          {...{ totalCount, PAGE_SIZE, page }}
+          onChangePage={(ChangePage) => setPage(ChangePage)}
         />
       )}
     </div>
