@@ -5,8 +5,6 @@ interface PaginationProps {
   totalCount: number;
   PAGE_SIZE: number;
   page: number;
-  onNextPage: () => void;
-  onPrevPage: () => void;
   onChangePage: (ChangePage: number) => void;
 }
 
@@ -14,8 +12,6 @@ export const CreatePagination: React.FC<PaginationProps> = ({
   totalCount,
   PAGE_SIZE,
   page,
-  onNextPage,
-  onPrevPage,
   onChangePage,
 }) => {
   const totalPage = Math.ceil(totalCount / PAGE_SIZE);
@@ -35,7 +31,9 @@ export const CreatePagination: React.FC<PaginationProps> = ({
     <div className="flex justify-center mt-6 w-full">
       <div className="flex items-center justify-center space-x-2">
         {/* 前へボタン */}
-        {page > 1 && <GrayButton label="前へ" onClick={onPrevPage} />}
+        {page > 1 && (
+          <GrayButton label="前へ" onClick={() => onChangePage(--page)} />
+        )}
         {/* ページネーションボタン */}
         <div className="flex justify-center space-x-2">
           {pageItems.map((item, index) =>
@@ -58,7 +56,9 @@ export const CreatePagination: React.FC<PaginationProps> = ({
           )}
         </div>
         {/* 次へボタン */}
-        {page < totalPage && <GrayButton label="次へ" onClick={onNextPage} />}
+        {page < totalPage && (
+          <GrayButton label="次へ" onClick={() => onChangePage(++page)} />
+        )}
       </div>
     </div>
   );

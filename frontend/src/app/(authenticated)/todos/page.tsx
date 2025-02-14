@@ -28,9 +28,6 @@ const TodosPage = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const setNextPage = () => setPage((page) => page + 1);
-  const setPrevPage = () => setPage((page) => page - 1);
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
@@ -57,8 +54,6 @@ const TodosPage = () => {
       {totalCount > 0 && (
         <CreatePagination
           {...{ totalCount, PAGE_SIZE, page }}
-          onNextPage={() => setNextPage()}
-          onPrevPage={() => setPrevPage()}
           onChangePage={(ChangePage) => setPage(ChangePage)}
         />
       )}
