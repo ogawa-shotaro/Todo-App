@@ -9,6 +9,7 @@ import type { AuthState } from "@/features/users/types/authTypes";
 
 const initialState: AuthState = {
   inProgress: false,
+  isLoggedIn: false,
   user: null,
   error: null,
 };

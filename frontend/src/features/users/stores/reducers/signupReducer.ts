@@ -9,8 +9,8 @@ import {
 } from "@/features/users/stores/reducers/authExtraReducer";
 import type {
   AuthState,
-  SignupInput,
   AuthResponse,
+  SignupInput,
 } from "@/features/users/types/authTypes";
 
 export const createSignupAction = createAsyncThunk<AuthResponse, SignupInput>(

@@ -14,7 +14,7 @@ const Header: FC = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
-  const isLoggedIn = authState.user !== null;
+  const isLoggedIn = authState.isLoggedIn;
 
   const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (event) => {
     event.preventDefault();

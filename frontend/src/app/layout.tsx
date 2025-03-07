@@ -1,8 +1,9 @@
 "use client";
 
 import "@/styles/globals.css";
-import { store } from "@/stores/store";
+import { store, persistor } from "@/stores/store";
 import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
 
 import Header from "@/components/shared/layouts/header";
 import Footer from "@/components/shared/layouts/footer";
@@ -17,10 +18,12 @@ export default function RootLayout({
     <html lang="ja">
       <body className="flex flex-col min-h-screen">
         <Provider store={store}>
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Toast />
-          <Footer />
+          <PersistGate loading={null} persistor={persistor}>
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Toast />
+            <Footer />
+          </PersistGate>
         </Provider>
       </body>
     </html>

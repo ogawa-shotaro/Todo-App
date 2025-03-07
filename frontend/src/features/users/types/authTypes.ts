@@ -5,6 +5,7 @@ interface User {
 
 export interface AuthState {
   inProgress: boolean;
+  isLoggedIn: boolean;
   user: User | null;
   error: AuthResponseError | null;
 }
