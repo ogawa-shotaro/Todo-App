@@ -5,7 +5,6 @@ import Link from "next/link";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 
 import { type AuthContextType, AuthContext } from "@/app/layout";
-// import type { AuthContextType } from "@/app/layout";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SignupInput } from "@/features/users/types/authTypes";
 import { createSignupAction } from "@/features/users/stores/reducers/signupReducer";
