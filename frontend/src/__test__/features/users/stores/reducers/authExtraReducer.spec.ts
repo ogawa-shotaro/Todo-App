@@ -14,7 +14,6 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
   beforeEach(() => {
     state = {
       inProgress: false,
-      isLoggedIn: false,
       user: {
         name: "",
         email: "",
@@ -28,7 +27,7 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
     expect(state.inProgress).toEqual(true);
     expect(state.error).toEqual(null);
   });
-  it("fulfilledReducer関数を実行すると、isLoggedInをtrueにし、user情報の更新を行う。", () => {
+  it("fulfilledReducer関数を実行すると、user情報の更新を行う。", () => {
     const signupFulfilled = createAction<AuthResponse>("signup/fulfilled");
     const action = signupFulfilled({
       user: {
@@ -40,7 +39,6 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
     fulfilledReducer(state, action);
 
     expect(state.inProgress).toEqual(false);
-    expect(state.isLoggedIn).toEqual(true);
     expect(state.user?.name).toEqual("ダミーユーザー");
     expect(state.user?.email).toEqual("dummyData@mail.com");
     expect(state.error).toEqual(null);
@@ -56,11 +54,10 @@ describe("【ユニットテスト】State操作に関わるReducer関数(ユー
     expect(state.inProgress).toEqual(false);
     expect(state.error?.message).toEqual("dummyMessage");
   });
-  it("authClearedFulfilledReducer関数を実行すると、isLoggedInをfalseにし、user情報をnullにする。", () => {
+  it("authClearedFulfilledReducer関数を実行すると、user情報をnullにする。", () => {
     authClearedFulfilledReducer(state);
 
     expect(state.inProgress).toEqual(false);
-    expect(state.isLoggedIn).toEqual(false);
     expect(state.user).toEqual(null);
     expect(state.error).toEqual(null);
   });

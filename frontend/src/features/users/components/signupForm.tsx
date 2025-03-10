@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Link from "next/link";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 
+import { type AuthContextType, AuthContext } from "@/app/layout";
+// import type { AuthContextType } from "@/app/layout";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import type { SignupInput } from "@/features/users/types/authTypes";
 import { createSignupAction } from "@/features/users/stores/reducers/signupReducer";
@@ -13,6 +15,9 @@ import { SubmitButton } from "@/components/shared/buttons/submitButton";
 const SignupForm: FC = () => {
   const dispatch = useAppDispatch();
   const authState = useAppSelector((state) => state.auth);
+
+  const { setIsLoggedIn, setHasInitialized } =
+    useContext<AuthContextType>(AuthContext);
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",
@@ -35,6 +40,9 @@ const SignupForm: FC = () => {
     if (authState.error) {
       setFormData((formData) => ({ ...formData, password: "" }));
     }
+
+    setHasInitialized(true);
+    setIsLoggedIn(true);
   };
 
   if (authState.inProgress) {

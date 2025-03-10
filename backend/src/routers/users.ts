@@ -35,6 +35,10 @@ userRouter.route("/logout").post(authHandler, (req, res, next) => {
   userSessionController.logout(res, next);
 });
 
+userRouter.route("/auth").get(authHandler, (req, res) => {
+  res.json(true);
+});
+
 userRouter
   .route("/")
   .put(authHandler, validator(updateUserSchema), (req, res, next) => {

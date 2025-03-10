@@ -11,7 +11,6 @@ export const fulfilledReducer = (
   action: PayloadAction<AuthResponse>
 ) => {
   state.inProgress = false;
-  state.isLoggedIn = true;
   state.error = null;
   if (action.payload.user) {
     state.user = {
@@ -23,7 +22,6 @@ export const fulfilledReducer = (
 
 export const authClearedFulfilledReducer = (state: AuthState) => {
   state.inProgress = false;
-  state.isLoggedIn = false;
   state.user = null;
   state.error = null;
 };

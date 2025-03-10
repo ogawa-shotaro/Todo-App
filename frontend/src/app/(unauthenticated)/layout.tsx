@@ -1,23 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useContext } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAppSelector } from "@/stores/hooks";
+import { type AuthContextType, AuthContext } from "@/app/layout";
 
 export default function AuthPageLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const { isLoggedIn } = useContext<AuthContextType>(AuthContext);
   const router = useRouter();
-  const authState = useAppSelector((state) => state.auth);
 
   useEffect(() => {
-    if (authState.user) {
+    if (isLoggedIn) {
       router.push("/todos");
     }
-  }, [authState.user]);
+  }, [isLoggedIn]);
 
   return <div>{children}</div>;
 }
