@@ -13,10 +13,6 @@ export interface UserLoginInput {
   email: string;
 }
 
-export interface UserReLoginInput {
-  userId: UserId;
-}
-
 export interface UserUpdateInput {
   userId: number;
   name?: string;
