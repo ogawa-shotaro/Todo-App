@@ -31,6 +31,10 @@ userRouter
     userSessionController.login(req, res, next);
   });
 
+userRouter.route("/reLogin").get(authHandler, (req, res, next) => {
+  userSessionController.reLogin(req, res, next);
+});
+
 userRouter.route("/logout").post(authHandler, (req, res, next) => {
   userSessionController.logout(res, next);
 });

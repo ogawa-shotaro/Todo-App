@@ -43,7 +43,7 @@ describe("【UserRepositoryのテスト】", () => {
       const decodedToken2 = jwt.verify(result2.token, process.env.JWT_SECRET!);
       expect(decodedToken2).toMatchObject({ userId: result2.user.id });
     });
-    it("【loginメソッド実行時】DBから認証Userの検索を行い、ユーザー情報とトークンを返す。", async () => {
+    it("【loginメソッド実行時】DBから認証Userの検索(passwordとemail検索)を行い、ユーザー情報とトークンを返す。", async () => {
       const userData = await createTestUser();
       const email = userData.email;
 
@@ -60,6 +60,18 @@ describe("【UserRepositoryのテスト】", () => {
       ) as JwtPayload;
 
       expect(decodedToken.userId).toEqual(user.id);
+    });
+    it("【reLoginメソッド実行時】DBから認証Userの検索(id検索)を行い、ユーザー情報を返す。", async () => {
+      const userData = await createTestUser();
+      const userId = userData.id;
+
+      const repository = new UserRepository();
+
+      const user = await repository.reLogin({
+        userId,
+      });
+
+      expect(userData.id).toEqual(user.id);
     });
     it("【updateメソッド実行時】DBのユーザー情報(nameプロパティの値)を更新し、更新情報を返す。", async () => {
       const userData = await createTestUser();

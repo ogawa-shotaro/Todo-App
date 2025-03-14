@@ -2,7 +2,10 @@ import { StatusCodes } from "http-status-codes";
 
 import { SessionUserController } from "../../../controllers/users/SessionUserController";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
-import { createMockRequest } from "../../helper/mocks/request";
+import {
+  createMockAuthenticatedRequest,
+  createMockRequest,
+} from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】ユーザーログイン機能", () => {
@@ -41,6 +44,37 @@ describe("【ユニットテスト】ユーザーログイン機能", () => {
       });
       expect(res.cookie).toHaveBeenCalledWith("token", "mockedJWT", {
         httpOnly: true,
+        maxAge: 3600000,
+      });
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+      expect(res.json).toHaveBeenCalledWith({
+        id: 1,
+        name: "ダミーユーザー",
+        email: "dummyData@mail.com",
+      });
+    });
+    it("reLoginメソッドのパラメータが正しいと、status(ok=200)が返る。", async () => {
+      const req = createMockAuthenticatedRequest({
+        user: {
+          id: 1,
+        },
+      });
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      const mockUser = {
+        id: 1,
+        name: "ダミーユーザー",
+        password: "dummyPassword",
+        email: "dummyData@mail.com",
+      };
+
+      repository.reLogin.mockResolvedValue(mockUser);
+
+      await controller.reLogin(req, res, next);
+
+      expect(repository.reLogin).toHaveBeenCalledWith({
+        userId: 1,
       });
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({

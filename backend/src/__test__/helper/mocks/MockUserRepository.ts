@@ -2,7 +2,7 @@ import type { User } from "@prisma/client";
 
 import type { IUserRepository } from "../../../repositories/users/IUserRepository";
 import type {
-  UserDeleteInput,
+  UserId,
   UserLoginInput,
   UserRegisterInput,
   UserUpdateInput,
@@ -14,6 +14,7 @@ export class MockRepository implements IUserRepository {
     [UserRegisterInput]
   >();
   login = jest.fn<Promise<{ user: User; token: string }>, [UserLoginInput]>();
+  reLogin = jest.fn<Promise<User>, [UserId]>();
   update = jest.fn<Promise<Partial<User>>, [UserUpdateInput]>();
-  delete = jest.fn<Promise<User>, [UserDeleteInput]>();
+  delete = jest.fn<Promise<User>, [UserId]>();
 }

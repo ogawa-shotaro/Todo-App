@@ -4,9 +4,17 @@ export interface UserRegisterInput {
   email: string;
 }
 
+export interface UserId {
+  userId: number;
+}
+
 export interface UserLoginInput {
   password: string;
   email: string;
+}
+
+export interface UserReLoginInput {
+  userId: UserId;
 }
 
 export interface UserUpdateInput {
@@ -14,8 +22,4 @@ export interface UserUpdateInput {
   name?: string;
   password?: string;
   email?: string;
-}
-
-export interface UserDeleteInput {
-  userId: number;
 }
