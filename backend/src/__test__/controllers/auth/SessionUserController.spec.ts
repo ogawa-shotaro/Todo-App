@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import { SessionUserController } from "../../../controllers/users/SessionUserController";
+import { SessionUserController } from "../../../controllers/auth/SessionUserController";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
 import {
   createMockAuthenticatedRequest,
@@ -16,7 +16,7 @@ describe("【ユニットテスト】ユーザーログイン機能", () => {
     controller = new SessionUserController(repository);
   });
   describe("【成功パターン】", () => {
-    it("Loginメソッドのパラメータが正しいと、tokenとstatus(ok=200)が返る。", async () => {
+    it("loginメソッドのパラメータが正しければ、ユーザー情報・トークン・ステータス(200=OK)を返す。", async () => {
       const req = createMockRequest({
         body: {
           password: "dummyPassword",
@@ -53,7 +53,7 @@ describe("【ユニットテスト】ユーザーログイン機能", () => {
         email: "dummyData@mail.com",
       });
     });
-    it("reLoginメソッドのパラメータが正しいと、status(ok=200)が返る。", async () => {
+    it("checkAndRefreshメソッドのパラメータが正しければ、ユーザー情報・トークン・ステータス(200=OK)を返す。", async () => {
       const req = createMockAuthenticatedRequest({
         user: {
           id: 1,
@@ -68,14 +68,16 @@ describe("【ユニットテスト】ユーザーログイン機能", () => {
         password: "dummyPassword",
         email: "dummyData@mail.com",
       };
+      const mockToken = "mockedJWT";
 
-      repository.reLogin.mockResolvedValue(mockUser);
-
-      await controller.reLogin(req, res, next);
-
-      expect(repository.reLogin).toHaveBeenCalledWith({
-        userId: 1,
+      repository.checkAndRefresh.mockResolvedValue({
+        user: mockUser,
+        token: mockToken,
       });
+
+      await controller.checkAndRefresh(req, res, next);
+
+      expect(repository.checkAndRefresh).toHaveBeenCalledWith(1);
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
         id: 1,

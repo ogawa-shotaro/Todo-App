@@ -76,7 +76,7 @@ export class UserRepository {
     return { user, token };
   }
 
-  async reLogin({ userId }: UserId) {
+  async checkAndRefresh(userId: UserId) {
     const user = await prisma.user.findUnique({
       where: { id: userId },
     });
@@ -85,7 +85,9 @@ export class UserRepository {
       throw new UnauthorizedError("認証に失敗しました。");
     }
 
-    return user;
+    const token = createJWT(user.id);
+
+    return { user, token };
   }
 
   async update(inputData: UserUpdateInput) {
@@ -123,7 +125,7 @@ export class UserRepository {
     }
   }
 
-  async delete({ userId }: UserId) {
+  async delete(userId: UserId) {
     try {
       const deletedUser = await prisma.user.delete({
         where: { id: userId },

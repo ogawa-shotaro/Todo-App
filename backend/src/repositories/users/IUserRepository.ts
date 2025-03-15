@@ -12,7 +12,7 @@ export interface IUserRepository {
     inputData: UserRegisterInput,
   ): Promise<{ user: User; token: string }>;
   login(inputData: UserLoginInput): Promise<{ user: User; token: string }>;
-  reLogin(inputData: UserId): Promise<User>;
+  checkAndRefresh(inputData: UserId): Promise<{ user: User; token: string }>;
   update(inputData: UserUpdateInput): Promise<Partial<User>>;
   delete(inputData: UserId): Promise<User>;
 }

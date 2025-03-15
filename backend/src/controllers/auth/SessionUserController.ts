@@ -34,15 +34,25 @@ export class SessionUserController {
     }
   }
 
-  async reLogin(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+  async checkAndRefresh(
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction,
+  ) {
     const userId = req.user?.id as number;
-    const user = await this.repository.reLogin({ userId });
+    const { user, token } = await this.repository.checkAndRefresh(userId);
     try {
-      res.status(StatusCodes.OK).json({
-        id: user.id,
-        name: user.name,
-        email: user.email,
-      });
+      res
+        .cookie("token", token, {
+          httpOnly: true,
+          maxAge: 60 * 60 * 1000,
+        })
+        .status(StatusCodes.OK)
+        .json({
+          id: user.id,
+          name: user.name,
+          email: user.email,
+        });
     } catch (error) {
       next(error);
     }

@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import { RegisterUserController } from "../../../controllers/users/RegisterUserController";
+import { RegisterUserController } from "../../../controllers/auth/RegisterUserController";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";

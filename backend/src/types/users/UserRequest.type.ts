@@ -1,11 +1,9 @@
+export type UserId = number;
+
 export interface UserRegisterInput {
   name: string;
   password: string;
   email: string;
-}
-
-export interface UserId {
-  userId: number;
 }
 
 export interface UserLoginInput {

@@ -13,7 +13,7 @@ export class DeleteUserController {
   async delete(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const userId = req.user?.id as number;
-      const user = await this.repository.delete({ userId });
+      const user = await this.repository.delete(userId);
 
       res.status(StatusCodes.OK).json({
         id: user.id,

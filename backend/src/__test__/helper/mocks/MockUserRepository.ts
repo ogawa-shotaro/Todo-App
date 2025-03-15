@@ -14,7 +14,7 @@ export class MockRepository implements IUserRepository {
     [UserRegisterInput]
   >();
   login = jest.fn<Promise<{ user: User; token: string }>, [UserLoginInput]>();
-  reLogin = jest.fn<Promise<User>, [UserId]>();
+  checkAndRefresh = jest.fn<Promise<{ user: User; token: string }>, [UserId]>();
   update = jest.fn<Promise<Partial<User>>, [UserUpdateInput]>();
   delete = jest.fn<Promise<User>, [UserId]>();
 }
