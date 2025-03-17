@@ -2,9 +2,16 @@ import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import { IUserRepository } from "../../repositories/users/IUserRepository";
-import { AuthenticatedRequest } from "../../types/requests/AuthenticatedRequest.type";
+import { AuthenticatedRequest } from "../../types/auths/AuthenticatedRequest.type";
 
-export class SessionUserController {
+const createCookieOptions = () => {
+  return {
+    httpOnly: true,
+    maxAge: 60 * 60 * 1000,
+  };
+};
+
+export class SessionController {
   private repository: IUserRepository;
   constructor(repository: IUserRepository) {
     this.repository = repository;
@@ -17,18 +24,13 @@ export class SessionUserController {
         password,
         email,
       });
+      const options = createCookieOptions();
 
-      res
-        .cookie("token", token, {
-          httpOnly: true,
-          maxAge: 60 * 60 * 1000,
-        })
-        .status(StatusCodes.OK)
-        .json({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        });
+      res.cookie("token", token, options).status(StatusCodes.OK).json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      });
     } catch (error) {
       next(error);
     }
@@ -39,20 +41,16 @@ export class SessionUserController {
     res: Response,
     next: NextFunction,
   ) {
-    const userId = req.user?.id as number;
-    const { user, token } = await this.repository.checkAndRefresh(userId);
     try {
-      res
-        .cookie("token", token, {
-          httpOnly: true,
-          maxAge: 60 * 60 * 1000,
-        })
-        .status(StatusCodes.OK)
-        .json({
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        });
+      const userId = req.user?.id as number;
+      const { user, token } = await this.repository.checkAndRefresh(userId);
+      const options = createCookieOptions();
+
+      res.cookie("token", token, options).status(StatusCodes.OK).json({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+      });
     } catch (error) {
       next(error);
     }

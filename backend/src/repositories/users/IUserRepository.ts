@@ -1,9 +1,11 @@
 import { User } from "@prisma/client";
 
 import type {
-  UserId,
   UserLoginInput,
   UserRegisterInput,
+} from "../../types/auths/AuthRequest.type";
+import type {
+  UserId,
   UserUpdateInput,
 } from "../../types/users/UserRequest.type";
 

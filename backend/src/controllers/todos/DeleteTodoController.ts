@@ -2,7 +2,7 @@ import type { NextFunction, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
 import type { ITodoRepository } from "../../repositories/todos/ITodoRepository";
-import type { AuthenticatedRequest } from "../../types/requests/AuthenticatedRequest.type";
+import type { AuthenticatedRequest } from "../../types/auths/AuthenticatedRequest.type";
 
 export class DeleteTodoController {
   private repository: ITodoRepository;

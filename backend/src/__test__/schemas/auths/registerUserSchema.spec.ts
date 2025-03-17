@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { registerUserSchema } from "../../../schemas/users/registerUserSchema";
+import { registerUserSchema } from "../../../schemas/auth/registerUserSchema";
 
 describe("【ユニットテスト】registerUserSchemaの挙動テスト", () => {
   describe("【成功パターン】", () => {

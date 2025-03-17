@@ -10,9 +10,11 @@ import { InternalServerError } from "../../errors/InternalServerError";
 import { NotFoundError } from "../../errors/NotFoundError";
 import { UnauthorizedError } from "../../errors/UnauthorizedError";
 import type {
-  UserId,
   UserLoginInput,
   UserRegisterInput,
+} from "../../types/auths/AuthRequest.type";
+import type {
+  UserId,
   UserUpdateInput,
 } from "../../types/users/UserRequest.type";
 

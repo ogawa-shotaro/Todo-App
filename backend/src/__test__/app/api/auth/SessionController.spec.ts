@@ -9,7 +9,7 @@ import {
   requestAPIWithAuth,
 } from "../../../helper/requestHelper";
 
-describe("【APIテスト】ユーザーログイン機能", () => {
+describe("【APIテスト】認証・認可機能（トークン管理含む）", () => {
   let newUser: User;
   beforeEach(async () => {
     newUser = await createTestUser();
@@ -37,7 +37,7 @@ describe("【APIテスト】ユーザーログイン機能", () => {
       });
       expect(cookie[0]).toContain("token=");
     });
-    it("認証済みユーザーでJWTの有効期限内なら、CookieのユーザーIDでログインし、ユーザー情報を返してJWTを再セットする。", async () => {
+    it("認証済みユーザーでJWTの有効期限内なら、ユーザー情報を返してJWTを再セットする。", async () => {
       const response = await requestAPIWithAuth({
         method: "post",
         endPoint: "/api/auth/refresh",
