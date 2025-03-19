@@ -1,8 +1,8 @@
 import { ZodError } from "zod";
 
-import { registerUserSchema } from "../../../schemas/auth/registerUserSchema";
+import { registerSchema } from "../../../schemas/auths/registerSchema";
 
-describe("【ユニットテスト】registerUserSchemaの挙動テスト", () => {
+describe("【ユニットテスト】registerSchemaの挙動テスト", () => {
   describe("【成功パターン】", () => {
     it("【バリデーションに成功した場合】例外が発生しない。", () => {
       const data = {
@@ -13,7 +13,7 @@ describe("【ユニットテスト】registerUserSchemaの挙動テスト", () =
         },
       };
 
-      const result = registerUserSchema.parse(data);
+      const result = registerSchema.parse(data);
 
       expect(result).toEqual(data);
     });
@@ -27,7 +27,7 @@ describe("【ユニットテスト】registerUserSchemaの挙動テスト", () =
         },
       };
 
-      expect(() => registerUserSchema.parse(data)).toThrow(
+      expect(() => registerSchema.parse(data)).toThrow(
         new ZodError([
           {
             code: "invalid_type",
@@ -48,7 +48,7 @@ describe("【ユニットテスト】registerUserSchemaの挙動テスト", () =
         },
       };
 
-      expect(() => registerUserSchema.parse(data)).toThrow(
+      expect(() => registerSchema.parse(data)).toThrow(
         new ZodError([
           {
             code: "too_small",

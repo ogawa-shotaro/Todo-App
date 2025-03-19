@@ -4,6 +4,8 @@ import { StatusCodes } from "http-status-codes";
 import { IUserRepository } from "../../repositories/users/IUserRepository";
 import { AuthenticatedRequest } from "../../types/auths/AuthenticatedRequest.type";
 
+const TOKEN_KEY = "token";
+
 const createCookieOptions = () => {
   return {
     httpOnly: true,
@@ -26,7 +28,7 @@ export class SessionController {
       });
       const options = createCookieOptions();
 
-      res.cookie("token", token, options).status(StatusCodes.OK).json({
+      res.cookie(TOKEN_KEY, token, options).status(StatusCodes.OK).json({
         id: user.id,
         name: user.name,
         email: user.email,
@@ -46,7 +48,7 @@ export class SessionController {
       const { user, token } = await this.repository.checkAndRefresh(userId);
       const options = createCookieOptions();
 
-      res.cookie("token", token, options).status(StatusCodes.OK).json({
+      res.cookie(TOKEN_KEY, token, options).status(StatusCodes.OK).json({
         id: user.id,
         name: user.name,
         email: user.email,
@@ -59,7 +61,7 @@ export class SessionController {
   async logout(res: Response, next: NextFunction) {
     try {
       res
-        .clearCookie("token", { httpOnly: true })
+        .clearCookie(TOKEN_KEY, { httpOnly: true })
         .status(StatusCodes.OK)
         .json();
       next();

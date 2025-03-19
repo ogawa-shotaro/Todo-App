@@ -10,8 +10,8 @@ import { InternalServerError } from "../../errors/InternalServerError";
 import { NotFoundError } from "../../errors/NotFoundError";
 import { UnauthorizedError } from "../../errors/UnauthorizedError";
 import type {
-  UserLoginInput,
-  UserRegisterInput,
+  LoginInput,
+  RegisterInput,
 } from "../../types/auths/AuthRequest.type";
 import type {
   UserId,
@@ -29,7 +29,7 @@ const createJWT = (userId: number) => {
 };
 
 export class UserRepository {
-  async register(inputData: UserRegisterInput) {
+  async register(inputData: RegisterInput) {
     try {
       const hashedPassword = await hashPassword(inputData.password);
       const userData: User = await prisma.user.create({
@@ -55,7 +55,7 @@ export class UserRepository {
     }
   }
 
-  async login(inputData: UserLoginInput) {
+  async login(inputData: LoginInput) {
     const user = await prisma.user.findUnique({
       where: { email: inputData.email },
     });

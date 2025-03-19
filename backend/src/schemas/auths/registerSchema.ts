@@ -2,7 +2,7 @@ import { z } from "zod";
 
 import { emailPasswordSchema } from "./shared/emailPasswordSchema";
 
-export const registerUserSchema = z.object({
+export const registerSchema = z.object({
   body: z.object({
     name: z
       .string({ required_error: "ユーザー名の入力は必須です。" })

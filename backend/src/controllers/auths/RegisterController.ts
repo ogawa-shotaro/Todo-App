@@ -3,7 +3,7 @@ import { StatusCodes } from "http-status-codes";
 
 import { IUserRepository } from "../../repositories/users/IUserRepository";
 
-export class RegisterUserController {
+export class RegisterController {
   private repository: IUserRepository;
   constructor(repository: IUserRepository) {
     this.repository = repository;

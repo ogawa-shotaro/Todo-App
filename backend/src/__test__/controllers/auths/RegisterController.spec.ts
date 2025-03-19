@@ -1,16 +1,16 @@
 import { StatusCodes } from "http-status-codes";
 
-import { RegisterUserController } from "../../../controllers/auth/RegisterUserController";
+import { RegisterController } from "../../../controllers/auths/RegisterController";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
 import { createMockRequest } from "../../helper/mocks/request";
 import { createMockResponse } from "../../helper/mocks/response";
 
 describe("【ユニットテスト】ユーザーの新規登録", () => {
   let repository: MockRepository;
-  let controller: RegisterUserController;
+  let controller: RegisterController;
   beforeEach(async () => {
     repository = new MockRepository();
-    controller = new RegisterUserController(repository);
+    controller = new RegisterController(repository);
   });
   describe("【成功パターン】", () => {
     it("Registerメソッドのパラメータが正しいと、User(jsonとstatus(ok=200))が返る。", async () => {

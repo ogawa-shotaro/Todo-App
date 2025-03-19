@@ -30,7 +30,7 @@ describe("【APIテスト】 ユーザーの新規登録", () => {
     });
   });
   describe("【異常パターン】", () => {
-    describe("【registerUserSchemaに基づくInvalidErrorのテスト】", () => {
+    describe("【registerSchemaに基づくInvalidErrorのテスト】", () => {
       it("nameプロパティの入力値がない場合。", async () => {
         const request = {
           password: "dummyPassword",

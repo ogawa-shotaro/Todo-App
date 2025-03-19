@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 
-import { SessionController } from "../../../controllers/auth/SessionController";
+import { SessionController } from "../../../controllers/auths/SessionController";
 import { MockRepository } from "../../helper/mocks/MockUserRepository";
 import {
   createMockAuthenticatedRequest,

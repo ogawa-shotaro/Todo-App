@@ -70,7 +70,7 @@ describe("【APIテスト】認証・認可機能（トークン管理含む）"
     });
   });
   describe("【異常パターン】", () => {
-    describe("【loginUserSchemaに基づくInvalidErrorのテスト】", () => {
+    describe("【loginSchemaに基づくInvalidErrorのテスト】", () => {
       it("passwordプロパティの入力値がない場合。", async () => {
         const request = {
           email: newUser.email,
