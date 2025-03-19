@@ -3,6 +3,8 @@ import { StatusCodes } from "http-status-codes";
 
 import { IUserRepository } from "../../repositories/users/IUserRepository";
 
+const TOKEN_KEY = "token";
+
 export class RegisterController {
   private repository: IUserRepository;
   constructor(repository: IUserRepository) {
@@ -19,7 +21,7 @@ export class RegisterController {
       });
 
       res
-        .cookie("token", token, {
+        .cookie(TOKEN_KEY, token, {
           httpOnly: true,
         })
         .status(StatusCodes.OK)
