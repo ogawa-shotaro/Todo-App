@@ -1,9 +1,9 @@
 import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
-import { IUserRepository } from "../../repositories/users/IUserRepository";
+import { TOKEN_KEY } from "./shared/constants";
 
-const TOKEN_KEY = "token";
+import { IUserRepository } from "../../repositories/users/IUserRepository";
 
 export class RegisterController {
   private repository: IUserRepository;

@@ -1,10 +1,10 @@
 import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
+import { TOKEN_KEY } from "./shared/constants";
+
 import { IUserRepository } from "../../repositories/users/IUserRepository";
 import { AuthenticatedRequest } from "../../types/auths/AuthenticatedRequest.type";
-
-const TOKEN_KEY = "token";
 
 const createCookieOptions = () => {
   return {
