@@ -1,6 +1,6 @@
 import { ZodError } from "zod";
 
-import { emailPasswordSchema } from "../../../../schemas/users/shared/emailPasswordSchema";
+import { emailPasswordSchema } from "../../../../schemas/auths/shared/emailPasswordSchema";
 
 describe("【ユニットテスト】emailPasswordSchemaの挙動テスト", () => {
   describe("【成功パターン】", () => {

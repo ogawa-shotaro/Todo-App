@@ -31,9 +31,7 @@ describe("【ユニットテスト】ユーザー削除機能", () => {
 
       await controller.delete(req, res, next);
 
-      expect(repository.delete).toHaveBeenCalledWith({
-        userId: 1,
-      });
+      expect(repository.delete).toHaveBeenCalledWith(1);
       expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
       expect(res.json).toHaveBeenCalledWith({
         id: 1,

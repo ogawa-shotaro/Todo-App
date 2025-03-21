@@ -10,9 +10,11 @@ import { InternalServerError } from "../../errors/InternalServerError";
 import { NotFoundError } from "../../errors/NotFoundError";
 import { UnauthorizedError } from "../../errors/UnauthorizedError";
 import type {
-  UserDeleteInput,
-  UserLoginInput,
-  UserRegisterInput,
+  LoginInput,
+  RegisterInput,
+} from "../../types/auths/AuthRequest.type";
+import type {
+  UserId,
   UserUpdateInput,
 } from "../../types/users/UserRequest.type";
 
@@ -27,7 +29,7 @@ const createJWT = (userId: number) => {
 };
 
 export class UserRepository {
-  async register(inputData: UserRegisterInput) {
+  async register(inputData: RegisterInput) {
     try {
       const hashedPassword = await hashPassword(inputData.password);
       const userData: User = await prisma.user.create({
@@ -52,7 +54,8 @@ export class UserRepository {
       }
     }
   }
-  async login(inputData: UserLoginInput) {
+
+  async login(inputData: LoginInput) {
     const user = await prisma.user.findUnique({
       where: { email: inputData.email },
     });
@@ -67,6 +70,20 @@ export class UserRepository {
     );
 
     if (!passwordMatches) {
+      throw new UnauthorizedError("認証に失敗しました。");
+    }
+
+    const token = createJWT(user.id);
+
+    return { user, token };
+  }
+
+  async checkAndRefresh(userId: UserId) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
       throw new UnauthorizedError("認証に失敗しました。");
     }
 
@@ -110,10 +127,10 @@ export class UserRepository {
     }
   }
 
-  async delete(inputData: UserDeleteInput) {
+  async delete(userId: UserId) {
     try {
       const deletedUser = await prisma.user.delete({
-        where: { id: inputData.userId },
+        where: { id: userId },
       });
 
       return deletedUser;

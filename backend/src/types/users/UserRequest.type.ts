@@ -1,21 +1,8 @@
-export interface UserRegisterInput {
-  name: string;
-  password: string;
-  email: string;
-}
-
-export interface UserLoginInput {
-  password: string;
-  email: string;
-}
+export type UserId = number;
 
 export interface UserUpdateInput {
   userId: number;
   name?: string;
   password?: string;
   email?: string;
-}
-
-export interface UserDeleteInput {
-  userId: number;
 }

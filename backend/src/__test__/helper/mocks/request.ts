@@ -1,6 +1,6 @@
 import type { Request } from "express";
 
-import type { AuthenticatedRequest } from "../../../types/requests/AuthenticatedRequest.type";
+import type { AuthenticatedRequest } from "../../../types/auths/AuthenticatedRequest.type";
 
 type RequestBody = Record<string, string | number>;
 type RequestParams = Record<string, string>;

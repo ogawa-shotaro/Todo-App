@@ -43,7 +43,7 @@ describe("【UserRepositoryのテスト】", () => {
       const decodedToken2 = jwt.verify(result2.token, process.env.JWT_SECRET!);
       expect(decodedToken2).toMatchObject({ userId: result2.user.id });
     });
-    it("【loginメソッド実行時】DBから認証Userの検索を行い、ユーザー情報とトークンを返す。", async () => {
+    it("【loginメソッド実行時】DBから認証Userの検索(passwordとemail検索)を行い、ユーザー情報とトークンを返す。", async () => {
       const userData = await createTestUser();
       const email = userData.email;
 
@@ -60,6 +60,23 @@ describe("【UserRepositoryのテスト】", () => {
       ) as JwtPayload;
 
       expect(decodedToken.userId).toEqual(user.id);
+      expect(userData.id).toEqual(user.id);
+    });
+    it("【checkAndRefreshメソッド実行時】DBから認証Userの検索(id検索)を行い、ユーザー情報とトークンを返す。", async () => {
+      const userData = await createTestUser();
+      const userId = userData.id;
+
+      const repository = new UserRepository();
+
+      const { user, token } = await repository.checkAndRefresh(userId);
+
+      const decodedToken = jwt.verify(
+        token,
+        process.env.JWT_SECRET!,
+      ) as JwtPayload;
+
+      expect(decodedToken.userId).toEqual(user.id);
+      expect(userData.id).toEqual(user.id);
     });
     it("【updateメソッド実行時】DBのユーザー情報(nameプロパティの値)を更新し、更新情報を返す。", async () => {
       const userData = await createTestUser();
@@ -117,9 +134,7 @@ describe("【UserRepositoryのテスト】", () => {
       const userData = await createTestUser();
       const repository = new UserRepository();
 
-      const deletedUser = await repository.delete({
-        userId: userData.id,
-      });
+      const deletedUser = await repository.delete(userData.id);
 
       expect(deletedUser.id).toEqual(userData.id);
       expect(deletedUser.name).toEqual(userData.name);
@@ -173,6 +188,15 @@ describe("【UserRepositoryのテスト】", () => {
         }),
       ).rejects.toThrow("認証に失敗しました。");
     });
+    it("【checkAndRefreshメソッド実行時】認証に失敗した場合、エラーオブジェクトが返る。", async () => {
+      await createTestUser();
+
+      const repository = new UserRepository();
+
+      await expect(repository.checkAndRefresh(999)).rejects.toThrow(
+        "認証に失敗しました。",
+      );
+    });
     it("【updateメソッド実行時】重複したemailはエラーとなる。", async () => {
       const repository = new UserRepository();
       const initialUser = await createTestUser();
@@ -188,11 +212,9 @@ describe("【UserRepositoryのテスト】", () => {
     it("【deleteメソッド実行時】存在しないユーザーを指定した場合、エラーオブジェクトが返る。", async () => {
       const repository = new UserRepository();
 
-      await expect(
-        repository.delete({
-          userId: 999,
-        }),
-      ).rejects.toThrow("削除対象のユーザーが見つかりません。");
+      await expect(repository.delete(999)).rejects.toThrow(
+        "削除対象のユーザーが見つかりません。",
+      );
     });
   });
 });

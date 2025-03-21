@@ -1,24 +1,27 @@
 import type { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 
+import { TOKEN_KEY } from "./shared/constants";
+
 import { IUserRepository } from "../../repositories/users/IUserRepository";
 
-export class SessionUserController {
+export class RegisterController {
   private repository: IUserRepository;
   constructor(repository: IUserRepository) {
     this.repository = repository;
   }
 
-  async login(req: Request, res: Response, next: NextFunction) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { password, email } = req.body;
-      const { user, token } = await this.repository.login({
+      const { name, password, email } = req.body;
+      const { user, token } = await this.repository.register({
+        name,
         password,
         email,
       });
 
       res
-        .cookie("token", token, {
+        .cookie(TOKEN_KEY, token, {
           httpOnly: true,
         })
         .status(StatusCodes.OK)
@@ -27,18 +30,6 @@ export class SessionUserController {
           name: user.name,
           email: user.email,
         });
-    } catch (error) {
-      next(error);
-    }
-  }
-
-  async logout(res: Response, next: NextFunction) {
-    try {
-      res
-        .clearCookie("token", { httpOnly: true })
-        .status(StatusCodes.OK)
-        .json();
-      next();
     } catch (error) {
       next(error);
     }

@@ -3,6 +3,7 @@ import cors from "cors";
 import express from "express";
 
 import { errorHandler } from "./middlewares/errorHandler";
+import authRouter from "./routers/auth";
 import todoRouter from "./routers/todos";
 import userRouter from "./routers/users";
 
@@ -18,6 +19,7 @@ app.use(
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use("/api/auth", authRouter);
 app.use("/api/users", userRouter);
 app.use("/api/todos", todoRouter);
 app.use(errorHandler);

@@ -1,17 +1,18 @@
 import { User } from "@prisma/client";
 
 import type {
-  UserDeleteInput,
-  UserLoginInput,
-  UserRegisterInput,
+  LoginInput,
+  RegisterInput,
+} from "../../types/auths/AuthRequest.type";
+import type {
+  UserId,
   UserUpdateInput,
 } from "../../types/users/UserRequest.type";
 
 export interface IUserRepository {
-  register(
-    inputData: UserRegisterInput,
-  ): Promise<{ user: User; token: string }>;
-  login(inputData: UserLoginInput): Promise<{ user: User; token: string }>;
+  register(inputData: RegisterInput): Promise<{ user: User; token: string }>;
+  login(inputData: LoginInput): Promise<{ user: User; token: string }>;
+  checkAndRefresh(inputData: UserId): Promise<{ user: User; token: string }>;
   update(inputData: UserUpdateInput): Promise<Partial<User>>;
-  delete(inputData: UserDeleteInput): Promise<User>;
+  delete(inputData: UserId): Promise<User>;
 }

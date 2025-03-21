@@ -1,20 +1,29 @@
 import { StatusCodes } from "http-status-codes";
 
-import { UserRepository } from "../../../../repositories/users/UserRepository";
-import { requestAPI } from "../../../helper/requestHelper";
+import { type User } from "@prisma/client";
 
-describe("【APIテスト】 ユーザーの新規登録", () => {
+import { UserRepository } from "../../../../repositories/users/UserRepository";
+import {
+  createTestUser,
+  requestAPI,
+  requestAPIWithAuth,
+} from "../../../helper/requestHelper";
+
+describe("【APIテスト】認証・認可機能（トークン管理含む）", () => {
+  let newUser: User;
+  beforeEach(async () => {
+    newUser = await createTestUser();
+  });
   describe("【成功パターン】", () => {
-    it("【name・password・email】を送ったら成功する", async () => {
+    it("リクエストに成功すると、ユーザー情報を返してcookieにJWTをセットする。", async () => {
       const request = {
-        name: "ダミーユーザー",
         password: "dummyPassword",
-        email: "dummyData@mail.com",
+        email: newUser.email,
       };
 
       const response = await requestAPI({
         method: "post",
-        endPoint: "/api/users/register",
+        endPoint: "/api/auth/login",
         statusCode: StatusCodes.OK,
       }).send(request);
 
@@ -24,55 +33,52 @@ describe("【APIテスト】 ユーザーの新規登録", () => {
       expect(responseUser).toEqual({
         id: 1,
         name: "ダミーユーザー",
-        email: "dummyData@mail.com",
+        email: newUser.email,
       });
       expect(cookie[0]).toContain("token=");
     });
+    it("認証済みユーザーでJWTの有効期限内なら、ユーザー情報を返してJWTを再セットする。", async () => {
+      const response = await requestAPIWithAuth({
+        method: "post",
+        endPoint: "/api/auth/refresh",
+        statusCode: StatusCodes.OK,
+        userId: newUser.id,
+      }).send();
+
+      const responseUser = response.body;
+      const cookie = response.header["set-cookie"];
+
+      expect(responseUser).toEqual({
+        id: 1,
+        name: "ダミーユーザー",
+        email: newUser.email,
+      });
+      expect(cookie[0]).toContain("token=");
+    });
+    it("リクエスト(ログアウト)を送った場合、トークンが無効化される。", async () => {
+      const response = await requestAPIWithAuth({
+        method: "post",
+        endPoint: "/api/auth/logout",
+        statusCode: StatusCodes.OK,
+        userId: newUser.id,
+      });
+
+      const cookie = response.header["set-cookie"];
+
+      expect(cookie[0]).toContain("token=;");
+      expect(cookie[0]).toContain("Expires=");
+    });
   });
   describe("【異常パターン】", () => {
-    describe("【registerUserSchemaに基づくInvalidErrorのテスト】", () => {
-      it("nameプロパティの入力値がない場合。", async () => {
-        const request = {
-          password: "dummyPassword",
-          email: "dummyData@mail.com",
-        };
-
-        const response = await requestAPI({
-          method: "post",
-          endPoint: "/api/users/register",
-          statusCode: StatusCodes.BAD_REQUEST,
-        }).send(request);
-
-        expect(response.body).toEqual({
-          message: "ユーザー名の入力は必須です。",
-        });
-      });
-      it("nameプロパティ有り・入力値(1文字以上)がない場合。", async () => {
-        const request = {
-          name: "",
-          password: "dummyPassword",
-          email: "dummyData@mail.com",
-        };
-
-        const response = await requestAPI({
-          method: "post",
-          endPoint: "/api/users/register",
-          statusCode: StatusCodes.BAD_REQUEST,
-        }).send(request);
-
-        expect(response.body).toEqual({
-          message: "ユーザー名は1文字以上である必要があります。",
-        });
-      });
+    describe("【loginSchemaに基づくInvalidErrorのテスト】", () => {
       it("passwordプロパティの入力値がない場合。", async () => {
         const request = {
-          name: "ダミーユーザー",
-          email: "dummyData@mail.com",
+          email: newUser.email,
         };
 
         const response = await requestAPI({
           method: "post",
-          endPoint: "/api/users/register",
+          endPoint: "/api/auth/login",
           statusCode: StatusCodes.BAD_REQUEST,
         }).send(request);
 
@@ -82,14 +88,13 @@ describe("【APIテスト】 ユーザーの新規登録", () => {
       });
       it("passwordプロパティ有り・入力値が不正(7文字以下)な場合。", async () => {
         const request = {
-          name: "ダミーユーザー",
           password: "Invalid",
-          email: "dummyData@mail.com",
+          email: newUser.email,
         };
 
         const response = await requestAPI({
           method: "post",
-          endPoint: "/api/users/register",
+          endPoint: "/api/auth/login",
           statusCode: StatusCodes.BAD_REQUEST,
         }).send(request);
 
@@ -99,14 +104,13 @@ describe("【APIテスト】 ユーザーの新規登録", () => {
       });
       it("passwordプロパティ有り・入力値が不正(16文字より多い場合)な場合。", async () => {
         const request = {
-          name: "ダミーユーザー",
           password: "ExcessivePassword",
-          email: "dummyData@mail.com",
+          email: newUser.email,
         };
 
         const response = await requestAPI({
           method: "post",
-          endPoint: "/api/users/register",
+          endPoint: "/api/auth/login",
           statusCode: StatusCodes.BAD_REQUEST,
         }).send(request);
 
@@ -116,13 +120,12 @@ describe("【APIテスト】 ユーザーの新規登録", () => {
       });
       it("emailプロパティの入力値がない場合。", async () => {
         const request = {
-          name: "ダミーユーザー",
           password: "dummyPassword",
         };
 
         const response = await requestAPI({
           method: "post",
-          endPoint: "/api/users/register",
+          endPoint: "/api/auth/login",
           statusCode: StatusCodes.BAD_REQUEST,
         }).send(request);
 
@@ -132,14 +135,13 @@ describe("【APIテスト】 ユーザーの新規登録", () => {
       });
       it("emailプロパティ有り・入力値が不正(形式が正しくない)な場合。", async () => {
         const request = {
-          name: "ダミーユーザー",
           password: "dummyPassword",
           email: "incorrectFormat.com",
         };
 
         const response = await requestAPI({
           method: "post",
-          endPoint: "/api/users/register",
+          endPoint: "/api/auth/login",
           statusCode: StatusCodes.BAD_REQUEST,
         }).send(request);
 
@@ -148,48 +150,20 @@ describe("【APIテスト】 ユーザーの新規登録", () => {
         });
       });
     });
-    describe("【DBに関わるエラーテスト】", () => {
-      it("【ConflictErrorのテスト】email値が重複している場合。", async () => {
-        const request = {
-          name: "ダミーユーザー",
-          password: "dummyPassword",
-          email: "dummyData@mail.com",
-        };
-
-        await requestAPI({
-          method: "post",
-          endPoint: "/api/users/register",
-          statusCode: StatusCodes.OK,
-        }).send(request);
-
-        const response = await requestAPI({
-          method: "post",
-          endPoint: "/api/users/register",
-          statusCode: StatusCodes.CONFLICT,
-        }).send(request);
-
-        expect(response.body).toEqual({
-          message: "emailの内容が重複しています。",
-        });
-      });
-    });
     describe("【サーバーに関わるエラーテスト】", () => {
       it("プログラムの意図しないエラー(サーバー側の問題等)は、エラーメッセージとstatus(InternalServerError=500)が返る。", async () => {
-        jest
-          .spyOn(UserRepository.prototype, "register")
-          .mockImplementation(() => {
-            throw new Error("Unexpected Error");
-          });
+        jest.spyOn(UserRepository.prototype, "login").mockImplementation(() => {
+          throw new Error("Unexpected Error");
+        });
 
         const request = {
-          name: "ダミーユーザー",
           password: "dummyPassword",
-          email: "dummyData@mail.com",
+          email: newUser.email,
         };
 
         const response = await requestAPI({
           method: "post",
-          endPoint: "/api/users/register",
+          endPoint: "/api/auth/login",
           statusCode: StatusCodes.INTERNAL_SERVER_ERROR,
         }).send(request);
 
