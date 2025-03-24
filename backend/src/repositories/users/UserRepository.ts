@@ -129,6 +129,10 @@ export class UserRepository {
 
   async delete(userId: UserId) {
     try {
+      await prisma.todo.deleteMany({
+        where: { userId: userId },
+      });
+
       const deletedUser = await prisma.user.delete({
         where: { id: userId },
       });

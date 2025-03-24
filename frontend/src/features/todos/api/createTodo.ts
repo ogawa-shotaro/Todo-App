@@ -1,4 +1,4 @@
-import type { TodoInput, TodoResponse } from "@/features/todos/types/todoTypes";
+import type { TodoInput, TodoResponse } from "@/features/todos/types/type";
 
 export const createTodoApi = async (
   formData: TodoInput

@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
+import { useState, useContext } from "react";
+import Link from "next/link";
 
-import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import type { SigninInput } from "@/features/users/types/authTypes";
-import { createSigninAction } from "@/features/users/stores/reducers/signinReducer";
+import type { AuthContextType, SigninInput } from "@/features/auths/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
+import { AuthContext } from "@/app/layout";
+import { useAuthHandler } from "@/features/auths/components/shared/fooks/useAuthHandler";
 
 const SigninForm: FC = () => {
-  const dispatch = useAppDispatch();
-  const authState = useAppSelector((state) => state.auth);
+  const { handleSignin } = useAuthHandler();
+  const { error, loading } = useContext<AuthContextType>(AuthContext);
 
   const [formData, setFormData] = useState<SigninInput>({
     email: "",
@@ -29,15 +29,11 @@ const SigninForm: FC = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(createSigninAction(formData));
-
-    if (authState.error) {
-      setFormData((formData) => ({ ...formData, password: "" }));
-    }
+    handleSignin(formData);
   };
 
-  if (authState.inProgress) {
-    return <p>送信中...</p>;
+  {
+    loading && <p>送信中...</p>;
   }
 
   return (
@@ -46,13 +42,11 @@ const SigninForm: FC = () => {
         <h2 className="text-2xl font-bold text-center text-gray-700">
           サインイン
         </h2>
-        {authState.error?.message && (
-          <p className="text-center text-red-600">
-            {Array.isArray(authState.error.message)
-              ? authState.error.message.join(" ")
-              : authState.error.message}
-          </p>
-        )}
+        <p className="text-center text-red-600">
+          {Array.isArray(error?.message)
+            ? error?.message.join(" ")
+            : error?.message}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Email field */}

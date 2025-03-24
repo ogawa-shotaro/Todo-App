@@ -1,7 +1,4 @@
-import type {
-  TodoListParams,
-  TodoResponse,
-} from "@/features/todos/types/todoTypes";
+import type { TodoListParams, TodoResponse } from "@/features/todos/types/type";
 
 export const getTodosApi = async (
   paramsData: TodoListParams

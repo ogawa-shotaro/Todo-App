@@ -1,15 +1,13 @@
 import { useState, type ChangeEventHandler, FormEventHandler } from "react";
 
+import type { TodoInput } from "@/features/todos/types/type";
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
 import Modal from "@/components/shared/modal";
 import { TextField } from "@/components/shared/form-elements/textField";
 import { CloseButton } from "@/components/shared/buttons/buttons";
 import { createTodoAction } from "@/features/todos/stores/reducers/createTodoReducer";
-
-import type { TodoInput } from "@/features/todos/types/todoTypes";
 
 interface ModalProps {
   onCreateSuccess: () => void;

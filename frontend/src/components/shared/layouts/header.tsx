@@ -1,24 +1,32 @@
 "use client";
 
+import type { MouseEventHandler, FC } from "react";
+import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import type { MouseEventHandler, FC } from "react";
 
-import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import { createSignoutAction } from "@/features/users/stores/reducers/signoutReducer";
+import type { AuthContextType } from "@/features/auths/types/type";
+import { AuthContext } from "@/app/layout";
 import HamburgerButton from "@/components/shared//buttons/hamburgerButton";
 import { RedButton } from "@/components/shared/buttons/buttons";
 import { BlueButtonWithBorder } from "@/components/shared/buttons/buttons";
+import { signoutApi } from "@/features/auths/api/signout";
 
 const Header: FC = () => {
+  const { setUser, isLoggedIn, setIsLoggedIn, setHasInitialized } =
+    useContext<AuthContextType>(AuthContext);
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const authState = useAppSelector((state) => state.auth);
-  const isLoggedIn = authState.user !== null;
 
   const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (event) => {
     event.preventDefault();
-    dispatch(createSignoutAction());
+
+    (async () => {
+      await signoutApi();
+
+      setUser(null);
+      setHasInitialized(false);
+      setIsLoggedIn(false);
+    })();
 
     router.push("/");
   };

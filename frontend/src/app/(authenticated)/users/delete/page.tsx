@@ -1,22 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useContext } from "react";
 import Link from "next/link";
 
-import { useAppSelector } from "@/stores/hooks";
+import type { AuthContextType } from "@/features/auths/types/type";
 import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
+import { AuthContext } from "@/app/layout";
 
 const DeleteUserPage = () => {
-  const authState = useAppSelector((state) => state.auth);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { loading } = useContext<AuthContextType>(AuthContext);
 
   const handleIsModalOpen = () => {
     setIsModalOpen((state) => !state);
   };
 
-  if (authState.inProgress) {
+  if (loading) {
     return <p>送信中...</p>;
   }
 
