@@ -1,21 +1,19 @@
 "use client";
 
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 
-import type { AuthContextType } from "@/features/auths/types/type";
 import type { UpdateInput } from "@/features/users/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
 import { BlueButton, GreenButton } from "@/components/shared/buttons/buttons";
-import { AuthContext } from "@/app/layout";
+import { useAuthContext } from "@/contexts/authContext";
 import { useUserHandler } from "./shared/fooks/useUserHandler";
 
 const UpdateUserForm: FC = () => {
   const { handleUserUpdate, isUpdated, setIsUpdated } = useUserHandler();
-  const { user, error, loading, setError } =
-    useContext<AuthContextType>(AuthContext);
+  const { user, error, loading, setError } = useAuthContext();
 
   const [formData, setFormData] = useState<UpdateInput>({
     name: "",
@@ -50,8 +48,8 @@ const UpdateUserForm: FC = () => {
     error && setFormData((formData) => ({ ...formData, password: "" }));
   };
 
-  if (loading) {
-    return <p>送信中...</p>;
+  {
+    loading && <p>送信中...</p>;
   }
 
   if (isUpdated) {

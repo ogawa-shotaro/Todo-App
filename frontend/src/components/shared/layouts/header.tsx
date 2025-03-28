@@ -1,12 +1,10 @@
 "use client";
 
 import type { MouseEventHandler, FC } from "react";
-import { useContext } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import type { AuthContextType } from "@/features/auths/types/type";
-import { AuthContext } from "@/app/layout";
+import { useAuthContext } from "@/contexts/authContext";
 import HamburgerButton from "@/components/shared//buttons/hamburgerButton";
 import { RedButton } from "@/components/shared/buttons/buttons";
 import { BlueButtonWithBorder } from "@/components/shared/buttons/buttons";
@@ -14,7 +12,7 @@ import { signoutApi } from "@/features/auths/api/signout";
 
 const Header: FC = () => {
   const { setUser, isLoggedIn, setIsLoggedIn, setHasInitialized } =
-    useContext<AuthContextType>(AuthContext);
+    useAuthContext();
   const router = useRouter();
 
   const handleSubmit: MouseEventHandler<HTMLButtonElement> = async (event) => {

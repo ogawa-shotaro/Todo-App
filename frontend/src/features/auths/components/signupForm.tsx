@@ -1,18 +1,18 @@
 "use client";
 
 import type { ChangeEventHandler, FormEventHandler, FC } from "react";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
-import type { SignupInput, AuthContextType } from "@/features/auths/types/type";
+import type { SignupInput } from "@/features/auths/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
-import { AuthContext } from "@/app/layout";
+import { useAuthContext } from "@/contexts/authContext";
 import { useAuthHandler } from "@/features/auths/components/shared/fooks/useAuthHandler";
 
 const SignupForm: FC = () => {
   const { handleSignup } = useAuthHandler();
-  const { error, loading } = useContext<AuthContextType>(AuthContext);
+  const { error, loading } = useAuthContext();
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",

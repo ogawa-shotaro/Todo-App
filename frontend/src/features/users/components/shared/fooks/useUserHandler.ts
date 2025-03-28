@@ -1,15 +1,14 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import type { ApiResponse } from "@/types/shared/type";
 import type { UpdateInput } from "@/features/users/types/type";
-import type { AuthContextType } from "@/features/auths/types/type";
-import { AuthContext } from "@/app/layout";
+import { useAuthContext } from "@/contexts/authContext";
 import { updateUserApi } from "@/features/users/api/updateUser";
 import { deleteUserApi } from "@/features/users/api/deleteUser";
 
 export const useUserHandler = () => {
   const { setUser, setLoading, setError, setHasInitialized, setIsLoggedIn } =
-    useContext<AuthContextType>(AuthContext);
+    useAuthContext();
   const [isUpdated, setIsUpdated] = useState(false);
 
   const handleUserUpdate = async (formData: UpdateInput) => {

@@ -1,18 +1,12 @@
-import { useContext } from "react";
-
 import type { ApiResponse } from "@/types/shared/type";
-import type {
-  AuthContextType,
-  SigninInput,
-  SignupInput,
-} from "@/features/auths/types/type";
-import { AuthContext } from "@/app/layout";
+import type { SigninInput, SignupInput } from "@/features/auths/types/type";
+import { useAuthContext } from "@/contexts/authContext";
 import { signinApi } from "@/features/auths/api/signin";
 import { signupApi } from "@/features/auths/api/signup";
 
 export const useAuthHandler = () => {
   const { setUser, setError, setLoading, setIsLoggedIn, setHasInitialized } =
-    useContext<AuthContextType>(AuthContext);
+    useAuthContext();
 
   const handleSignup = async (formData: SignupInput) => {
     try {

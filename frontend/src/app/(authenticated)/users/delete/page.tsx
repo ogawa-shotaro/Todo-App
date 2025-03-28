@@ -1,16 +1,15 @@
 "use client";
 
-import { useState, useContext } from "react";
+import { useState } from "react";
 import Link from "next/link";
 
-import type { AuthContextType } from "@/features/auths/types/type";
 import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
-import { AuthContext } from "@/app/layout";
+import { useAuthContext } from "@/contexts/authContext";
 
 const DeleteUserPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { loading } = useContext<AuthContextType>(AuthContext);
+  const { loading } = useAuthContext();
 
   const handleIsModalOpen = () => {
     setIsModalOpen((state) => !state);

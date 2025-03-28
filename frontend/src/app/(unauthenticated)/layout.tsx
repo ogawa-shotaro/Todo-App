@@ -1,17 +1,16 @@
 "use client";
 
-import { useEffect, useContext } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { AuthContext } from "@/app/layout";
-import type { AuthContextType } from "@/features/auths/types/type";
+import { useAuthContext } from "@/contexts/authContext";
 
 export default function AuthPageLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { isLoggedIn } = useContext<AuthContextType>(AuthContext);
+  const { isLoggedIn } = useAuthContext();
   const router = useRouter();
 
   useEffect(() => {
