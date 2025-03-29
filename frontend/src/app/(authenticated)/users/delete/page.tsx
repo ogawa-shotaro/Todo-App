@@ -5,7 +5,7 @@ import Link from "next/link";
 
 import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
-import { useAuthUserContext } from "@/contexts/authContext";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const DeleteUserPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

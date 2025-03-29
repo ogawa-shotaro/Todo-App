@@ -9,7 +9,7 @@ import { getTodosAction } from "@/features/todos/stores/reducers/getTodosReducer
 import { resetTodosAction } from "@/features/todos/stores/todoSlice";
 import TodoList from "@/features/todos/components/todoList";
 import { CreatePagination } from "@/features/todos/components/createPagination";
-import { useAuthUserContext } from "@/contexts/authContext";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const PAGE_SIZE = 10;
 

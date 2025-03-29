@@ -7,7 +7,7 @@ import Link from "next/link";
 import type { SignupInput } from "@/features/auths/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
-import { useAuthUserContext } from "@/contexts/authContext";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const SignupForm: FC = () => {
   const { signup, loading, error } = useAuthUserContext();

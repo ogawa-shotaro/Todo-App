@@ -6,7 +6,7 @@ import { useAppDispatch } from "@/stores/hooks";
 import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
 import { showToast } from "@/stores/toastSlice";
 import Modal from "@/components/shared/modal";
-import { useAuthUserContext } from "@/contexts/authContext";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const DeleteAccountModal: FC = () => {
   const { deleteUser, error } = useAuthUserContext();

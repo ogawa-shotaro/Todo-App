@@ -3,7 +3,7 @@
 import "@/styles/globals.css";
 import { Provider } from "react-redux";
 
-import { ContextProvider } from "@/contexts/authContext";
+import { ContextProvider } from "@/contexts/authUserContext";
 import { store } from "@/stores/store";
 import Header from "@/components/shared/layouts/header";
 import Footer from "@/components/shared/layouts/footer";

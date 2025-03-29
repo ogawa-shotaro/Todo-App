@@ -4,7 +4,7 @@ import type { MouseEventHandler, FC } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import { useAuthUserContext } from "@/contexts/authContext";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 import HamburgerButton from "@/components/shared//buttons/hamburgerButton";
 import { RedButton } from "@/components/shared/buttons/buttons";
 import { BlueButtonWithBorder } from "@/components/shared/buttons/buttons";

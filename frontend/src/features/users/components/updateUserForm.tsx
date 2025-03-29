@@ -8,7 +8,7 @@ import type { UpdateInput } from "@/features/users/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
 import { BlueButton, GreenButton } from "@/components/shared/buttons/buttons";
-import { useAuthUserContext } from "@/contexts/authContext";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const UpdateUserForm: FC = () => {
   const [isUpdated, setIsUpdated] = useState(false);
