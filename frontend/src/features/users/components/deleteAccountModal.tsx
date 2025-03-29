@@ -6,12 +6,10 @@ import { useAppDispatch } from "@/stores/hooks";
 import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
 import { showToast } from "@/stores/toastSlice";
 import Modal from "@/components/shared/modal";
-import { useAuthContext } from "@/contexts/authContext";
-import { useUserHandler } from "./shared/fooks/useUserHandler";
+import { useAuthUserContext } from "@/contexts/authContext";
 
 const DeleteAccountModal: FC = () => {
-  const { handleUserDelete } = useUserHandler();
-  const { error } = useAuthContext();
+  const { deleteUser, error } = useAuthUserContext();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -19,7 +17,7 @@ const DeleteAccountModal: FC = () => {
     event
   ) => {
     event.preventDefault();
-    handleUserDelete();
+    deleteUser();
 
     if (error?.message) {
       dispatch(

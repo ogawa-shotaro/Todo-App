@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 import { buildCreateTodoExtraReducer } from "@/features/todos/stores/reducers/createTodoReducer";
-import type { TodoState } from "@/features/todos/types/todoTypes";
+import type { TodoState } from "@/features/todos/types/type";
 import { buildGetTodosExtraReducer } from "./reducers/getTodosReducer";
 
 const initialState: TodoState = {
@@ -13,11 +13,17 @@ const initialState: TodoState = {
 export const todoSlice = createSlice({
   name: "todo",
   initialState,
-  reducers: {},
+  reducers: {
+    resetTodosAction: (state) => {
+      state.todoPage.items = [];
+      state.todoPage.totalCount = 0;
+    },
+  },
   extraReducers(builder) {
     buildCreateTodoExtraReducer(builder);
     buildGetTodosExtraReducer(builder);
   },
 });
 
+export const { resetTodosAction } = todoSlice.actions;
 export default todoSlice.reducer;

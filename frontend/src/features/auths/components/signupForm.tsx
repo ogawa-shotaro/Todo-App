@@ -7,12 +7,10 @@ import Link from "next/link";
 import type { SignupInput } from "@/features/auths/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
-import { useAuthContext } from "@/contexts/authContext";
-import { useAuthHandler } from "@/features/auths/components/shared/fooks/useAuthHandler";
+import { useAuthUserContext } from "@/contexts/authContext";
 
 const SignupForm: FC = () => {
-  const { handleSignup } = useAuthHandler();
-  const { error, loading } = useAuthContext();
+  const { signup, loading, error } = useAuthUserContext();
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",
@@ -30,7 +28,7 @@ const SignupForm: FC = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    handleSignup(formData);
+    await signup(formData);
   };
 
   {

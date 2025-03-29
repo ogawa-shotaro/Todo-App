@@ -6,12 +6,16 @@ import { useAppDispatch, useAppSelector } from "@/stores/hooks";
 import { BlueButton } from "@/components/shared/buttons/buttons";
 import CreateTodoModal from "@/features/todos/components/createTodoModal";
 import { getTodosAction } from "@/features/todos/stores/reducers/getTodosReducer";
+import { resetTodosAction } from "@/features/todos/stores/todoSlice";
 import TodoList from "@/features/todos/components/todoList";
 import { CreatePagination } from "@/features/todos/components/createPagination";
+import { useAuthUserContext } from "@/contexts/authContext";
 
 const PAGE_SIZE = 10;
 
 const TodosPage = () => {
+  const { user } = useAuthUserContext();
+
   const dispatch = useAppDispatch();
   const state = useAppSelector((state) => state.todo);
 
@@ -22,8 +26,13 @@ const TodosPage = () => {
   const totalCount = state.todoPage.totalCount;
 
   useEffect(() => {
+    if (!user) {
+      dispatch(resetTodosAction());
+      return;
+    }
+
     dispatch(getTodosAction({ page }));
-  }, [page]);
+  }, [user, page]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);

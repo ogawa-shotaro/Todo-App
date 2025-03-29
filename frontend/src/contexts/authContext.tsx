@@ -1,6 +1,5 @@
 "use client";
 
-import "@/styles/globals.css";
 import {
   type FC,
   type PropsWithChildren,
@@ -10,24 +9,26 @@ import {
   useEffect,
 } from "react";
 
-import type { User, ResponseError } from "@/types/shared/type";
-import type { AuthContextType } from "@/features/auths/types/type";
+import type {
+  AuthUserContextType,
+  User,
+  ResponseError,
+  ApiResponse,
+} from "@/types/shared/type";
+import type { SigninInput, SignupInput } from "@/features/auths/types/type";
+import type { UpdateInput } from "@/features/users/types/type";
 import { checkAuthApi } from "@/features/auths/api/checkAuth";
+import { signupApi } from "@/features/auths/api/signup";
+import { signinApi } from "@/features/auths/api/signin";
+import { signoutApi } from "@/features/auths/api/signout";
+import { updateUserApi } from "@/features/users/api/updateUser";
+import { deleteUserApi } from "@/features/users/api/deleteUser";
 
-export const AuthContext = createContext<AuthContextType>({
-  user: null,
-  setUser: () => {},
-  error: null,
-  setError: () => {},
-  loading: false,
-  setLoading: () => {},
-  isLoggedIn: false,
-  setIsLoggedIn: () => {},
-  hasInitialized: false,
-  setHasInitialized: () => {},
-});
+const AuthUserContext = createContext<AuthUserContextType>(
+  {} as AuthUserContextType
+);
 
-export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
+export const ContextProvider: FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [error, setError] = useState<ResponseError | null>(null);
   const [loading, setLoading] = useState(false);
@@ -45,24 +46,94 @@ export const AuthContextProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   }, []);
 
+  const signup = async (formData: SignupInput) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const response = await signupApi(formData);
+      setUser((response as ApiResponse).user);
+      setHasInitialized(true);
+      setIsLoggedIn(true);
+    } catch (error) {
+      setError({ message: (error as ApiResponse).message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signin = async (formData: SigninInput) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const response = await signinApi(formData);
+      setUser((response as ApiResponse).user);
+      setHasInitialized(true);
+      setIsLoggedIn(true);
+    } catch (error) {
+      setError({ message: (error as ApiResponse).message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const signout = async () => {
+    try {
+      await signoutApi();
+
+      setUser(null);
+      setHasInitialized(false);
+      setIsLoggedIn(false);
+    } catch (error) {
+      setError({ message: (error as ApiResponse).message });
+    }
+  };
+
+  const updateUser = async (formData: UpdateInput) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const response = await updateUserApi(formData);
+      setUser((response as ApiResponse).user);
+    } catch (error) {
+      setError({ message: (error as ApiResponse).message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const deleteUser = async () => {
+    try {
+      setError(null);
+      setLoading(true);
+      await deleteUserApi();
+      setUser(null);
+      setHasInitialized(false);
+      setIsLoggedIn(false);
+    } catch (error) {
+      setError({ message: (error as ApiResponse).message });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <AuthContext.Provider
+    <AuthUserContext.Provider
       value={{
         user,
-        setUser,
         error,
-        setError,
         loading,
-        setLoading,
         isLoggedIn,
-        setIsLoggedIn,
         hasInitialized,
-        setHasInitialized,
+        signin,
+        signup,
+        signout,
+        updateUser,
+        deleteUser,
       }}
     >
       {children}
-    </AuthContext.Provider>
+    </AuthUserContext.Provider>
   );
 };
 
-export const useAuthContext = () => useContext(AuthContext);
+export const useAuthUserContext = () => useContext(AuthUserContext);

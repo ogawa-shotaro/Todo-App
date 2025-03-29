@@ -3,14 +3,14 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAuthContext } from "@/contexts/authContext";
+import { useAuthUserContext } from "@/contexts/authContext";
 
 export default function AuthPageLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { isLoggedIn } = useAuthContext();
+  const { isLoggedIn } = useAuthUserContext();
   const router = useRouter();
 
   useEffect(() => {
