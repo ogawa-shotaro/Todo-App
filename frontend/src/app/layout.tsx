@@ -3,7 +3,7 @@
 import "@/styles/globals.css";
 import { Provider } from "react-redux";
 
-import { ContextProvider } from "@/contexts/authUserContext";
+import { ContextProvider as AuthContextProvider } from "@/contexts/authUserContext";
 import { store } from "@/stores/store";
 import Header from "@/components/shared/layouts/header";
 import Footer from "@/components/shared/layouts/footer";
@@ -17,14 +17,14 @@ export default function RootLayout({
   return (
     <html lang="ja">
       <body className="flex flex-col min-h-screen">
-        <ContextProvider>
+        <AuthContextProvider>
           <Provider store={store}>
             <Header />
             <main className="flex-1">{children}</main>
             <Toast />
             <Footer />
           </Provider>
-        </ContextProvider>
+        </AuthContextProvider>
       </body>
     </html>
   );

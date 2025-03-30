@@ -9,12 +9,7 @@ import {
   useEffect,
 } from "react";
 
-import type {
-  AuthUserContextType,
-  User,
-  ResponseError,
-  ApiResponse,
-} from "@/types/shared/type";
+import type { User, ResponseError, ApiResponse } from "@/types/shared/type";
 import type { SigninInput, SignupInput } from "@/features/auths/types/type";
 import type { UpdateInput } from "@/features/users/types/type";
 import { checkAuthApi } from "@/features/auths/api/checkAuth";
@@ -23,6 +18,19 @@ import { signinApi } from "@/features/auths/api/signin";
 import { signoutApi } from "@/features/auths/api/signout";
 import { updateUserApi } from "@/features/users/api/updateUser";
 import { deleteUserApi } from "@/features/users/api/deleteUser";
+
+export interface AuthUserContextType {
+  user: User | null;
+  error: ResponseError | null;
+  loading: boolean;
+  isLoggedIn: boolean;
+  hasInitialized: boolean;
+  signin: (input: SigninInput) => Promise<void>;
+  signup: (input: SignupInput) => Promise<void>;
+  signout: () => Promise<void>;
+  updateUser: (input: UpdateInput) => Promise<void>;
+  deleteUser: () => Promise<void>;
+}
 
 const AuthUserContext = createContext<AuthUserContextType>(
   {} as AuthUserContextType

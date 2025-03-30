@@ -17,7 +17,7 @@ const DeleteAccountModal: FC = () => {
     event
   ) => {
     event.preventDefault();
-    deleteUser();
+    await deleteUser();
 
     if (error?.message) {
       dispatch(
