@@ -9,7 +9,7 @@ import Modal from "@/components/shared/modal";
 import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const DeleteAccountModal: FC = () => {
-  const { deleteUser, error } = useAuthUserContext();
+  const { deleteUser } = useAuthUserContext();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -17,16 +17,9 @@ const DeleteAccountModal: FC = () => {
     event
   ) => {
     event.preventDefault();
-    await deleteUser();
+    const response = await deleteUser();
 
-    if (error?.message) {
-      dispatch(
-        showToast({
-          text: "アカウントの削除に失敗しました。",
-          type: "error",
-        })
-      );
-    } else {
+    if (response) {
       dispatch(
         showToast({
           text: "アカウントが削除されました。ご利用ありがとうございました。",
@@ -34,6 +27,13 @@ const DeleteAccountModal: FC = () => {
         })
       );
       router.push("/");
+    } else {
+      dispatch(
+        showToast({
+          text: "アカウントの削除に失敗しました。",
+          type: "error",
+        })
+      );
     }
   };
 

@@ -29,7 +29,7 @@ export interface AuthUserContextType {
   signup: (input: SignupInput) => Promise<void>;
   signout: () => Promise<void>;
   updateUser: (input: UpdateInput) => Promise<void>;
-  deleteUser: () => Promise<void>;
+  deleteUser: () => Promise<boolean>;
 }
 
 const AuthUserContext = createContext<AuthUserContextType>(
@@ -117,8 +117,10 @@ export const ContextProvider: FC<PropsWithChildren> = ({ children }) => {
       setUser(null);
       setHasInitialized(false);
       setIsLoggedIn(false);
+      return true;
     } catch (error) {
       setError({ message: (error as ApiResponse).message });
+      return false;
     } finally {
       setLoading(false);
     }
