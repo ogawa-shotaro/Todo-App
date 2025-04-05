@@ -17,9 +17,9 @@ const DeleteAccountModal: FC = () => {
     event
   ) => {
     event.preventDefault();
-    const response = await deleteUser();
+    const isSuccess = await deleteUser();
 
-    if (response) {
+    if (isSuccess) {
       dispatch(
         showToast({
           text: "アカウントが削除されました。ご利用ありがとうございました。",
