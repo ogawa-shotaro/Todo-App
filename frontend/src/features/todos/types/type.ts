@@ -1,3 +1,5 @@
+import type { ResponseError } from "@/types/shared/type";
+
 interface Todo {
   id?: number;
   title: string;
@@ -9,7 +11,7 @@ interface Todo {
 export interface TodoState {
   inProgress: boolean;
   todoPage: { items: Todo[]; totalCount: number };
-  error: null | TodoResponseError;
+  error: null | ResponseError;
 }
 
 export interface TodoInput {
@@ -23,10 +25,6 @@ export interface TodoListParams {
 
 export interface TodoListProps {
   todos: Todo[];
-}
-
-export interface TodoResponseError {
-  message?: string[] | string;
 }
 
 export interface TodoResponse {

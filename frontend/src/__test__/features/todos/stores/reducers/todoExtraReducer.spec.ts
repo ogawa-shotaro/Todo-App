@@ -7,7 +7,7 @@ import {
   getTodosFulfilledReducer,
   rejectedReducer,
 } from "@/features/todos/stores/reducers/todoExtraReducer";
-import type { TodoState, TodoResponse } from "@/features/todos/types/todoTypes";
+import type { TodoState, TodoResponse } from "@/features/todos/types/type";
 
 describe("【ユニットテスト】State操作(TodoState)に関わるReducer関数のテスト。", () => {
   let state: TodoState;

@@ -3,20 +3,19 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import { useAppSelector } from "@/stores/hooks";
 import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const DeleteUserPage = () => {
-  const authState = useAppSelector((state) => state.auth);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { loading } = useAuthUserContext();
 
   const handleIsModalOpen = () => {
     setIsModalOpen((state) => !state);
   };
 
-  if (authState.inProgress) {
+  if (loading) {
     return <p>送信中...</p>;
   }
 

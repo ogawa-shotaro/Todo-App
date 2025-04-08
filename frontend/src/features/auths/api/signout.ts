@@ -1,6 +1,6 @@
 export const signoutApi = async () => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/users/logout`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/auth/logout`,
     {
       method: "POST",
       credentials: "include",

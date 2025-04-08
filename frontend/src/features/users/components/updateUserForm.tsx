@@ -1,40 +1,38 @@
 "use client";
 
+import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 
-import { createUserUpdateAction } from "@/features/users/stores/reducers/updateUserReducer";
-import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import type { SignupInput as UpdateUserInput } from "@/features/users/types/authTypes";
+import type { UpdateInput } from "@/features/users/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
 import { BlueButton, GreenButton } from "@/components/shared/buttons/buttons";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const UpdateUserForm: FC = () => {
-  const dispatch = useAppDispatch();
-  const authState = useAppSelector((state) => state.auth);
+  const [isUpdated, setIsUpdated] = useState(false);
+  const { updateUser, user, error, loading } = useAuthUserContext();
 
-  const [formData, setFormData] = useState<UpdateUserInput>({
+  const [formData, setFormData] = useState<UpdateInput>({
     name: "",
     email: "",
     password: "",
   });
 
-  const [isUpdated, setIsUpdated] = useState(false);
-
   useEffect(() => {
-    if (authState.user) {
+    if (user) {
       setFormData({
-        name: authState.user.name,
-        email: authState.user.email,
+        name: user.name,
+        email: user.email,
         password: "",
       });
     }
-  }, [authState.user]);
+  }, [user]);
 
   const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
     const { name, value } = event.target;
+
     setFormData((formState) => ({
       ...formState,
       [name]: value.trim(),
@@ -43,15 +41,17 @@ const UpdateUserForm: FC = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    const result = await dispatch(createUserUpdateAction(formData));
 
-    "error" in result
-      ? setFormData((formData) => ({ ...formData, password: "" }))
-      : setIsUpdated(true);
+    try {
+      await updateUser(formData);
+      setIsUpdated(true);
+    } catch (_) {
+      setFormData((formData) => ({ ...formData, password: "" }));
+    }
   };
 
-  if (authState.inProgress) {
-    return <p>送信中...</p>;
+  {
+    loading && <p>送信中...</p>;
   }
 
   if (isUpdated) {
@@ -81,11 +81,11 @@ const UpdateUserForm: FC = () => {
         <h2 className="text-2xl font-bold text-center text-gray-700">
           アカウント更新
         </h2>
-        {authState.error?.message && (
+        {error?.message && (
           <p className="text-center text-red-600">
-            {Array.isArray(authState.error.message)
-              ? authState.error.message.join(" ")
-              : authState.error.message}
+            {Array.isArray(error.message)
+              ? error.message.join(" ")
+              : error.message}
           </p>
         )}
 

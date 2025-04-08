@@ -1,14 +1,15 @@
-import type { FC, MouseEventHandler } from "react";
+import { type FC, MouseEventHandler } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { useAppDispatch } from "@/stores/hooks";
 import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
-import { createUserDeleteAction } from "@/features/users/stores/reducers/deleteUserReducer";
 import { showToast } from "@/stores/toastSlice";
 import Modal from "@/components/shared/modal";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const DeleteAccountModal: FC = () => {
+  const { deleteUser } = useAuthUserContext();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
@@ -16,16 +17,9 @@ const DeleteAccountModal: FC = () => {
     event
   ) => {
     event.preventDefault();
-    const result = await dispatch(createUserDeleteAction());
+    const isSuccess = await deleteUser();
 
-    if ("error" in result) {
-      dispatch(
-        showToast({
-          text: "アカウントの削除に失敗しました。",
-          type: "error",
-        })
-      );
-    } else {
+    if (isSuccess) {
       dispatch(
         showToast({
           text: "アカウントが削除されました。ご利用ありがとうございました。",
@@ -33,6 +27,13 @@ const DeleteAccountModal: FC = () => {
         })
       );
       router.push("/");
+    } else {
+      dispatch(
+        showToast({
+          text: "アカウントの削除に失敗しました。",
+          type: "error",
+        })
+      );
     }
   };
 

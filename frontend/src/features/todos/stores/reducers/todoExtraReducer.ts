@@ -1,6 +1,6 @@
 import type { PayloadAction, SerializedError } from "@reduxjs/toolkit";
 
-import { TodoState, TodoResponse } from "@/features/todos/types/todoTypes";
+import type { TodoState, TodoResponse } from "@/features/todos/types/type";
 
 export const pendingReducer = (state: TodoState) => {
   state.inProgress = true;

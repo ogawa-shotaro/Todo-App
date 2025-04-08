@@ -1,4 +1,4 @@
-import type { TodoListProps } from "@/features/todos/types/todoTypes";
+import type { TodoListProps } from "@/features/todos/types/type";
 
 const TodoList: React.FC<TodoListProps> = ({ todos }) => {
   return (

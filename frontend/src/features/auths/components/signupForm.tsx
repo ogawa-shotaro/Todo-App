@@ -1,18 +1,16 @@
 "use client";
 
+import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 import { useState } from "react";
 import Link from "next/link";
-import type { ChangeEventHandler, FormEventHandler, FC } from "react";
 
-import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import type { SignupInput } from "@/features/users/types/authTypes";
-import { createSignupAction } from "@/features/users/stores/reducers/signupReducer";
+import type { SignupInput } from "@/features/auths/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
+import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const SignupForm: FC = () => {
-  const dispatch = useAppDispatch();
-  const authState = useAppSelector((state) => state.auth);
+  const { signup, loading, error } = useAuthUserContext();
 
   const [formData, setFormData] = useState<SignupInput>({
     name: "",
@@ -30,15 +28,11 @@ const SignupForm: FC = () => {
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
-    dispatch(createSignupAction(formData));
-
-    if (authState.error) {
-      setFormData((formData) => ({ ...formData, password: "" }));
-    }
+    await signup(formData);
   };
 
-  if (authState.inProgress) {
-    return <p>送信中...</p>;
+  {
+    loading && <p>送信中...</p>;
   }
 
   return (
@@ -47,14 +41,11 @@ const SignupForm: FC = () => {
         <h2 className="text-2xl font-bold text-center text-gray-700">
           サインアップ
         </h2>
-        {authState.error?.message && (
-          <p className="text-center text-red-600">
-            {Array.isArray(authState.error.message)
-              ? authState.error.message.join(" ")
-              : authState.error.message}
-          </p>
-        )}
-
+        <p className="text-center text-red-600">
+          {Array.isArray(error?.message)
+            ? error?.message.join(" ")
+            : error?.message}
+        </p>
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Name field */}
           <InputField
