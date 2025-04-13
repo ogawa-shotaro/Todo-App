@@ -8,7 +8,7 @@ export const SubmitButton: FC<SubmitButtonProps> = ({ label }) => {
   return (
     <button
       type="submit"
-      className="w-full px-4 py-2 font-semibold text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+      className="w-full px-4 py-2 font-semibold text-white bg-indigo-900 rounded-md hover:bg-indigo-800 "
     >
       {label}
     </button>

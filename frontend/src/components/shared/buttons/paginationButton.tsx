@@ -16,7 +16,7 @@ export const PaginationButton: FC<ButtonProps> = ({
   return (
     <button
       onClick={onClick}
-      className={`w-10 h-10 rounded ${page === currentPage ? "bg-blue-500 text-white" : "bg-gray-300 text-black hover:bg-gray-400"}`}
+      className={`w-10 h-10 rounded ${page === currentPage ? "bg-indigo-900 text-white" : "bg-gray-300 text-black hover:bg-gray-400"}`}
     >
       {label}
     </button>

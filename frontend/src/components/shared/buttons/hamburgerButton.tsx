@@ -13,7 +13,7 @@ const HamburgerButton: FC = () => {
     <div className="relative">
       <button
         onClick={handleToggleMenu}
-        className="flex flex-col justify-center items-center w-8 h-8 bg-blue-500 rounded-md hover:bg-blue-700 focus:outline-none mr-4"
+        className="flex flex-col justify-center items-center w-8 h-8 bg-indigo-900 rounded-md hover:bg-indigo-800 focus:outline-none mr-4"
       >
         <span className="block  w-6 h-0.5 bg-white mb-1"></span>
         <span className="block w-6 h-0.5 bg-white mb-1"></span>

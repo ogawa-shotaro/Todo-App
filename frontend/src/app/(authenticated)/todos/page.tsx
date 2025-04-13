@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 
 import { useAppDispatch, useAppSelector } from "@/stores/hooks";
-import { BlueButton } from "@/components/shared/buttons/buttons";
+import { IndigoButton } from "@/components/shared/buttons/buttons";
 import CreateTodoModal from "@/features/todos/components/createTodoModal";
 import { getTodosAction } from "@/features/todos/stores/reducers/getTodosReducer";
 import { resetTodosAction } from "@/features/todos/stores/todoSlice";
@@ -40,11 +40,11 @@ const TodosPage = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 to-gray-100 p-6">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-8">
-        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-700 text-center mb-8">
+        <h1 className="text-4xl font-extrabold text-transparent bg-clip-text bg-indigo-900 text-center mb-8">
           📝 Todo 一覧
         </h1>
         <div className="flex justify-end mb-6 text-lg font-medium ">
-          <BlueButton label="新規Todo" onClick={openModal} />
+          <IndigoButton label="新規Todo" onClick={openModal} />
         </div>
         {/* Todoリスト */}
         <TodoList todos={items} />

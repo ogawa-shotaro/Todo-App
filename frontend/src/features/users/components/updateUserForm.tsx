@@ -7,7 +7,7 @@ import Link from "next/link";
 import type { UpdateInput } from "@/features/users/types/type";
 import { InputField } from "@/components/shared/form-elements/inputField";
 import { SubmitButton } from "@/components/shared/buttons/submitButton";
-import { BlueButton, GreenButton } from "@/components/shared/buttons/buttons";
+import { IndigoButton, GreenButton } from "@/components/shared/buttons/buttons";
 import { useAuthUserContext } from "@/contexts/authUserContext";
 
 const UpdateUserForm: FC = () => {
@@ -63,7 +63,7 @@ const UpdateUserForm: FC = () => {
           </h2>
           <div className="flex justify-center space-x-4">
             <Link href={"/todos"}>
-              <BlueButton label="Todoページへ" />
+              <IndigoButton label="Todoページへ" />
             </Link>
             <GreenButton
               label="編集を続ける"

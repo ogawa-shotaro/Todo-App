@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 import { useAppDispatch } from "@/stores/hooks";
-import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
+import { IndigoButton, RedButton } from "@/components/shared/buttons/buttons";
 import { showToast } from "@/stores/toastSlice";
 import Modal from "@/components/shared/modal";
 import { useAuthUserContext } from "@/contexts/authUserContext";
@@ -49,7 +49,7 @@ const DeleteAccountModal: FC = () => {
         <div className="flex justify-center mt-4 space-x-4">
           <RedButton label="削除する" onClick={handleDeleteAccount} />
           <Link href={"/todos"}>
-            <BlueButton label="キャンセル" />
+            <IndigoButton label="キャンセル" />
           </Link>
         </div>
       </div>

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 
-import { BlueButton, RedButton } from "@/components/shared/buttons/buttons";
+import { IndigoButton, RedButton } from "@/components/shared/buttons/buttons";
 import DeleteAccountModal from "@/features/users/components/deleteAccountModal";
 import { useAuthUserContext } from "@/contexts/authUserContext";
 
@@ -27,7 +27,7 @@ const DeleteUserPage = () => {
         </h2>
         <div className="flex justify-center space-x-4">
           <Link href={"/todos"}>
-            <BlueButton label="Todoページに戻る" />
+            <IndigoButton label="Todoページに戻る" />
           </Link>
           <RedButton label="アカウントを削除" onClick={handleIsModalOpen} />
         </div>

@@ -9,7 +9,7 @@ export const RedButton: FC<ButtonProps> = ({ label, onClick }) => {
   return (
     <button
       type="submit"
-      className="px-4 py-2 text-white  bg-red-500 rounded hover:bg-red-600"
+      className="px-4 py-2 text-white bg-red-700 rounded hover:bg-red-900"
       onClick={onClick}
     >
       {label}
@@ -21,7 +21,7 @@ export const GreenButton: FC<ButtonProps> = ({ label, onClick }) => {
   return (
     <button
       type="submit"
-      className="px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
+      className="px-4 py-2 text-white bg-[rgb(13,175,73)] rounded hover:bg-green-500"
       onClick={onClick}
     >
       {label}
@@ -29,11 +29,11 @@ export const GreenButton: FC<ButtonProps> = ({ label, onClick }) => {
   );
 };
 
-export const BlueButton: FC<ButtonProps> = ({ label, onClick }) => {
+export const IndigoButton: FC<ButtonProps> = ({ label, onClick }) => {
   return (
     <button
       type="submit"
-      className="px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600"
+      className="px-4 py-2 text-white bg-indigo-900 rounded hover:bg-indigo-800"
       onClick={onClick}
     >
       {label}
@@ -41,11 +41,11 @@ export const BlueButton: FC<ButtonProps> = ({ label, onClick }) => {
   );
 };
 
-export const BlueButtonWithBorder: FC<ButtonProps> = ({ label, onClick }) => {
+export const IndigoButtonWithBorder: FC<ButtonProps> = ({ label, onClick }) => {
   return (
     <button
       type="submit"
-      className="px-4 py-2 text-white text-lg bg-blue-500 border-2 border-white rounded hover:bg-blue-600"
+      className="px-4 py-2 text-white text-lg bg-indigo-900 border-2 border-white rounded hover:bg-indigo-800"
       onClick={onClick}
     >
       {label}
