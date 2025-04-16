@@ -24,6 +24,19 @@ export const getTodosFulfilledReducer = (
   }
 };
 
+export const updateTodoFulfilledReducer = (
+  state: TodoState,
+  action: PayloadAction<TodoResponse>
+) => {
+  state.inProgress = false;
+  state.error = null;
+
+  const updatedTodo = action.payload.todo;
+  state.todoPage.items = state.todoPage.items.map((todo) =>
+    todo.id === updatedTodo?.id ? { ...todo, ...updatedTodo } : todo
+  );
+};
+
 export const rejectedReducer = (
   state: TodoState,
   action: { error: SerializedError }

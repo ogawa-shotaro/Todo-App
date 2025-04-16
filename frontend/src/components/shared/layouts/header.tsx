@@ -6,7 +6,6 @@ import Link from "next/link";
 
 import { useAuthUserContext } from "@/contexts/authUserContext";
 import HamburgerButton from "@/components/shared//buttons/hamburgerButton";
-import { RedButton } from "@/components/shared/buttons/buttons";
 import { IndigoButtonWithBorder } from "@/components/shared/buttons/buttons";
 
 const Header: FC = () => {

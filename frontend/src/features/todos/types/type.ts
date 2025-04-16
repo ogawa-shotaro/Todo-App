@@ -1,6 +1,6 @@
 import type { ResponseError } from "@/types/shared/type";
 
-interface Todo {
+export interface Todo {
   id?: number;
   title: string;
   body: string;
@@ -17,6 +17,12 @@ export interface TodoState {
 export interface TodoInput {
   title: string;
   body: string;
+}
+
+export interface TodoUpdateInput {
+  id?: number;
+  title?: string;
+  body?: string;
 }
 
 export interface TodoListParams {

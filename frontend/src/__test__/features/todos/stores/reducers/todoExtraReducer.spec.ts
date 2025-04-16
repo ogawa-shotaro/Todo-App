@@ -1,13 +1,15 @@
 import { createAction } from "@reduxjs/toolkit";
 import type { SerializedError } from "@reduxjs/toolkit";
 
+import type { TodoState, TodoResponse } from "@/features/todos/types/type";
 import {
   pendingReducer,
   createTodoFulfilledReducer,
   getTodosFulfilledReducer,
   rejectedReducer,
+  updateTodoFulfilledReducer,
 } from "@/features/todos/stores/reducers/todoExtraReducer";
-import type { TodoState, TodoResponse } from "@/features/todos/types/type";
+import { todo } from "node:test";
 
 describe("【ユニットテスト】State操作(TodoState)に関わるReducer関数のテスト。", () => {
   let state: TodoState;
@@ -86,6 +88,31 @@ describe("【ユニットテスト】State操作(TodoState)に関わるReducer�
     ]);
     expect(state.todoPage.totalCount).toEqual(3);
     expect(state.error).toEqual(null);
+  });
+  it("updateTodoFulfilledReducer関数を実行すると、指定した配列要素(itemsのTodo一件)のデータ更新をする。", () => {
+    state.todoPage.items.push({
+      id: 1,
+      title: "ダミータイトル",
+      body: "ダミーボディ",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    });
+
+    const fulfilled = createAction<TodoResponse>("todo/updateTodo");
+    const action = fulfilled({
+      todo: {
+        id: 1,
+        title: "変更後のタイトル",
+        body: "変更後のボディ",
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+    });
+
+    updateTodoFulfilledReducer(state, action);
+
+    expect(state.inProgress).toEqual(false);
+    expect(state.todoPage.items[0]).toEqual(action.payload.todo);
   });
   it("rejectedReducer関数を実行すると、error情報の更新をする。", () => {
     const rejected = createAction<{ error: SerializedError }>(

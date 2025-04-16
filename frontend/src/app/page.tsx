@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import { GreenButton } from "@/components/shared/buttons/buttons";
 
 export default function TopPage() {
@@ -15,7 +17,9 @@ export default function TopPage() {
           Todoアプリでやるべきことを整理しましょう
         </p>
         <div className="flex gap-4 justify-center">
-          <GreenButton label="ユーザー登録する" />
+          <Link href="/signup">
+            <GreenButton label="サインアップ" />
+          </Link>
         </div>
       </div>
     </div>

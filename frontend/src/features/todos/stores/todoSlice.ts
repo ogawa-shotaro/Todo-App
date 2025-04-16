@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { buildCreateTodoExtraReducer } from "@/features/todos/stores/reducers/createTodoReducer";
 import type { TodoState } from "@/features/todos/types/type";
-import { buildGetTodosExtraReducer } from "./reducers/getTodosReducer";
+import { buildCreateTodoExtraReducer } from "@/features/todos/stores/reducers/createTodoReducer";
+import { buildGetTodosExtraReducer } from "@/features/todos/stores/reducers/getTodosReducer";
+import { buildUpdateTodoExtraReducer } from "@/features/todos/stores/reducers/updateTodoReducer";
 
 const initialState: TodoState = {
   inProgress: false,
@@ -22,6 +23,7 @@ export const todoSlice = createSlice({
   extraReducers(builder) {
     buildCreateTodoExtraReducer(builder);
     buildGetTodosExtraReducer(builder);
+    buildUpdateTodoExtraReducer(builder);
   },
 });
 
