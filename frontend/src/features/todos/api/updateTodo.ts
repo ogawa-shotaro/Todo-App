@@ -4,14 +4,14 @@ import type {
 } from "@/features/todos/types/type";
 
 export const updateTodoApi = async (
-  updatedata: TodoUpdateInput
+  todoItem: TodoUpdateInput
 ): Promise<TodoResponse> => {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${updatedata.id}`,
+    `${process.env.NEXT_PUBLIC_API_URL}/api/todos/${todoItem.id}`,
     {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title: updatedata.title, body: updatedata.body }),
+      body: JSON.stringify({ title: todoItem.title, body: todoItem.body }),
       credentials: "include",
     }
   );

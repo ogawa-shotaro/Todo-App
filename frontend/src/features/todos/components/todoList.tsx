@@ -3,8 +3,9 @@ import { useState } from "react";
 import type { Todo, TodoListProps } from "@/features/todos/types/type";
 import { GreenButton, RedButton } from "@/components/shared/buttons/buttons";
 import CreateUpdateModal from "@/features/todos/components/createUpdateModal";
+import { deleteTodoApi } from "@/features/todos/api/deleteTodo";
 
-const TodoList: React.FC<TodoListProps> = ({ todos }) => {
+const TodoList: React.FC<TodoListProps> = ({ todos, onDeleteSuccess }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
 
@@ -25,7 +26,15 @@ const TodoList: React.FC<TodoListProps> = ({ todos }) => {
           <p className="text-gray-600 mt-2 leading-relaxed">{todo.body}</p>
           <div className="absolute bottom-4 right-4 flex gap-2">
             <GreenButton label="編集" onClick={() => openModal(todo)} />
-            <RedButton label="削除" />
+            <RedButton
+              label="削除"
+              onClick={async () => {
+                const isSuccess = await deleteTodoApi({ id: todo.id });
+                if (isSuccess) {
+                  await onDeleteSuccess();
+                }
+              }}
+            />
           </div>
         </div>
       ))}

@@ -19,8 +19,11 @@ export interface TodoInput {
   body: string;
 }
 
-export interface TodoUpdateInput {
+export interface TodoFindParams {
   id?: number;
+}
+
+export interface TodoUpdateInput extends TodoFindParams {
   title?: string;
   body?: string;
 }
@@ -31,6 +34,7 @@ export interface TodoListParams {
 
 export interface TodoListProps {
   todos: Todo[];
+  onDeleteSuccess: () => Promise<void>;
 }
 
 export interface TodoResponse {

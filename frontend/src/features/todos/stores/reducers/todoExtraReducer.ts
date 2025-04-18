@@ -18,8 +18,11 @@ export const getTodosFulfilledReducer = (
   state.inProgress = false;
   state.error = null;
 
-  if (Array.isArray(action.payload.items) && action.payload.totalCount) {
-    state.todoPage.items = action.payload.items;
+  if (
+    Array.isArray(action.payload.items) &&
+    action.payload.totalCount !== undefined
+  ) {
+    state.todoPage.items = [...action.payload.items];
     state.todoPage.totalCount = action.payload.totalCount;
   }
 };

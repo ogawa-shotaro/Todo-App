@@ -47,14 +47,19 @@ const TodosPage = () => {
           <IndigoButton label="新規Todo" onClick={openModal} />
         </div>
         {/* Todoリスト */}
-        <TodoList todos={items} />
+        <TodoList
+          todos={items}
+          onDeleteSuccess={async () => {
+            await dispatch(getTodosAction({ page }));
+          }}
+        />
       </div>
       {/* モーダル */}
       {isModalOpen && (
         <CreateTodoModal
-          onCreateSuccess={() => {
+          onCreateSuccess={async () => {
             closeModal();
-            dispatch(getTodosAction({ page }));
+            await dispatch(getTodosAction({ page }));
           }}
           onCancel={() => closeModal()}
         />
