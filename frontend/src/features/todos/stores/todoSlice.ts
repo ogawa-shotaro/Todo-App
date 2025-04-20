@@ -14,12 +14,7 @@ const initialState: TodoState = {
 export const todoSlice = createSlice({
   name: "todo",
   initialState,
-  reducers: {
-    resetTodosAction: (state) => {
-      state.todoPage.items = [];
-      state.todoPage.totalCount = 0;
-    },
-  },
+  reducers: {},
   extraReducers(builder) {
     buildCreateTodoExtraReducer(builder);
     buildGetTodosExtraReducer(builder);
@@ -27,5 +22,4 @@ export const todoSlice = createSlice({
   },
 });
 
-export const { resetTodosAction } = todoSlice.actions;
 export default todoSlice.reducer;

@@ -9,7 +9,6 @@ import {
   rejectedReducer,
   updateTodoFulfilledReducer,
 } from "@/features/todos/stores/reducers/todoExtraReducer";
-import { todo } from "node:test";
 
 describe("【ユニットテスト】State操作(TodoState)に関わるReducer関数のテスト。", () => {
   let state: TodoState;
