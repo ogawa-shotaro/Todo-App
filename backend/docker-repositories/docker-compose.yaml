@@ -1,0 +1,34 @@
+version: "3.9"
+
+services:
+  db:
+    build: .
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: ogawa
+      POSTGRES_PASSWORD: ogawa777
+      POSTGRES_DB: todo
+    volumes:
+      - ./volumes/postgres:/var/lib/postgresql/data
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  db-test:
+    build: .
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_USER: ogawa
+      POSTGRES_PASSWORD: ogawa777
+      POSTGRES_DB: todo_test
+    volumes:
+      - ./test/volumes/postgres:/var/lib/postgresql/data
+  adminer-test:
+    image: adminer
+    restart: always
+    ports:
+      - 8081:8080

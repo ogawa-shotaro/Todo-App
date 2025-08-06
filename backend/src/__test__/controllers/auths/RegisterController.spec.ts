@@ -1,0 +1,77 @@
+import { StatusCodes } from "http-status-codes";
+
+import { RegisterController } from "../../../controllers/auths/RegisterController";
+import { MockRepository } from "../../helper/mocks/MockUserRepository";
+import { createMockRequest } from "../../helper/mocks/request";
+import { createMockResponse } from "../../helper/mocks/response";
+
+describe("【ユニットテスト】ユーザーの新規登録", () => {
+  let repository: MockRepository;
+  let controller: RegisterController;
+  beforeEach(async () => {
+    repository = new MockRepository();
+    controller = new RegisterController(repository);
+  });
+  describe("【成功パターン】", () => {
+    it("Registerメソッドのパラメータが正しいと、User(jsonとstatus(ok=200))が返る。", async () => {
+      const req = createMockRequest({
+        body: {
+          name: "ダミーユーザー",
+          password: "dummyPassword",
+          email: "dummyData@mail.com",
+        },
+      });
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      const mockUser = {
+        id: 1,
+        name: "ダミーユーザー",
+        password: "dummyPassword",
+        email: "dummyData@mail.com",
+      };
+      const mockToken = "mockedJWT";
+
+      repository.register.mockResolvedValue({
+        user: mockUser,
+        token: mockToken,
+      });
+
+      await controller.register(req, res, next);
+
+      expect(repository.register).toHaveBeenCalledWith({
+        name: "ダミーユーザー",
+        password: "dummyPassword",
+        email: "dummyData@mail.com",
+      });
+      expect(res.cookie).toHaveBeenCalledWith("token", "mockedJWT", {
+        httpOnly: true,
+      });
+      expect(res.status).toHaveBeenCalledWith(StatusCodes.OK);
+      expect(res.json).toHaveBeenCalledWith({
+        id: 1,
+        name: "ダミーユーザー",
+        email: "dummyData@mail.com",
+      });
+    });
+  });
+  describe("【異常パターン】", () => {
+    it("Registerメソッドのパラメータが不正の場合、next関数(パラメーターがError)を実行する。", async () => {
+      const req = createMockRequest({
+        body: {
+          name: "InvalidName",
+          password: "InvalidPassword",
+          email: "InvalidEmail",
+        },
+      });
+      const res = createMockResponse();
+      const next = jest.fn();
+
+      repository.register.mockRejectedValue(new Error("dummy error"));
+
+      await controller.register(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(Error));
+    });
+  });
+});

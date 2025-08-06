@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.custom-toast-container {
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.Toastify__progress-bar--success {
+  background-color: blue !important;
+}
+
+.custom-toast-container .Toastify__toast--success svg {
+  fill: blue;
+}
