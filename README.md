@@ -6,6 +6,7 @@
 - TypeScript
 - React / Next.js
 - Node.js / Express
+- PostgreSQL
 - docker
 - Jest（単体テスト / 結合テスト）
 
