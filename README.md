@@ -183,6 +183,7 @@ npm run test:integration
 以下のコマンドを実行してください：
 ```bash
 npm run test:unit
+```
 
 # 【本番環境】
 
@@ -198,7 +199,3 @@ CloudFrontでHTTPS通信を行うため、証明書を北部バージニアで�
 
 ## 3.【の設定】
 
-
-
-
-```
