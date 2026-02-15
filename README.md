@@ -31,7 +31,6 @@
 ```bash
 git clone https://github.com/ogawa-shotaro/Todo-App.git
 cd Todo-App
-git checkout feature/frontend-signup
 ```
 
 ## 2.【パッケージをインストール】
