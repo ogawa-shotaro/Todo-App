@@ -215,10 +215,10 @@ ALB、ECS用にパブリックサブネット、RDS用にプライベートサ�
 ## 5.【RDS構築】
 ローカルで使用していたPostgreSQLをAmazonRDSへ変更する。
 
-## 6.【ECS on Fargate構成】
-・クラスターを作成し、Fargateを選択。
-・タスク定義では、起動タイプをFargateにし、コンテナイメージを追加する。
-・サービスを作成し、ALBと紐付ける。
+## 6.【ECS on Fargate構成】<br />
+・クラスターを作成し、Fargateを選択。<br />
+・タスク定義では、起動タイプをFargateにし、コンテナイメージを追加する。<br />
+・サービスを作成し、ALBと紐付ける。<br />
 
 ## 7.【Parameter StoreでDB接続情報を管理】
 ・ＤＢの接続情報は、Systems Manager Parameter　Storeから取得する。
