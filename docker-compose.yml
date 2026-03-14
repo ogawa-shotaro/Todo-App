@@ -41,7 +41,6 @@ services:
       - "3001:3001"
     environment:
       PORT: 3001
-      # ビルド時ではなくコンテナ起動時に注入される（同一イメージを使い回せる）
       NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:3000}
     depends_on:
       - backend
